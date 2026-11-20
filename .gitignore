@@ -1,3 +1,5 @@
 node_modules/
 data/guestbook.json
 .DS_Store
+backend/cloudflare/.wrangler/
+backend/cloudflare/.dev.vars
