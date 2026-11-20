@@ -361,7 +361,7 @@
           </div>
         </div>`;
       list.appendChild(el);
-      mountLazy($('.model', el), a.id, a.name, a.model, 360, { az: 0.62 + idx * 0.35, shift: idx * 20, glb: a.glb && a.glb.url });
+      mountLazy($('.model', el), a.id, a.name, a.model, 360, { az: 0.62 + idx * 0.35, shift: idx * 20, glb: a.glb && a.glb.url, tight: !!(a.glb && a.glb.base) });
     });
     observeReveal();
   }

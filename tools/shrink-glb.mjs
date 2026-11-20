@@ -3,7 +3,7 @@
      npm run shrink -- ต้นฉบับ.glb                      -> ต้นฉบับ.web.glb (ไฟล์สำหรับเว็บ)
      npm run shrink -- ต้นฉบับ.glb --out assets/model/prang-sam-yot.glb
      npm run shrink -- ต้นฉบับ.glb --ar 0.4             -> เพิ่ม .ar.glb สำหรับ AR (กว้าง 0.4 ม.)
-   ตัวเลือก: --ratio 0.1 (สัดส่วนจุดยอดที่เก็บ 0–1)  --texture 2048 (ขนาด texture สูงสุด px)  --error 0.001  --target 8 (MB เป้าหมาย)
+   ตัวเลือก: --ar-png (texture AR เป็น PNG แทน JPEG เมื่อมีความโปร่งใส)  --ratio 0.1 (สัดส่วนจุดยอดที่เก็บ 0–1)  --texture 2048 (ขนาด texture สูงสุด px)  --error 0.001  --target 8 (MB เป้าหมาย)
    ถ้าไฟล์ผลลัพธ์ยังใหญ่กว่า --target สคริปต์จะลดค่า ratio/texture ลงเองทีละขั้น (สูงสุด 4 รอบ) และแจ้งผล */
 import { spawnSync } from 'node:child_process';
 import { statSync, existsSync, mkdirSync, rmSync, mkdtempSync } from 'node:fs';
@@ -49,7 +49,10 @@ if (arWidth) {
   const arOut = out.replace(/(\.web)?\.glb$/, '') + '.ar.glb';
   run(['optimize', src, a, '--compress', 'false', '--texture-compress', 'false', '--simplify', 'true',
     '--simplify-ratio', String(Math.min(ratio, 0.05)), '--simplify-error', '0.002', '--no-instance', '--no-palette']);
-  run(['resize', a, b, '--width', '1024', '--height', '1024']);
+  // texture ต้นฉบับอาจเป็น WebP (AR ไม่รองรับ) จึงแปลงเป็น JPEG คุณภาพ 85 ก่อน (ไฟล์เล็ก; ถ้าโมเดลมี texture โปร่งใส ให้ใช้ --ar-png) แล้วค่อยย่อให้ไม่เกิน 1024 px
+  const c = join(tmp, 'c.glb');
+  run(args.includes('--ar-png') ? ['png', a, c, '--formats', 'webp'] : ['jpeg', a, c, '--formats', 'webp', '--quality', '85']);
+  run(['resize', c, b, '--width', '1024', '--height', '1024']);
   const r = spawnSync(process.execPath, [join(root, 'tools/make-ar-glb.mjs'), b, arOut, arWidth], { stdio: 'inherit', cwd: root });
   rmSync(tmp, { recursive: true, force: true }); if (r.status) process.exit(r.status);
   console.log(`AR: ${arOut} (${MB(arOut)}, กว้าง ${arWidth} ม.)`);

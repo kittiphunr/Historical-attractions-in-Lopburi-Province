@@ -206,7 +206,9 @@ function buildParts(type, opts, shared, custom) {
   const r = Math.max(sph.radius * (FIT[type] || 1), Math.hypot(size.x, size.z) * 0.5 * 1.18 + 18), target = sph.center.clone(); target.y = Math.min(target.y, size.y * 0.5);
 
   // ฐานไดโอรามา: แผ่นดินเผามุมมน + ชั้นทราย
-  const SW = size.x * 1.22 + 46, SD = size.z * 1.22 + 46;
+  // โมเดลที่มีฐาน/พื้นของตัวเองอยู่แล้ว (opts.tight) ใช้แผ่นรองที่เล็กลง ไม่ให้ดูเป็นฐานซ้อนฐาน
+  const PADK = opts.tight ? 1.08 : 1.22, PADC = opts.tight ? 22 : 46;
+  const SW = size.x * PADK + PADC, SD = size.z * PADK + PADC;
   scene.add(makeSlab(SW, SD, 22, '#b9633a', -27));
   scene.add(makeSlab(SW - 8, SD - 8, 5, '#e6bf92', -5.2));
   const ground = new Mesh(new PlaneGeometry(r * 8, r * 8), new ShadowMaterial({ opacity: 0.22 }));
