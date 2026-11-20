@@ -27,6 +27,23 @@
   /* ---------- บาร์โค้ดบนตั๋ว: รหัสจังหวัดลพบุรี (ISO 3166-2:TH-16) ---------- */
   if (window.renderBarcode && $('#ticketBarcode')) window.renderBarcode($('#ticketBarcode'), 'TH-16');
 
+
+  /* ---------- โหมดกลางวัน / กลางคืน ---------- */
+  const THEME_KEY = 'lopburi.theme';
+  const isDark = () => document.documentElement.classList.contains('dark');
+  function applyTheme(mode, persist) {
+    document.documentElement.classList.toggle('dark', mode === 'dark');
+    const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.content = mode === 'dark' ? '#1e1814' : '#f4ece2';
+    const btn = $('#themeBtn'); if (btn) { btn.setAttribute('aria-pressed', mode === 'dark'); btn.setAttribute('aria-label', mode === 'dark' ? 'สลับเป็นโหมดกลางวัน' : 'สลับเป็นโหมดกลางคืน'); }
+    if (window.LopburiGL && window.LopburiGL.setNight) window.LopburiGL.setNight(mode === 'dark');
+    const mv = document.querySelector('#arStage model-viewer'); if (mv) mv.setAttribute('exposure', mode === 'dark' ? '0.75' : '1');
+    if (persist) { try { localStorage.setItem(THEME_KEY, mode); } catch (e) { /* โหมดส่วนตัว */ } }
+    window.dispatchEvent(new CustomEvent('themechange', { detail: { mode } }));
+  }
+  $('#themeBtn').addEventListener('click', () => applyTheme(isDark() ? 'light' : 'dark', true));
+  // ตามการตั้งค่าระบบ ถ้าผู้ใช้ยังไม่เคยเลือกเอง
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => { let saved = null; try { saved = localStorage.getItem(THEME_KEY); } catch (err) { /* ไม่มี storage */ } if (!saved) applyTheme(e.matches ? 'dark' : 'light', false); });
+
   /* ---------- ทักทายตามเวลา ---------- */
   (function () { const h = new Date().getHours(); $('#hello').textContent = h < 12 ? 'สวัสดีตอนเช้า' : h < 17 ? 'สวัสดีตอนบ่าย' : 'สวัสดีตอนเย็น'; })();
 
@@ -90,6 +107,7 @@
     window.Lopburi3D.interactive(host, m.stage, { speed: 0.1, ry: -28 + (opts.shift || 0) });
     return 'css';
   }
+  if (GL) GL.setNight(isDark());
   const heroHost = $('#heroModel');
   mountModel(heroHost, 'triprang', 520, { speed: 0.0042, glb: A.find(x => x.id === 'sam-yot').glb.url });
   if (GL) GL.onFail(() => location.reload());
@@ -120,7 +138,7 @@
       const mv = document.createElement('model-viewer');
       Object.entries({ src, alt: `โมเดล 3 มิติ ${a.name}`, ar: '', 'ar-modes': isBlob ? 'webxr quick-look' : 'webxr scene-viewer quick-look', 'ar-scale': 'auto', 'ar-placement': 'floor',
         'camera-controls': '', 'auto-rotate': '', 'shadow-intensity': '1', 'shadow-softness': '0.9', 'touch-action': 'pan-y', 'interaction-prompt': 'auto' }).forEach(([k, v]) => mv.setAttribute(k, v));
-      mv.className = 'h-full w-full'; mv.style.background = 'transparent';
+      mv.className = 'h-full w-full'; mv.style.background = 'transparent'; mv.setAttribute('exposure', isDark() ? '0.75' : '1');
       const btn = document.createElement('button'); btn.slot = 'ar-button'; btn.type = 'button'; btn.className = 'btn-terra absolute bottom-4 left-1/2 -translate-x-1/2';
       btn.innerHTML = svg('cube', 'h-5 w-5') + 'ดูใน AR (วางบนโต๊ะ)'; mv.append(btn);
       mv.addEventListener('load', () => setTimeout(() => {
@@ -162,7 +180,7 @@
       w.innerHTML = `<button type="button" data-map-ui data-mvsel="${h.id}" class="pointer-events-auto group relative -translate-x-1/2 -translate-y-full outline-offset-4" aria-label="${esc(h.a.name)}">
         <span class="grid h-8 w-8 place-items-center rounded-full border-2 border-white bg-terra-500 text-xs font-semibold text-white shadow-dark transition group-hover:scale-110">${h.a.no}</span>
         <span class="mx-auto block h-2 w-0.5 bg-terra-500"></span>
-        <span class="pointer-events-none absolute bottom-full left-1/2 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-char-800 px-2.5 py-1 text-xs text-cream-50 shadow-dark group-hover:block">${esc(h.a.name)}</span></button>`;
+        <span class="pointer-events-none absolute bottom-full left-1/2 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-char-800 px-2.5 py-1 text-xs text-snow-50 shadow-dark group-hover:block">${esc(h.a.name)}</span></button>`;
       layer.appendChild(w); h.el = w; h.btn = w.firstElementChild;
     });
     let viewer = null, started = false;
@@ -221,7 +239,7 @@
     b.setAttribute('aria-label', `${a.name} — ดูรายละเอียด`);
     b.innerHTML = `<span class="absolute inset-0 -m-1 animate-ping rounded-full bg-terra-400/40 sm:-m-2"></span>
       <span class="absolute -inset-2" aria-hidden="true"></span><span class="relative grid h-5 w-5 place-items-center rounded-full border border-white bg-terra-500 text-[9px] font-semibold text-white shadow-dark transition group-hover:scale-125 sm:h-9 sm:w-9 sm:border-2 sm:text-sm">${a.no}</span>
-      <span class="pointer-events-none absolute right-0 top-full z-10 mt-2 whitespace-nowrap rounded-lg bg-char-800 px-3 py-1.5 text-xs text-cream-50 opacity-0 shadow-dark transition group-hover:opacity-100 group-focus-visible:opacity-100">${esc(a.name)}</span>`;
+      <span class="pointer-events-none absolute right-0 top-full z-10 mt-2 whitespace-nowrap rounded-lg bg-char-800 px-3 py-1.5 text-xs text-snow-50 opacity-0 shadow-dark transition group-hover:opacity-100 group-focus-visible:opacity-100">${esc(a.name)}</span>`;
     mapWrap.appendChild(b);
   });
 
@@ -258,7 +276,7 @@
       el.innerHTML = `
         <div class="grid items-start gap-8 lg:grid-cols-12 lg:gap-10">
           <div class="${flip ? 'lg:order-2' : ''} lg:col-span-5 lg:sticky lg:top-6">
-            <div class="relative overflow-hidden rounded-3xl shadow-press" style="background:radial-gradient(ellipse at 50% 30%,#fff,transparent 65%),linear-gradient(180deg,#f7efe5,#ecdccb)">
+            <div class="stage-bg relative overflow-hidden rounded-3xl shadow-press">
               <span class="absolute left-5 top-3 z-10 text-6xl font-semibold text-terra-500/20">${a.no}</span>
               <div class="model h-[320px] sm:h-[380px]" role="img" aria-label="โมเดล 3 มิติจำลอง ${esc(a.name)} ลากเพื่อหมุน"></div>
               <p class="relative pt-1 text-center text-[11px] text-ink-500">↻ ลาก / ปุ่มลูกศร เพื่อหมุน · ดับเบิลคลิกรีเซ็ต${a.glb ? `<br>${esc(a.glb.credit)}` : ''}</p>

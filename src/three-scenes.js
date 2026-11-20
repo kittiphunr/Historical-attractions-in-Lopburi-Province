@@ -17,6 +17,20 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 const L = () => window.Lopburi3D;
 const CAP = 512;
+/* ---------- แสงกลางวัน / กลางคืน (โหมดกลางคืน = แสงจันทร์สีน้ำเงิน + ไฟตะเกียงอุ่นด้านหลัง) ---------- */
+let NIGHT = false;
+const LIGHTS = {
+  day:   { hemi: ['#fff1dc', '#b98a64', 1.0], sun: ['#fff0d6', 2.6], rim: ['#ffd2a8', 0.7], env: 0.32, exposure: 0.95 },
+  night: { hemi: ['#8aa4ff', '#2a1d16', 0.6], sun: ['#aac2ff', 1.6], rim: ['#ffb070', 1.3], env: 0.16, exposure: 0.95 }
+};
+const NIGHT_TARGETS = new Set();
+function paintLights(t) {
+  const m = NIGHT ? LIGHTS.night : LIGHTS.day, L = t.L;
+  L.hemi.color.set(m.hemi[0]); L.hemi.groundColor.set(m.hemi[1]); L.hemi.intensity = m.hemi[2];
+  L.sun.color.set(m.sun[0]); L.sun.intensity = m.sun[1]; L.rim.color.set(m.rim[0]); L.rim.intensity = m.rim[1];
+  t.scene.environmentIntensity = m.env * (t.envScale || 1);
+  if (t.renderer) t.renderer.toneMappingExposure = m.exposure;
+}
 let EXPORTING = false; // true ระหว่างส่งออก GLB: เลี่ยง InstancedMesh เพื่อให้เปิดใน Quick Look/Scene Viewer ได้
 const texCache = new Map();
 const matCache = new Map();
@@ -199,13 +213,14 @@ function buildParts(type, opts, shared, custom) {
   ground.rotation.x = -Math.PI / 2; ground.position.y = -29; ground.receiveShadow = true; scene.add(ground);
 
   // แสง
-  scene.add(new HemisphereLight('#fff1dc', '#b98a64', 1.0));
+  const hemi = new HemisphereLight('#fff1dc', '#b98a64', 1.0); scene.add(hemi);
   const sun = new DirectionalLight('#fff0d6', 2.6);
   sun.position.set(target.x + r * 1.3, r * 2.0, target.z + r * 1.1); sun.target.position.copy(target);
   sun.castShadow = true; sun.shadow.mapSize.set(1536, 1536); sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.8;
   const sc = sun.shadow.camera; sc.left = -r * 1.6; sc.right = r * 1.6; sc.top = r * 1.6; sc.bottom = -r * 1.6; sc.near = 1; sc.far = r * 7;
   scene.add(sun, sun.target);
   const rim = new DirectionalLight('#ffd2a8', 0.7); rim.position.set(-r * 1.5, r * 0.8, -r * 1.2); scene.add(rim);
+  const nightEntry = { scene, L: { hemi, sun, rim } }; NIGHT_TARGETS.add(nightEntry); paintLights(nightEntry);
 
   let particles = null;
   if (opts.particles) {
@@ -219,7 +234,7 @@ function buildParts(type, opts, shared, custom) {
   const camera = new PerspectiveCamera(30, 1, 5, r * 40);
   return {
     scene, camera, r, target, particles, size,
-    dispose() { scene.traverse(o => { if (o.geometry && !o.userData.keep) o.geometry.dispose(); }); }
+    dispose() { NIGHT_TARGETS.delete(nightEntry); scene.traverse(o => { if (o.geometry && !o.userData.keep) o.geometry.dispose(); }); }
   };
 }
 
@@ -327,11 +342,12 @@ function createMapViewer(host, cfg) {
 
   const scene = new Scene(), camera = new PerspectiveCamera(34, 1, 10, 8000);
   const pm = new PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.35; pm.dispose();
-  scene.add(new HemisphereLight('#fff1dc', '#b98a64', 1.0));
+  const hemi = new HemisphereLight('#fff1dc', '#b98a64', 1.0); scene.add(hemi);
   const sun = new DirectionalLight('#fff0d6', 2.6); sun.position.set(520, 900, 560); sun.target.position.set(0, 0, 0);
   sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0005; sun.shadow.normalBias = 1.2;
   Object.assign(sun.shadow.camera, { left: -520, right: 520, top: 520, bottom: -520, near: 10, far: 2600 }); scene.add(sun, sun.target);
   const rim = new DirectionalLight('#ffd2a8', 0.6); rim.position.set(-500, 300, -600); scene.add(rim);
+  NIGHT_TARGETS.add({ scene, L: { hemi, sun, rim }, renderer, envScale: 1.1 }); NIGHT_TARGETS.forEach(paintLights);
 
   const S = { az: 0.55, el: 0.9, dist: 1400, target: new Vector3(0, 10, 0), fit: 1400, auto: !reduce, userTouched: false };
   const goal = { az: S.az, el: S.el, dist: S.dist, target: S.target.clone() };
@@ -486,6 +502,7 @@ const GL = (() => {
       return true;
     },
     onFail(cb) { failCb = cb; },
+    setNight(on) { NIGHT = !!on; NIGHT_TARGETS.forEach(paintLights); if (renderer) renderer.toneMappingExposure = NIGHT ? LIGHTS.night.exposure : LIGHTS.day.exposure; },
     exportGLB,
     createMapViewer,
     addView(host, type, opts = {}) {

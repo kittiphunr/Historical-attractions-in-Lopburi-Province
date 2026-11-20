@@ -3,10 +3,35 @@
 @tailwind utilities;
 
 @layer base {
+  :root {
+    --cream-50: 251 247 241; --cream-100: 244 236 226; --cream-200: 234 223 209; --cream-300: 220 205 186;
+    --ink-900: 42 35 32; --ink-700: 74 63 56; --ink-500: 122 108 96; --ink-400: 154 140 128;
+    --paper: 255 255 255;
+    --stage-glow: 255 255 255; --stage-a: 247 239 229; --stage-b: 236 220 203;
+    --shadow-soft: 0 22px 40px -22px rgba(120,72,40,.38), 0 2px 0 rgba(255,255,255,.95) inset;
+    --shadow-neu: 7px 7px 18px rgba(135,92,60,.17), -6px -6px 16px rgba(255,255,255,.95);
+    --shadow-dark: 0 26px 44px -20px rgba(30,20,12,.65);
+    --shadow-press: inset 3px 3px 8px rgba(135,92,60,.18), inset -3px -3px 8px rgba(255,255,255,.9);
+    color-scheme: light;
+  }
+  .dark {
+    --cream-50: 43 34 28; --cream-100: 30 24 20; --cream-200: 22 17 14; --cream-300: 66 53 44;
+    --ink-900: 248 239 227; --ink-700: 227 214 198; --ink-500: 176 161 147; --ink-400: 140 126 114;
+    --paper: 66 52 43;
+    --stage-glow: 78 60 48; --stage-a: 41 33 28; --stage-b: 26 20 16;
+    --shadow-soft: 0 22px 40px -22px rgba(0,0,0,.7), 0 1px 0 rgba(255,255,255,.05) inset;
+    --shadow-neu: 7px 7px 18px rgba(0,0,0,.5), -5px -5px 14px rgba(255,255,255,.035);
+    --shadow-dark: 0 26px 44px -20px rgba(0,0,0,.8);
+    --shadow-press: inset 3px 3px 8px rgba(0,0,0,.5), inset -3px -3px 8px rgba(255,255,255,.04);
+    color-scheme: dark;
+  }
+}
+
+@layer base {
   html { scroll-behavior: smooth; }
   body {
     @apply bg-cream-100 text-ink-700 font-sans antialiased;
-    background-image: radial-gradient(1100px 600px at 90% -5%, rgba(217,105,63,.14), transparent 60%), radial-gradient(900px 500px at -10% 40%, rgba(255,255,255,.8), transparent 60%);
+    background-image: radial-gradient(1100px 600px at 90% -5%, rgba(217,105,63,.14), transparent 60%), radial-gradient(900px 500px at -10% 40%, rgb(var(--paper) / .8), transparent 60%);
     background-attachment: fixed;
   }
   ::selection { @apply bg-terra-500 text-white; }
@@ -15,22 +40,30 @@
 }
 
 @layer components {
-  .card { @apply rounded-[1.75rem] border border-white/80 bg-cream-50 shadow-soft; }
-  .card-dark { @apply rounded-[1.75rem] text-cream-50 shadow-dark; background: linear-gradient(155deg, #3a332e, #211d1a); }
+  .card { @apply rounded-[1.75rem] border border-paper/80 bg-cream-50 shadow-soft; }
+  .card-dark { @apply rounded-[1.75rem] text-snow-50 shadow-dark; background: linear-gradient(155deg, #3a332e, #211d1a); }
   .neu { @apply rounded-2xl bg-cream-50 shadow-neu transition; }
   .btn-terra {
     @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 font-medium text-white shadow-neu transition hover:-translate-y-0.5 hover:brightness-105;
     background-image: linear-gradient(145deg, #dc6f45, #b84a25);
   }
-  .btn-dark { @apply inline-flex items-center justify-center gap-2 rounded-full bg-char-800 px-5 py-2.5 text-sm font-medium text-cream-50 shadow-dark transition hover:-translate-y-0.5; }
+  .btn-dark { @apply inline-flex items-center justify-center gap-2 rounded-full bg-char-800 px-5 py-2.5 text-sm font-medium text-snow-50 shadow-dark transition hover:-translate-y-0.5; }
   .btn-soft { @apply inline-flex items-center justify-center gap-2 rounded-full bg-cream-100 px-6 py-3 font-medium text-ink-700 shadow-neu transition hover:-translate-y-0.5 hover:text-terra-600; }
   .chip { @apply rounded-full bg-cream-50 px-4 py-2 text-sm text-ink-700 shadow-neu transition hover:text-terra-600; }
   .chip[aria-pressed="true"] { @apply bg-terra-500 text-white shadow-press; }
   .eyebrow { @apply text-xs font-medium uppercase tracking-[.28em] text-terra-500; }
   .h-sec { @apply text-3xl font-semibold leading-tight text-ink-900 sm:text-4xl; }
   .rail-btn { @apply flex w-[68px] flex-col items-center gap-1 rounded-2xl bg-cream-50 px-1 py-3 text-[11px] text-ink-500 shadow-neu transition hover:text-terra-600; }
-  .rail-btn[aria-current="true"] { @apply bg-white text-terra-600 shadow-press; }
+  .rail-btn[aria-current="true"] { @apply bg-paper text-terra-600 shadow-press; }
   .field { @apply w-full rounded-2xl border-0 bg-cream-100 px-4 py-3 text-ink-900 shadow-press placeholder-ink-400/70; }
+
+
+  /* ฉากหลังของช่องแสดงโมเดล 3 มิติ: เปลี่ยนตามโหมดกลางวัน/กลางคืน */
+  .stage-bg { background: radial-gradient(ellipse at 50% 30%, rgb(var(--stage-glow)), transparent 62%), linear-gradient(180deg, rgb(var(--stage-a)), rgb(var(--stage-b))); }
+  /* โหมดกลางคืน: ตัวอักษรเน้นสีส้มให้อ่านชัดบนพื้นเข้ม, ลดความสว่างของภาพถ่ายและแผนที่ */
+  .dark .text-terra-500, .dark .text-terra-600 { color: rgb(240 150 108); }
+  .dark .map-img { filter: brightness(.8) contrast(1.05) saturate(.95); }
+  .dark .photo-img { filter: brightness(.82) saturate(.95); }
 
   /* ===== CSS 3D (ตัวสำรองเมื่อไม่มี WebGL) ===== */
   .scene { perspective: 1400px; perspective-origin: 50% 35%; }
