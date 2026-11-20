@@ -12,10 +12,12 @@ import {
 } from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { GLTFExporter } from 'three/addons/exporters/GLTFExporter.js';
 import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 const L = () => window.Lopburi3D;
 const CAP = 512;
+let EXPORTING = false; // true ระหว่างส่งออก GLB: เลี่ยง InstancedMesh เพื่อให้เปิดใน Quick Look/Scene Viewer ได้
 const texCache = new Map();
 const matCache = new Map();
 
@@ -91,6 +93,17 @@ function repeatMat(pal, W, H, repX) {
 }
 const shadowed = (m) => { m.castShadow = true; m.receiveShadow = true; return m; };
 
+/* แผ่นฐานไดโอรามา (ใช้ทั้งในฉากเว็บและตอนส่งออกไป AR) */
+function makeSlab(w, d, depth, color, y, rad = 26) {
+  const sh = new Shape(), x = -w / 2, z = -d / 2;
+  sh.moveTo(x + rad, z); sh.lineTo(x + w - rad, z); sh.quadraticCurveTo(x + w, z, x + w, z + rad); sh.lineTo(x + w, z + d - rad);
+  sh.quadraticCurveTo(x + w, z + d, x + w - rad, z + d); sh.lineTo(x + rad, z + d); sh.quadraticCurveTo(x, z + d, x, z + d - rad);
+  sh.lineTo(x, z + rad); sh.quadraticCurveTo(x, z, x + rad, z);
+  const g = new ExtrudeGeometry(sh, { depth, bevelEnabled: true, bevelSize: 2.5, bevelThickness: 2.5, bevelSegments: 3, curveSegments: 14 });
+  g.rotateX(-Math.PI / 2);
+  const m = new Mesh(g, new MeshStandardMaterial({ color, roughness: 0.92 })); m.position.y = y; m.castShadow = m.receiveShadow = true; return m;
+}
+
 /* ---------- primitives (ใช้พิกัดเดียวกับ CSS: y ลง -> y ขึ้น) ---------- */
 const THREEP = {
   group: (x, y, z) => { const g = new Group(); g.position.set(x, -y, z); return g; },
@@ -153,13 +166,16 @@ function mountain(w, h, pal, cx, by, cz, opt) {
   const body = new Mesh(geo, new MeshStandardMaterial({ vertexColors: true, roughness: 0.95, flatShading: true }));
   body.position.y = h / 2; shadowed(body); g.add(body);
   if (opt.stairs) {
-    const N = 70, steps = new InstancedMesh(new BoxGeometry(14, 2.4, 7), new MeshStandardMaterial({ color: '#efe4c8', roughness: 0.8 }), N);
+    const N = 70, stepGeo = new BoxGeometry(14, 2.4, 7), stepMat = new MeshStandardMaterial({ color: '#efe4c8', roughness: 0.8 });
+    const steps = EXPORTING ? new Group() : new InstancedMesh(stepGeo, stepMat, N);
     const o = new Object3D();
     for (let i = 0; i < N; i++) {
       const t = i / (N - 1) * 0.94, a = 0.75 * Math.sin(t * 6.6), r = R * (1 - t) + 3;
-      o.position.set(r * Math.sin(a), t * h + 1.5, r * Math.cos(a)); o.rotation.set(0, a, 0); o.scale.setScalar(1 - t * 0.45); o.updateMatrix(); steps.setMatrixAt(i, o.matrix);
+      o.position.set(r * Math.sin(a), t * h + 1.5, r * Math.cos(a)); o.rotation.set(0, a, 0); o.scale.setScalar(1 - t * 0.45); o.updateMatrix();
+      if (EXPORTING) { const m = new Mesh(stepGeo, stepMat); m.applyMatrix4(o.matrix); steps.add(m); } else steps.setMatrixAt(i, o.matrix);
     }
-    steps.castShadow = steps.receiveShadow = true; g.add(steps);
+    if (!EXPORTING) steps.castShadow = steps.receiveShadow = true;
+    g.add(steps);
   }
   return g;
 }
@@ -177,17 +193,8 @@ function buildParts(type, opts, shared, custom) {
 
   // ฐานไดโอรามา: แผ่นดินเผามุมมน + ชั้นทราย
   const SW = size.x * 1.22 + 46, SD = size.z * 1.22 + 46;
-  const slab = (w, d, depth, color, y, rad = 26) => {
-    const sh = new Shape(), x = -w / 2, z = -d / 2;
-    sh.moveTo(x + rad, z); sh.lineTo(x + w - rad, z); sh.quadraticCurveTo(x + w, z, x + w, z + rad); sh.lineTo(x + w, z + d - rad);
-    sh.quadraticCurveTo(x + w, z + d, x + w - rad, z + d); sh.lineTo(x + rad, z + d); sh.quadraticCurveTo(x, z + d, x, z + d - rad);
-    sh.lineTo(x, z + rad); sh.quadraticCurveTo(x, z, x + rad, z);
-    const g = new ExtrudeGeometry(sh, { depth, bevelEnabled: true, bevelSize: 2.5, bevelThickness: 2.5, bevelSegments: 3, curveSegments: 14 });
-    g.rotateX(-Math.PI / 2);
-    const m = new Mesh(g, new MeshStandardMaterial({ color, roughness: 0.92 })); m.position.y = y; m.castShadow = m.receiveShadow = true; return m;
-  };
-  scene.add(slab(SW, SD, 22, '#b9633a', -27));
-  scene.add(slab(SW - 8, SD - 8, 5, '#e6bf92', -5.2));
+  scene.add(makeSlab(SW, SD, 22, '#b9633a', -27));
+  scene.add(makeSlab(SW - 8, SD - 8, 5, '#e6bf92', -5.2));
   const ground = new Mesh(new PlaneGeometry(r * 8, r * 8), new ShadowMaterial({ opacity: 0.22 }));
   ground.rotation.x = -Math.PI / 2; ground.position.y = -29; ground.receiveShadow = true; scene.add(ground);
 
@@ -265,6 +272,24 @@ function bindInput(v, opts) {
   });
 }
 
+
+/* ---------- ส่งออกโมเดลที่สร้างด้วยโค้ดเป็น .glb สำหรับ AR (ขนาดจริงบนโต๊ะ ~ 40 ซม.) ---------- */
+async function exportGLB(type, meters = 0.4) {
+  EXPORTING = true;
+  try {
+    const body = new Group();
+    (L().MODEL_BUILDERS[type] || L().MODEL_BUILDERS.bigprang)(body, THREEP);
+    const size = new Box3().setFromObject(body).getSize(new Vector3());
+    const SW = size.x * 1.22 + 46, SD = size.z * 1.22 + 46;
+    const inner = new Group(); inner.add(body, makeSlab(SW, SD, 22, '#b9633a', -27), makeSlab(SW - 8, SD - 8, 5, '#e6bf92', -5.2));
+    const k = meters / Math.max(SW, SD);
+    inner.scale.setScalar(k); inner.position.y = 29.5 * k; // ให้ก้นแผ่นฐานแตะพื้น y=0
+    const root = new Group(); root.name = type; root.add(inner);
+    const buf = await new GLTFExporter().parseAsync(root, { binary: true, maxTextureSize: 1024 });
+    return new Blob([buf], { type: 'model/gltf-binary' });
+  } finally { EXPORTING = false; }
+}
+
 /* ---------- ตัวจัดการกลาง ---------- */
 const GL = (() => {
   let renderer, canvas, views = [], shared, running = false, failCb = null, ro, dead = false;
@@ -318,6 +343,7 @@ const GL = (() => {
       return true;
     },
     onFail(cb) { failCb = cb; },
+    exportGLB,
     addView(host, type, opts = {}) {
       if (!renderer || dead) return false;
       let v;

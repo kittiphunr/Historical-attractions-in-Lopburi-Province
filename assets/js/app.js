@@ -94,6 +94,50 @@
   if (GL) GL.onFail(() => location.reload());
   $('#srcCount').textContent = S.length + '+';
 
+
+  /* ---------- AR / ดู 3 มิติเต็มจอ (model-viewer โหลดตอนกดเท่านั้น ~1 MB) ---------- */
+  const arDlg = $('#arDialog'); let arBlobUrl = null, arReturnFocus = null, arLoading = null;
+  const arStatus = (t) => { $('#arStatus').textContent = t; };
+  function ensureAR() {
+    if (window.__lopburiARReady) return Promise.resolve();
+    return arLoading || (arLoading = new Promise((res, rej) => {
+      const s = document.createElement('script'); s.src = 'assets/js/ar.js'; s.onload = res; s.onerror = () => { arLoading = null; rej(new Error('โหลดตัวแสดง AR ไม่สำเร็จ')); }; document.head.appendChild(s);
+    }));
+  }
+  function arCleanup() { $('#arStage').replaceChildren(); if (arBlobUrl) { URL.revokeObjectURL(arBlobUrl); arBlobUrl = null; } $('#arHelp').classList.add('hidden'); }
+  async function openAR(id, trigger) {
+    const a = A.find(x => x.id === id); if (!a) return;
+    arReturnFocus = trigger || null; arCleanup();
+    $('#arTitle').textContent = a.name + ' — 3 มิติ / AR'; arStatus('กำลังเตรียมโมเดล…');
+    arDlg.showModal();
+    try {
+      await ensureAR();
+      let src, isBlob = false;
+      if (a.glb && a.glb.ar) src = a.glb.ar;                      // ไฟล์ .glb ที่ทำไว้สำหรับ AR
+      else { const blob = await window.LopburiGL.exportGLB(a.model); arBlobUrl = src = URL.createObjectURL(blob); isBlob = true; } // โมเดลที่สร้างด้วยโค้ด: ส่งออกขนาดจริง ~40 ซม.
+      const mv = document.createElement('model-viewer');
+      Object.entries({ src, alt: `โมเดล 3 มิติ ${a.name}`, ar: '', 'ar-modes': isBlob ? 'webxr quick-look' : 'webxr scene-viewer quick-look', 'ar-scale': 'auto', 'ar-placement': 'floor',
+        'camera-controls': '', 'auto-rotate': '', 'shadow-intensity': '1', 'shadow-softness': '0.9', 'touch-action': 'pan-y', 'interaction-prompt': 'auto' }).forEach(([k, v]) => mv.setAttribute(k, v));
+      mv.className = 'h-full w-full'; mv.style.background = 'transparent';
+      const btn = document.createElement('button'); btn.slot = 'ar-button'; btn.type = 'button'; btn.className = 'btn-terra absolute bottom-4 left-1/2 -translate-x-1/2';
+      btn.innerHTML = svg('cube', 'h-5 w-5') + 'ดูใน AR (วางบนโต๊ะ)'; mv.append(btn);
+      mv.addEventListener('load', () => setTimeout(() => {
+        if (mv.canActivateAR) arStatus('แตะ “ดูใน AR” เพื่อวางโมเดลบนโต๊ะหรือพื้นจริง · ลากเพื่อหมุน ใช้สองนิ้วซูม');
+        else {
+          arStatus('ลากเพื่อหมุน ใช้สองนิ้วซูม');
+          const help = $('#arHelp'); help.classList.remove('hidden');
+          help.textContent = (window.isSecureContext ? '' : 'หน้านี้ไม่ได้เปิดผ่าน HTTPS จึงใช้ AR ไม่ได้ · ') + 'อุปกรณ์หรือเบราว์เซอร์นี้ยังเปิด AR ไม่ได้ — AR ใช้ได้บน Android (Chrome พร้อม Google Play Services for AR) และ iPhone/iPad (Safari) ลองเปิดหน้านี้จากมือถือ';
+        }
+      }, 400));
+      mv.addEventListener('error', () => arStatus('แสดงโมเดลไม่สำเร็จ ลองใหม่อีกครั้ง'));
+      $('#arStage').append(mv);
+    } catch (e) { arStatus('เปิดโมเดลไม่สำเร็จ: ' + (e.message || e)); }
+  }
+  document.addEventListener('click', (e) => { const t = e.target.closest('[data-ar]'); if (t) openAR(t.dataset.ar, t); });
+  $('#arClose').addEventListener('click', () => arDlg.close());
+  arDlg.addEventListener('click', (e) => { if (e.target === arDlg) arDlg.close(); });
+  arDlg.addEventListener('close', () => { arCleanup(); if (arReturnFocus) arReturnFocus.focus(); });
+
   /* ---------- timeline ---------- */
   $('#timeline').innerHTML = window.TIMELINE.map((t, i) => `
     <li class="reveal card p-6" style="transition-delay:${i * 70}ms">
@@ -115,12 +159,12 @@
   const mapWrap = $('#mapWrap');
   A.filter(a => a.map).forEach(a => {
     const b = document.createElement('a');
-    b.href = '#' + a.id; b.className = 'group absolute -translate-x-1/2 -translate-y-1/2';
+    b.href = '#' + a.id; b.className = 'group absolute -translate-y-1/2 -translate-x-[calc(100%+6px)]';
     b.style.left = a.map[0] + '%'; b.style.top = a.map[1] + '%';
     b.setAttribute('aria-label', `${a.name} — ดูรายละเอียด`);
-    b.innerHTML = `<span class="absolute inset-0 -m-2 animate-ping rounded-full bg-terra-400/40"></span>
-      <span class="relative grid h-9 w-9 place-items-center rounded-full border-2 border-white bg-terra-500 text-sm font-semibold text-white shadow-dark transition group-hover:scale-125">${a.no}</span>
-      <span class="pointer-events-none absolute left-1/2 top-full z-10 mt-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-char-800 px-3 py-1.5 text-xs text-cream-50 opacity-0 shadow-dark transition group-hover:opacity-100 group-focus-visible:opacity-100">${esc(a.name)}</span>`;
+    b.innerHTML = `<span class="absolute inset-0 -m-1 animate-ping rounded-full bg-terra-400/40 sm:-m-2"></span>
+      <span class="absolute -inset-2" aria-hidden="true"></span><span class="relative grid h-5 w-5 place-items-center rounded-full border border-white bg-terra-500 text-[9px] font-semibold text-white shadow-dark transition group-hover:scale-125 sm:h-9 sm:w-9 sm:border-2 sm:text-sm">${a.no}</span>
+      <span class="pointer-events-none absolute right-0 top-full z-10 mt-2 whitespace-nowrap rounded-lg bg-char-800 px-3 py-1.5 text-xs text-cream-50 opacity-0 shadow-dark transition group-hover:opacity-100 group-focus-visible:opacity-100">${esc(a.name)}</span>`;
     mapWrap.appendChild(b);
   });
 
@@ -160,7 +204,8 @@
             <div class="relative overflow-hidden rounded-3xl shadow-press" style="background:radial-gradient(ellipse at 50% 30%,#fff,transparent 65%),linear-gradient(180deg,#f7efe5,#ecdccb)">
               <span class="absolute left-5 top-3 z-10 text-6xl font-semibold text-terra-500/20">${a.no}</span>
               <div class="model h-[320px] sm:h-[380px]" role="img" aria-label="โมเดล 3 มิติจำลอง ${esc(a.name)} ลากเพื่อหมุน"></div>
-              <p class="relative pb-3 pt-1 text-center text-[11px] text-ink-500">↻ ลาก / ปุ่มลูกศร เพื่อหมุน · ดับเบิลคลิกรีเซ็ต${a.glb ? `<br>${esc(a.glb.credit)}` : ''}</p>
+              <p class="relative pt-1 text-center text-[11px] text-ink-500">↻ ลาก / ปุ่มลูกศร เพื่อหมุน · ดับเบิลคลิกรีเซ็ต${a.glb ? `<br>${esc(a.glb.credit)}` : ''}</p>
+              <div class="relative flex justify-center pb-3 pt-2"><button type="button" data-ar="${a.id}" class="btn-soft !px-4 !py-2 text-sm">${svg('cube', 'h-4 w-4 text-terra-500')}ดูแบบ AR</button></div>
             </div>
             <div class="mt-5 space-y-4">${photoBlock(a)}${videoBlock(a)}</div>
           </div>
