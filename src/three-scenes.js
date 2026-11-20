@@ -17,6 +17,20 @@ import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 const L = () => window.Lopburi3D;
 const CAP = 512;
+/* ---------- แสงกลางวัน / กลางคืน (โหมดกลางคืน = แสงจันทร์สีน้ำเงิน + ไฟตะเกียงอุ่นด้านหลัง) ---------- */
+let NIGHT = false;
+const LIGHTS = {
+  day:   { hemi: ['#fff1dc', '#b98a64', 1.0], sun: ['#fff0d6', 2.6], rim: ['#ffd2a8', 0.7], env: 0.32, exposure: 0.95 },
+  night: { hemi: ['#8aa4ff', '#2a1d16', 0.6], sun: ['#aac2ff', 1.6], rim: ['#ffb070', 1.3], env: 0.16, exposure: 0.95 }
+};
+const NIGHT_TARGETS = new Set();
+function paintLights(t) {
+  const m = NIGHT ? LIGHTS.night : LIGHTS.day, L = t.L;
+  L.hemi.color.set(m.hemi[0]); L.hemi.groundColor.set(m.hemi[1]); L.hemi.intensity = m.hemi[2];
+  L.sun.color.set(m.sun[0]); L.sun.intensity = m.sun[1]; L.rim.color.set(m.rim[0]); L.rim.intensity = m.rim[1];
+  t.scene.environmentIntensity = m.env * (t.envScale || 1);
+  if (t.renderer) t.renderer.toneMappingExposure = m.exposure;
+}
 let EXPORTING = false; // true ระหว่างส่งออก GLB: เลี่ยง InstancedMesh เพื่อให้เปิดใน Quick Look/Scene Viewer ได้
 const texCache = new Map();
 const matCache = new Map();
@@ -199,13 +213,14 @@ function buildParts(type, opts, shared, custom) {
   ground.rotation.x = -Math.PI / 2; ground.position.y = -29; ground.receiveShadow = true; scene.add(ground);
 
   // แสง
-  scene.add(new HemisphereLight('#fff1dc', '#b98a64', 1.0));
+  const hemi = new HemisphereLight('#fff1dc', '#b98a64', 1.0); scene.add(hemi);
   const sun = new DirectionalLight('#fff0d6', 2.6);
   sun.position.set(target.x + r * 1.3, r * 2.0, target.z + r * 1.1); sun.target.position.copy(target);
   sun.castShadow = true; sun.shadow.mapSize.set(1536, 1536); sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.8;
   const sc = sun.shadow.camera; sc.left = -r * 1.6; sc.right = r * 1.6; sc.top = r * 1.6; sc.bottom = -r * 1.6; sc.near = 1; sc.far = r * 7;
   scene.add(sun, sun.target);
   const rim = new DirectionalLight('#ffd2a8', 0.7); rim.position.set(-r * 1.5, r * 0.8, -r * 1.2); scene.add(rim);
+  const nightEntry = { scene, L: { hemi, sun, rim } }; NIGHT_TARGETS.add(nightEntry); paintLights(nightEntry);
 
   let particles = null;
   if (opts.particles) {
@@ -219,7 +234,7 @@ function buildParts(type, opts, shared, custom) {
   const camera = new PerspectiveCamera(30, 1, 5, r * 40);
   return {
     scene, camera, r, target, particles, size,
-    dispose() { scene.traverse(o => { if (o.geometry && !o.userData.keep) o.geometry.dispose(); }); }
+    dispose() { NIGHT_TARGETS.delete(nightEntry); scene.traverse(o => { if (o.geometry && !o.userData.keep) o.geometry.dispose(); }); }
   };
 }
 
@@ -229,12 +244,29 @@ function makeView(host, type, opts, shared) {
   return v;
 }
 
+
+/* ---------- ตัวโหลด .glb กลาง: http(s) ใช้ fetch ปกติ, file:// ใช้ไฟล์สำรอง base64 ที่โหลดผ่าน <script> ---------- */
+const OFFLINE = location.protocol === 'file:';
+function loadScriptOnce(src) {
+  return new Promise((res, rej) => { const el = document.createElement('script'); el.src = src; el.onload = res; el.onerror = () => rej(new Error('ไม่พบไฟล์สำรอง ' + src)); document.head.appendChild(el); });
+}
+async function loadGLTF(url, onProgress) {
+  const loader = new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder);
+  if (OFFLINE) {
+    if (!(window.__GLB && window.__GLB[url])) await loadScriptOnce('assets/model/offline/' + url.split('/').pop() + '.js');
+    const bin = atob(window.__GLB[url]), buf = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+    if (onProgress) onProgress({ loaded: 1, total: 1 });
+    return new Promise((res, rej) => loader.parse(buf.buffer, '', res, rej));
+  }
+  return new Promise((res, rej) => loader.load(url, res, onProgress, rej));
+}
+
 /* ---------- โหลดโมเดล .glb (เช่น ที่ปั้นเอง) ---------- */
 const glbCache = new Map();
 function loadGlb(url) {
   if (glbCache.has(url)) return glbCache.get(url);
-  const loader = new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder);
-  const pr = new Promise((res, rej) => loader.load(url, (g) => {
+  const pr = loadGLTF(url).then((g) => {
     const root = g.scene;
     // ปรับขนาด/ตำแหน่ง: กว้างใกล้เคียงโมเดลจำลอง (~370 หน่วย) วางฐานบนพื้น y=0 กึ่งกลางที่ x,z=0
     const b = new Box3().setFromObject(root), sz = b.getSize(new Vector3()), c = b.getCenter(new Vector3());
@@ -248,8 +280,8 @@ function loadGlb(url) {
         const m = o.material; if (m) { m.metalness = Math.min(m.metalness ?? 0, 0.15); m.envMapIntensity = 0.6; m.needsUpdate = true; }
       }
     });
-    res(outer);
-  }, undefined, rej));
+    return outer;
+  });
   glbCache.set(url, pr); return pr;
 }
 
@@ -310,11 +342,12 @@ function createMapViewer(host, cfg) {
 
   const scene = new Scene(), camera = new PerspectiveCamera(34, 1, 10, 8000);
   const pm = new PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.35; pm.dispose();
-  scene.add(new HemisphereLight('#fff1dc', '#b98a64', 1.0));
+  const hemi = new HemisphereLight('#fff1dc', '#b98a64', 1.0); scene.add(hemi);
   const sun = new DirectionalLight('#fff0d6', 2.6); sun.position.set(520, 900, 560); sun.target.position.set(0, 0, 0);
   sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0005; sun.shadow.normalBias = 1.2;
   Object.assign(sun.shadow.camera, { left: -520, right: 520, top: 520, bottom: -520, near: 10, far: 2600 }); scene.add(sun, sun.target);
   const rim = new DirectionalLight('#ffd2a8', 0.6); rim.position.set(-500, 300, -600); scene.add(rim);
+  NIGHT_TARGETS.add({ scene, L: { hemi, sun, rim }, renderer, envScale: 1.1 }); NIGHT_TARGETS.forEach(paintLights);
 
   const S = { az: 0.55, el: 0.9, dist: 1400, target: new Vector3(0, 10, 0), fit: 1400, auto: !reduce, userTouched: false };
   const goal = { az: S.az, el: S.el, dist: S.dist, target: S.target.clone() };
@@ -327,8 +360,7 @@ function createMapViewer(host, cfg) {
   const fitDist = () => { const vf = MathUtils.degToRad(camera.fov), hf = 2 * Math.atan(Math.tan(vf / 2) * camera.aspect); S.fit = (S.radius || 450) / Math.sin(Math.min(vf, hf) / 2) * 0.74; if (!S.userTouched && !selected) { goal.dist = S.fit; if (!ready) S.dist = S.fit; } };
   new ResizeObserver(size).observe(host); new IntersectionObserver(es => es.forEach(e => (visible = e.isIntersecting)), { rootMargin: '120px' }).observe(host);
 
-  const loader = new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder);
-  const readyP = new Promise((res, rej) => loader.load(cfg.url, (g) => {
+  const readyP = loadGLTF(cfg.url, (e) => { if (e.total) api.onProgress && api.onProgress(e.loaded / e.total); }).then((g) => {
     const root = g.scene; const b = new Box3().setFromObject(root), sz = b.getSize(new Vector3()), c = b.getCenter(new Vector3());
     const k = 600 / Math.max(sz.x, sz.z);
     root.position.set(-c.x, -b.min.y, -c.z); const holder = new Group(); holder.add(root); holder.scale.setScalar(k); model.add(holder);
@@ -342,8 +374,8 @@ function createMapViewer(host, cfg) {
       const x = (h.x - c.x) * k, z = (h.z - c.z) * k; rc.set(new Vector3(x, 2000, z), new Vector3(0, -1, 0));
       const hit = rc.intersectObject(model, true)[0]; h.pos.set(x, (hit ? hit.point.y : 20) + 6, z);
     });
-    ready = true; fitDist(); S.dist = goal.dist = S.fit; res();
-  }, (e) => { if (e.total) api.onProgress && api.onProgress(e.loaded / e.total); }, rej));
+    ready = true; fitDist(); S.dist = goal.dist = S.fit;
+  });
 
   const api = { ready: readyP, onProgress: null, onSelect(cb) { onSel = cb; },
     select(id) {
@@ -470,6 +502,7 @@ const GL = (() => {
       return true;
     },
     onFail(cb) { failCb = cb; },
+    setNight(on) { NIGHT = !!on; NIGHT_TARGETS.forEach(paintLights); if (renderer) renderer.toneMappingExposure = NIGHT ? LIGHTS.night.exposure : LIGHTS.day.exposure; },
     exportGLB,
     createMapViewer,
     addView(host, type, opts = {}) {
@@ -482,7 +515,7 @@ const GL = (() => {
         loadGlb(opts.glb).then(obj => {
           const parts = buildParts(type, opts, shared, obj.clone(true));
           v.dispose(); Object.assign(v, parts); host.dataset.glb = 'ready';
-        }).catch(e => { host.dataset.glb = 'failed'; console.warn('โหลด .glb ไม่สำเร็จ ใช้โมเดลจำลองแทน', e); });
+        }).catch(e => { host.dataset.glb = 'failed'; console.warn('โหลด .glb ไม่สำเร็จ ใช้โมเดลจำลองแทน', e); host.dispatchEvent(new CustomEvent('glbfail')); });
       }
       if (!running) { running = true; requestAnimationFrame(frame); }
       return true;

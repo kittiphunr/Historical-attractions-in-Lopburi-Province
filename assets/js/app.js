@@ -1,4 +1,5 @@
 (function () {
+  const T = window.T || ((s, ...v) => v.reduce((r, x, i) => r.replace('{' + i + '}', x), s));
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const A = window.ATTRACTIONS, S = window.SOURCES, SRC = Object.fromEntries(S.map(s => [s.id, s]));
@@ -25,7 +26,25 @@
   $$('i[data-i]').forEach(i => { i.outerHTML = svg(i.dataset.i, i.className); });
 
   /* ---------- บาร์โค้ดบนตั๋ว: รหัสจังหวัดลพบุรี (ISO 3166-2:TH-16) ---------- */
-  if (window.renderBarcode && $('#ticketBarcode')) window.renderBarcode($('#ticketBarcode'), 'TH-16');
+  if (window.renderBarcode && $('#ticketBarcode')) { window.renderBarcode($('#ticketBarcode'), 'TH-16'); if (window.Motion) window.Motion.barcode($('#ticketBarcode')); }
+
+
+  /* ---------- โหมดกลางวัน / กลางคืน ---------- */
+  const THEME_KEY = 'lopburi.theme';
+  const isDark = () => document.documentElement.classList.contains('dark');
+  function paintThemeLabel(mode) { const btn = $('#themeBtn'); if (!btn) return; btn.setAttribute('aria-pressed', mode === 'dark'); btn.setAttribute('aria-label', T(mode === 'dark' ? 'สลับเป็นโหมดกลางวัน' : 'สลับเป็นโหมดกลางคืน')); }
+  function applyTheme(mode, persist) {
+    document.documentElement.classList.toggle('dark', mode === 'dark');
+    const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.content = mode === 'dark' ? '#1e1814' : '#f4ece2';
+    paintThemeLabel(mode);
+    if (window.LopburiGL && window.LopburiGL.setNight) window.LopburiGL.setNight(mode === 'dark');
+    const mv = document.querySelector('#arStage model-viewer'); if (mv) mv.setAttribute('exposure', mode === 'dark' ? '0.75' : '1');
+    if (persist) { try { localStorage.setItem(THEME_KEY, mode); } catch (e) { /* โหมดส่วนตัว */ } }
+    window.dispatchEvent(new CustomEvent('themechange', { detail: { mode } }));
+  }
+  $('#themeBtn').addEventListener('click', () => { const toDark = !isDark(); applyTheme(toDark ? 'dark' : 'light', true); if (window.Motion) window.Motion.themeBurst($('#themeBtn'), toDark); });
+  // ตามการตั้งค่าระบบ ถ้าผู้ใช้ยังไม่เคยเลือกเอง
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => { let saved = null; try { saved = localStorage.getItem(THEME_KEY); } catch (err) { /* ไม่มี storage */ } if (!saved) applyTheme(e.matches ? 'dark' : 'light', false); });
 
   /* ---------- ทักทายตามเวลา ---------- */
   (function () { const h = new Date().getHours(); $('#hello').textContent = h < 12 ? 'สวัสดีตอนเช้า' : h < 17 ? 'สวัสดีตอนบ่าย' : 'สวัสดีตอนเย็น'; })();
@@ -56,6 +75,7 @@
       $('#wxTemp').textContent = Math.round(c.temperature_2m);
       $('#wxDesc').textContent = WX_TXT(c.weather_code);
       $('#wxIcon').innerHTML = wxSvg(c.weather_code, !!c.is_day, 'h-full w-full');
+      if (window.Motion && c.weather_code <= 1 && c.is_day) window.Motion.spin($('#wxIcon svg g'), 24000);
       $('#wxHum').textContent = Math.round(c.relative_humidity_2m) + '%';
       $('#wxWind').textContent = Math.round(c.wind_speed_10m) + ' กม./ชม.';
       // หาชั่วโมงปัจจุบันในอาร์เรย์ hourly (เวลาเป็น Asia/Bangkok ตรงกับ c.time)
@@ -83,16 +103,18 @@
   /* ---------- โมเดล 3 มิติ: Three.js เป็นหลัก / CSS 3D เป็นตัวสำรอง ---------- */
   const GL = window.LopburiGL && window.LopburiGL.init() ? window.LopburiGL : null;
   function mountModel(host, type, size, opts = {}) {
+    if (opts.glb) host.addEventListener('glbfail', () => host.insertAdjacentHTML('afterend', `<p class="relative z-10 px-4 pb-2 text-center text-[11px] text-terra-600">กำลังแสดงโมเดลจำลองแทน เพราะโหลดไฟล์ .glb ไม่สำเร็จ${location.protocol === 'file:' ? ' (เปิดแบบ file://) — เปิดผ่านเซิร์ฟเวอร์ด้วย npm start' : ''}</p>`), { once: true });
     if (GL && GL.addView(host, type, opts)) return 'webgl';
     const m = window.Lopburi3D.createModel(type, size);
     host.appendChild(m.root);
     window.Lopburi3D.interactive(host, m.stage, { speed: 0.1, ry: -28 + (opts.shift || 0) });
     return 'css';
   }
+  if (GL) GL.setNight(isDark());
   const heroHost = $('#heroModel');
   mountModel(heroHost, 'triprang', 520, { speed: 0.0042, glb: A.find(x => x.id === 'sam-yot').glb.url });
   if (GL) GL.onFail(() => location.reload());
-  $('#srcCount').textContent = S.length + '+';
+  if (window.Motion) { window.Motion.countOnView($('#srcCount'), S.length, { suffix: '+' }); $$('[data-count]').forEach(el => window.Motion.countOnView(el, +el.dataset.count)); window.Motion.float($('#bannerSeal')); } else $('#srcCount').textContent = S.length + '+';
 
 
   /* ---------- AR / ดู 3 มิติเต็มจอ (model-viewer โหลดตอนกดเท่านั้น ~1 MB) ---------- */
@@ -109,16 +131,17 @@
     const a = id === 'province' ? { name: 'แผนที่ 3 มิติทั้งจังหวัด', glb: { ar: window.PROVINCE_MODEL.ar } } : A.find(x => x.id === id); if (!a) return;
     arReturnFocus = trigger || null; arCleanup();
     $('#arTitle').textContent = a.name + ' — 3 มิติ / AR'; arStatus('กำลังเตรียมโมเดล…');
-    arDlg.showModal();
+    arDlg.showModal(); if (window.Motion) window.Motion.dialogIn(arDlg);
     try {
       await ensureAR();
       let src, isBlob = false;
+      if (a.glb && a.glb.ar && location.protocol === 'file:') throw new Error('เปิดผ่านเซิร์ฟเวอร์ (npm start) หรือเว็บ HTTPS เพื่อดูไฟล์ AR นี้');
       if (a.glb && a.glb.ar) src = a.glb.ar;                      // ไฟล์ .glb ที่ทำไว้สำหรับ AR
       else { const blob = await window.LopburiGL.exportGLB(a.model); arBlobUrl = src = URL.createObjectURL(blob); isBlob = true; } // โมเดลที่สร้างด้วยโค้ด: ส่งออกขนาดจริง ~40 ซม.
       const mv = document.createElement('model-viewer');
       Object.entries({ src, alt: `โมเดล 3 มิติ ${a.name}`, ar: '', 'ar-modes': isBlob ? 'webxr quick-look' : 'webxr scene-viewer quick-look', 'ar-scale': 'auto', 'ar-placement': 'floor',
         'camera-controls': '', 'auto-rotate': '', 'shadow-intensity': '1', 'shadow-softness': '0.9', 'touch-action': 'pan-y', 'interaction-prompt': 'auto' }).forEach(([k, v]) => mv.setAttribute(k, v));
-      mv.className = 'h-full w-full'; mv.style.background = 'transparent';
+      mv.className = 'h-full w-full'; mv.style.background = 'transparent'; mv.setAttribute('exposure', isDark() ? '0.75' : '1');
       const btn = document.createElement('button'); btn.slot = 'ar-button'; btn.type = 'button'; btn.className = 'btn-terra absolute bottom-4 left-1/2 -translate-x-1/2';
       btn.innerHTML = svg('cube', 'h-5 w-5') + 'ดูใน AR (วางบนโต๊ะ)'; mv.append(btn);
       mv.addEventListener('load', () => setTimeout(() => {
@@ -160,7 +183,7 @@
       w.innerHTML = `<button type="button" data-map-ui data-mvsel="${h.id}" class="pointer-events-auto group relative -translate-x-1/2 -translate-y-full outline-offset-4" aria-label="${esc(h.a.name)}">
         <span class="grid h-8 w-8 place-items-center rounded-full border-2 border-white bg-terra-500 text-xs font-semibold text-white shadow-dark transition group-hover:scale-110">${h.a.no}</span>
         <span class="mx-auto block h-2 w-0.5 bg-terra-500"></span>
-        <span class="pointer-events-none absolute bottom-full left-1/2 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-char-800 px-2.5 py-1 text-xs text-cream-50 shadow-dark group-hover:block">${esc(h.a.name)}</span></button>`;
+        <span class="pointer-events-none absolute bottom-full left-1/2 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-char-800 px-2.5 py-1 text-xs text-snow-50 shadow-dark group-hover:block">${esc(h.a.name)}</span></button>`;
       layer.appendChild(w); h.el = w; h.btn = w.firstElementChild;
     });
     let viewer = null, started = false;
@@ -174,7 +197,7 @@
         <div class="min-w-0 flex-1"><b class="block text-ink-900">${esc(h.a.name)}</b><span class="block text-xs text-terra-600">${esc(h.a.eraLabel)}</span><p class="mt-1 text-xs leading-relaxed text-ink-500">${esc(h.a.tagline)}</p></div>
         <button type="button" data-mv="close" class="text-ink-400 hover:text-ink-900" aria-label="ปิดการ์ด">✕</button></div>
         <div class="mt-3 flex flex-wrap gap-2"><a href="#${h.id}" class="btn-terra !px-4 !py-2 text-sm">อ่านรายละเอียด</a><button type="button" data-ar="${h.id}" class="btn-soft !px-4 !py-2 text-sm">${svg('cube', 'h-4 w-4 text-terra-500')}ดูโมเดลอาคาร AR</button></div>`;
-      info.classList.remove('hidden');
+      info.classList.remove('hidden'); if (window.Motion) window.Motion.slideUp(info);
     }
     host.addEventListener('click', (e) => {
       const t = e.target.closest('[data-mv]'); if (!t || !viewer) return;
@@ -188,7 +211,7 @@
       if (!viewer) { $('#mvLoadTxt').textContent = 'อุปกรณ์นี้แสดง 3 มิติแบบ WebGL ไม่ได้ ใช้แผนที่ภาพด้านบนแทน'; $('#mvSpin').style.display = 'none'; $('#mvMarkers').style.display = 'none'; return; }
       viewer.onSelect(showInfo);
       viewer.onProgress = (f) => { $('#mvLoadTxt').textContent = `กำลังโหลดโมเดลแผนที่… ${Math.round(f * 100)}%`; };
-      viewer.ready.then(() => { $('#mvLoading').style.display = 'none'; host.dataset.ready = '1'; }).catch(() => { $('#mvLoadTxt').textContent = 'โหลดโมเดลแผนที่ไม่สำเร็จ ลองรีเฟรชหน้า'; });
+      viewer.ready.then(() => { $('#mvLoading').style.display = 'none'; host.dataset.ready = '1'; if (window.Motion) window.Motion.pop($$('#mvMarkers [data-mvsel] > span:first-child'), { delay: 110 }); }).catch((e) => { console.warn('โหลดโมเดลแผนที่ไม่สำเร็จ', e); $('#mvSpin').style.display = 'none'; $('#mvLoadTxt').textContent = 'โหลดโมเดลแผนที่ไม่สำเร็จ ' + (location.protocol === 'file:' ? '(เปิดแบบ file:// — เปิดผ่านเซิร์ฟเวอร์ด้วย npm start)' : 'ลองรีเฟรชหน้า'); });
     }
     new IntersectionObserver((es, o) => { if (es.some(e => e.isIntersecting)) { start(); o.disconnect(); } }, { rootMargin: '500px' }).observe(host);
   })();
@@ -219,7 +242,7 @@
     b.setAttribute('aria-label', `${a.name} — ดูรายละเอียด`);
     b.innerHTML = `<span class="absolute inset-0 -m-1 animate-ping rounded-full bg-terra-400/40 sm:-m-2"></span>
       <span class="absolute -inset-2" aria-hidden="true"></span><span class="relative grid h-5 w-5 place-items-center rounded-full border border-white bg-terra-500 text-[9px] font-semibold text-white shadow-dark transition group-hover:scale-125 sm:h-9 sm:w-9 sm:border-2 sm:text-sm">${a.no}</span>
-      <span class="pointer-events-none absolute right-0 top-full z-10 mt-2 whitespace-nowrap rounded-lg bg-char-800 px-3 py-1.5 text-xs text-cream-50 opacity-0 shadow-dark transition group-hover:opacity-100 group-focus-visible:opacity-100">${esc(a.name)}</span>`;
+      <span class="pointer-events-none absolute right-0 top-full z-10 mt-2 whitespace-nowrap rounded-lg bg-char-800 px-3 py-1.5 text-xs text-snow-50 opacity-0 shadow-dark transition group-hover:opacity-100 group-focus-visible:opacity-100">${esc(a.name)}</span>`;
     mapWrap.appendChild(b);
   });
 
@@ -256,7 +279,7 @@
       el.innerHTML = `
         <div class="grid items-start gap-8 lg:grid-cols-12 lg:gap-10">
           <div class="${flip ? 'lg:order-2' : ''} lg:col-span-5 lg:sticky lg:top-6">
-            <div class="relative overflow-hidden rounded-3xl shadow-press" style="background:radial-gradient(ellipse at 50% 30%,#fff,transparent 65%),linear-gradient(180deg,#f7efe5,#ecdccb)">
+            <div class="stage-bg relative overflow-hidden rounded-3xl shadow-press">
               <span class="absolute left-5 top-3 z-10 text-6xl font-semibold text-terra-500/20">${a.no}</span>
               <div class="model h-[320px] sm:h-[380px]" role="img" aria-label="โมเดล 3 มิติจำลอง ${esc(a.name)} ลากเพื่อหมุน"></div>
               <p class="relative pt-1 text-center text-[11px] text-ink-500">↻ ลาก / ปุ่มลูกศร เพื่อหมุน · ดับเบิลคลิกรีเซ็ต${a.glb ? `<br>${esc(a.glb.credit)}` : ''}</p>
@@ -299,6 +322,7 @@
   list.addEventListener('click', (e) => {
     const t = e.target.closest('[role=tab]'); if (!t) return;
     $$('[role=tab]', t.closest('[data-tabs]')).forEach(b => { const on = b === t; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; $('#' + b.getAttribute('aria-controls')).classList.toggle('hidden', !on); });
+    if (window.Motion) window.Motion.slideUp($('#' + t.getAttribute('aria-controls')));
   });
   list.addEventListener('keydown', (e) => {
     const t = e.target.closest('[role=tab]'); if (!t || !['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
@@ -328,6 +352,7 @@
   /* ---------- reveal ---------- */
   let io;
   function observeReveal() {
+    if (window.Motion) { window.Motion.reveal($$('.reveal:not(.in)')); return; }
     io = io || new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .06, rootMargin: '0px 0px -40px' });
     $$('.reveal:not(.in)').forEach(el => io.observe(el));
   }
@@ -371,7 +396,7 @@
       head.append(n, st);
       const meta = document.createElement('p'); meta.className = 'mt-1 text-xs text-ink-400';
       const pl = A.find(a => a.id === e.place);
-      meta.textContent = [pl ? 'ประทับใจ: ' + pl.name : null, new Date(e.at).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })].filter(Boolean).join(' · ');
+      meta.textContent = [pl ? T('ประทับใจ:') + ' ' + T(pl.name) : null, new Date(e.at).toLocaleDateString(window.I18N ? I18N.locale : 'th-TH', { year: 'numeric', month: 'long', day: 'numeric' })].filter(Boolean).join(' · ');
       const p = document.createElement('p'); p.className = 'mt-3 whitespace-pre-wrap break-words text-ink-700'; p.textContent = e.message;
       li.append(head, meta, p); gbList.appendChild(li);
     });
@@ -394,9 +419,16 @@
         const j = await r.json(); if (!r.ok) throw new Error(j.error || 'บันทึกไม่สำเร็จ');
         entries.unshift(j);
       } else { entries.unshift({ ...entry, id: 'l' + Date.now(), at: new Date().toISOString() }); writeLocal(entries); }
-      f.reset(); rating = 0; paint(); $('#gbCount').textContent = '0/500'; draw();
+      f.reset(); rating = 0; paint(); $('#gbCount').textContent = '0/500'; draw(); if (window.Motion) window.Motion.enter(gbList.firstElementChild);
     } catch (e) { err.textContent = e.message || 'เกิดข้อผิดพลาด'; }
     btn.disabled = false;
   });
   load();
+
+  /* ---------- หลายภาษา ---------- */
+  window.addEventListener('langchange', () => { draw(); loadWeather(); paintThemeLabel(isDark() ? 'dark' : 'light'); });
+  if (window.I18N) I18N.init();
+
+  /* ---------- เคอร์เซอร์และลูกเล่นเมาส์ (anime.js) ---------- */
+  if (window.Motion) { window.Motion.cursor(); window.Motion.ripples(); }
 })();
