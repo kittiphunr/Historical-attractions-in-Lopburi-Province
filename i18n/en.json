@@ -432,5 +432,8 @@
  "โหลดโมเดลแผนที่ไม่สำเร็จ": "Could not load the map model",
  "เปิดผลค้นหา “{0}” — วิดีโอทุกคลิปเป็นสิทธิ์ของเจ้าของช่อง ดูชื่อช่องในหน้าวิดีโอ": "Opens search results for “{0}” — every video belongs to its channel owner; see the channel name on the video page",
  "King Narai's Palace": "พระนารายณ์ราชนิเวศน์",
- "ลาก": "Drag"
+ "ลาก": "Drag",
+ "ข้อความและชื่อที่ส่งจะแสดงให้ผู้เข้าชมทุกคนเห็น กรุณาอย่าใส่ข้อมูลส่วนตัว เช่น เบอร์โทรหรืออีเมล ผู้ดูแลอาจลบข้อความที่ไม่เหมาะสม": "Your name and message will be visible to all visitors. Please do not include personal details such as a phone number or email. Inappropriate messages may be removed.",
+ "ห้ามใส่ลิงก์ในข้อความ": "Links are not allowed in messages",
+ "ระบบรับข้อความหนาแน่น ลองใหม่ภายหลัง": "The guestbook is busy; please try again later"
 }
