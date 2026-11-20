@@ -68,7 +68,7 @@
           <div class="absolute inset-0 bg-gradient-to-t from-char-900/75 via-char-900/10 to-transparent"></div>
           <p class="absolute bottom-3 right-3 rounded-full bg-black/35 px-2.5 py-1 text-[10px] text-white/90 backdrop-blur">ภาพประกอบ: จัดเตรียมโดยเจ้าของโปรเจกต์</p>
           <div class="absolute inset-x-0 bottom-0 flex items-end gap-4 p-4 sm:gap-5 sm:p-6">
-            <img src="assets/img/seal-384.png" alt="ตราประจำจังหวัดลพบุรี" width="112" height="109" class="w-20 shrink-0 drop-shadow-[0_6px_14px_rgba(0,0,0,.45)] sm:w-28">
+            <img src="assets/img/seal-384.png" alt="ตราประจำจังหวัดลพบุรี" width="112" height="109" id="bannerSeal" class="w-20 shrink-0 drop-shadow-[0_6px_14px_rgba(0,0,0,.45)] sm:w-28">
             <div class="min-w-0 pb-1 text-white">
               <p class="text-[11px] font-medium uppercase tracking-[.3em] text-amber-200 [text-shadow:0_1px_8px_rgba(0,0,0,.7)]">Lopburi Province</p>
               <p class="text-3xl font-semibold leading-tight sm:text-5xl [text-shadow:0_2px_14px_rgba(0,0,0,.5)]">จังหวัดลพบุรี</p>
@@ -172,8 +172,8 @@
 
         <!-- สถิติ -->
         <section class="reveal card grid grid-cols-3 divide-x divide-cream-300 p-5 text-center lg:col-span-5" aria-label="สรุป">
-          <div><p class="text-3xl font-semibold text-terra-500">10</p><p class="text-xs text-ink-500">แหล่งประวัติศาสตร์</p></div>
-          <div><p class="text-3xl font-semibold text-terra-500">3</p><p class="text-xs text-ink-500">ยุคสมัยหลัก</p></div>
+          <div><p class="text-3xl font-semibold text-terra-500" data-count="10">10</p><p class="text-xs text-ink-500">แหล่งประวัติศาสตร์</p></div>
+          <div><p class="text-3xl font-semibold text-terra-500" data-count="3">3</p><p class="text-xs text-ink-500">ยุคสมัยหลัก</p></div>
           <div><p class="text-3xl font-semibold text-terra-500" id="srcCount">33+</p><p class="text-xs text-ink-500">แหล่งอ้างอิง</p></div>
         </section>
       </div>
@@ -339,6 +339,7 @@
   <script src="assets/js/models.js"></script>
   <script src="assets/js/three-scenes.js"></script>
   <script src="assets/js/barcode.js"></script>
+  <script src="assets/js/motion.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>

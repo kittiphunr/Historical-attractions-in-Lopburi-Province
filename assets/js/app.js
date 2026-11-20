@@ -25,7 +25,7 @@
   $$('i[data-i]').forEach(i => { i.outerHTML = svg(i.dataset.i, i.className); });
 
   /* ---------- บาร์โค้ดบนตั๋ว: รหัสจังหวัดลพบุรี (ISO 3166-2:TH-16) ---------- */
-  if (window.renderBarcode && $('#ticketBarcode')) window.renderBarcode($('#ticketBarcode'), 'TH-16');
+  if (window.renderBarcode && $('#ticketBarcode')) { window.renderBarcode($('#ticketBarcode'), 'TH-16'); if (window.Motion) window.Motion.barcode($('#ticketBarcode')); }
 
 
   /* ---------- โหมดกลางวัน / กลางคืน ---------- */
@@ -40,7 +40,7 @@
     if (persist) { try { localStorage.setItem(THEME_KEY, mode); } catch (e) { /* โหมดส่วนตัว */ } }
     window.dispatchEvent(new CustomEvent('themechange', { detail: { mode } }));
   }
-  $('#themeBtn').addEventListener('click', () => applyTheme(isDark() ? 'light' : 'dark', true));
+  $('#themeBtn').addEventListener('click', () => { const toDark = !isDark(); applyTheme(toDark ? 'dark' : 'light', true); if (window.Motion) window.Motion.themeBurst($('#themeBtn'), toDark); });
   // ตามการตั้งค่าระบบ ถ้าผู้ใช้ยังไม่เคยเลือกเอง
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => { let saved = null; try { saved = localStorage.getItem(THEME_KEY); } catch (err) { /* ไม่มี storage */ } if (!saved) applyTheme(e.matches ? 'dark' : 'light', false); });
 
@@ -73,6 +73,7 @@
       $('#wxTemp').textContent = Math.round(c.temperature_2m);
       $('#wxDesc').textContent = WX_TXT(c.weather_code);
       $('#wxIcon').innerHTML = wxSvg(c.weather_code, !!c.is_day, 'h-full w-full');
+      if (window.Motion && c.weather_code <= 1 && c.is_day) window.Motion.spin($('#wxIcon svg g'), 24000);
       $('#wxHum').textContent = Math.round(c.relative_humidity_2m) + '%';
       $('#wxWind').textContent = Math.round(c.wind_speed_10m) + ' กม./ชม.';
       // หาชั่วโมงปัจจุบันในอาร์เรย์ hourly (เวลาเป็น Asia/Bangkok ตรงกับ c.time)
@@ -111,7 +112,7 @@
   const heroHost = $('#heroModel');
   mountModel(heroHost, 'triprang', 520, { speed: 0.0042, glb: A.find(x => x.id === 'sam-yot').glb.url });
   if (GL) GL.onFail(() => location.reload());
-  $('#srcCount').textContent = S.length + '+';
+  if (window.Motion) { window.Motion.countOnView($('#srcCount'), S.length, { suffix: '+' }); $$('[data-count]').forEach(el => window.Motion.countOnView(el, +el.dataset.count)); window.Motion.float($('#bannerSeal')); } else $('#srcCount').textContent = S.length + '+';
 
 
   /* ---------- AR / ดู 3 มิติเต็มจอ (model-viewer โหลดตอนกดเท่านั้น ~1 MB) ---------- */
@@ -128,7 +129,7 @@
     const a = id === 'province' ? { name: 'แผนที่ 3 มิติทั้งจังหวัด', glb: { ar: window.PROVINCE_MODEL.ar } } : A.find(x => x.id === id); if (!a) return;
     arReturnFocus = trigger || null; arCleanup();
     $('#arTitle').textContent = a.name + ' — 3 มิติ / AR'; arStatus('กำลังเตรียมโมเดล…');
-    arDlg.showModal();
+    arDlg.showModal(); if (window.Motion) window.Motion.dialogIn(arDlg);
     try {
       await ensureAR();
       let src, isBlob = false;
@@ -194,7 +195,7 @@
         <div class="min-w-0 flex-1"><b class="block text-ink-900">${esc(h.a.name)}</b><span class="block text-xs text-terra-600">${esc(h.a.eraLabel)}</span><p class="mt-1 text-xs leading-relaxed text-ink-500">${esc(h.a.tagline)}</p></div>
         <button type="button" data-mv="close" class="text-ink-400 hover:text-ink-900" aria-label="ปิดการ์ด">✕</button></div>
         <div class="mt-3 flex flex-wrap gap-2"><a href="#${h.id}" class="btn-terra !px-4 !py-2 text-sm">อ่านรายละเอียด</a><button type="button" data-ar="${h.id}" class="btn-soft !px-4 !py-2 text-sm">${svg('cube', 'h-4 w-4 text-terra-500')}ดูโมเดลอาคาร AR</button></div>`;
-      info.classList.remove('hidden');
+      info.classList.remove('hidden'); if (window.Motion) window.Motion.slideUp(info);
     }
     host.addEventListener('click', (e) => {
       const t = e.target.closest('[data-mv]'); if (!t || !viewer) return;
@@ -208,7 +209,7 @@
       if (!viewer) { $('#mvLoadTxt').textContent = 'อุปกรณ์นี้แสดง 3 มิติแบบ WebGL ไม่ได้ ใช้แผนที่ภาพด้านบนแทน'; $('#mvSpin').style.display = 'none'; $('#mvMarkers').style.display = 'none'; return; }
       viewer.onSelect(showInfo);
       viewer.onProgress = (f) => { $('#mvLoadTxt').textContent = `กำลังโหลดโมเดลแผนที่… ${Math.round(f * 100)}%`; };
-      viewer.ready.then(() => { $('#mvLoading').style.display = 'none'; host.dataset.ready = '1'; }).catch((e) => { console.warn('โหลดโมเดลแผนที่ไม่สำเร็จ', e); $('#mvSpin').style.display = 'none'; $('#mvLoadTxt').textContent = 'โหลดโมเดลแผนที่ไม่สำเร็จ ' + (location.protocol === 'file:' ? '(เปิดแบบ file:// — เปิดผ่านเซิร์ฟเวอร์ด้วย npm start)' : 'ลองรีเฟรชหน้า'); });
+      viewer.ready.then(() => { $('#mvLoading').style.display = 'none'; host.dataset.ready = '1'; if (window.Motion) window.Motion.pop($$('#mvMarkers [data-mvsel] > span:first-child'), { delay: 110 }); }).catch((e) => { console.warn('โหลดโมเดลแผนที่ไม่สำเร็จ', e); $('#mvSpin').style.display = 'none'; $('#mvLoadTxt').textContent = 'โหลดโมเดลแผนที่ไม่สำเร็จ ' + (location.protocol === 'file:' ? '(เปิดแบบ file:// — เปิดผ่านเซิร์ฟเวอร์ด้วย npm start)' : 'ลองรีเฟรชหน้า'); });
     }
     new IntersectionObserver((es, o) => { if (es.some(e => e.isIntersecting)) { start(); o.disconnect(); } }, { rootMargin: '500px' }).observe(host);
   })();
@@ -319,6 +320,7 @@
   list.addEventListener('click', (e) => {
     const t = e.target.closest('[role=tab]'); if (!t) return;
     $$('[role=tab]', t.closest('[data-tabs]')).forEach(b => { const on = b === t; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; $('#' + b.getAttribute('aria-controls')).classList.toggle('hidden', !on); });
+    if (window.Motion) window.Motion.slideUp($('#' + t.getAttribute('aria-controls')));
   });
   list.addEventListener('keydown', (e) => {
     const t = e.target.closest('[role=tab]'); if (!t || !['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
@@ -348,6 +350,7 @@
   /* ---------- reveal ---------- */
   let io;
   function observeReveal() {
+    if (window.Motion) { window.Motion.reveal($$('.reveal:not(.in)')); return; }
     io = io || new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .06, rootMargin: '0px 0px -40px' });
     $$('.reveal:not(.in)').forEach(el => io.observe(el));
   }
@@ -414,7 +417,7 @@
         const j = await r.json(); if (!r.ok) throw new Error(j.error || 'บันทึกไม่สำเร็จ');
         entries.unshift(j);
       } else { entries.unshift({ ...entry, id: 'l' + Date.now(), at: new Date().toISOString() }); writeLocal(entries); }
-      f.reset(); rating = 0; paint(); $('#gbCount').textContent = '0/500'; draw();
+      f.reset(); rating = 0; paint(); $('#gbCount').textContent = '0/500'; draw(); if (window.Motion) window.Motion.enter(gbList.firstElementChild);
     } catch (e) { err.textContent = e.message || 'เกิดข้อผิดพลาด'; }
     btn.disabled = false;
   });

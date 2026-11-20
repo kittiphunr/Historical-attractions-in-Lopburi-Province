@@ -65,6 +65,8 @@
   .dark .map-img { filter: brightness(.8) contrast(1.05) saturate(.95); }
   .dark .photo-img { filter: brightness(.82) saturate(.95); }
 
+  #ticketBarcode rect { transform-box: fill-box; transform-origin: 50% 100%; }
+
   /* ===== CSS 3D (ตัวสำรองเมื่อไม่มี WebGL) ===== */
   .scene { perspective: 1400px; perspective-origin: 50% 35%; }
   .stage { transform-style: preserve-3d; position: relative; }
