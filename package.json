@@ -10,9 +10,11 @@
     "watch": "tailwindcss -i ./src/input.css -o ./assets/tailwind.css --watch",
     "start": "node server.js",
     "build:offline": "node tools/make-offline-glb.mjs",
-    "build:lang": "node tools/build-lang.mjs"
+    "build:lang": "node tools/build-lang.mjs",
+    "shrink": "node tools/shrink-glb.mjs"
   },
   "devDependencies": {
+    "@gltf-transform/cli": "^4.5.1",
     "@google/model-viewer": "^4.4.0",
     "animejs": "^4.5.0",
     "esbuild": "^0.28.2",

@@ -23,6 +23,17 @@ npm start          # เสิร์ฟหน้าเว็บ + API สมุ�
 
 ข้อจำกัดของ Pages: ไม่มีเซิร์ฟเวอร์ สมุดเยี่ยมจึงเก็บในเบราว์เซอร์ของผู้ชมแต่ละคนเท่านั้น (ไม่แชร์ร่วมกัน) ถ้าต้องการสมุดเยี่ยมร่วมกัน ให้รัน `server.js` บนโฮสต์ที่มี Node (เช่น Render/Fly/VPS) แล้วชี้ `API` ใน `assets/js/app.js` ไปที่โฮสต์นั้น (ต้องเปิด CORS) ถ้าใช้โดเมนของตัวเอง ให้แก้ URL ใน `og:url`, `og:image`, `canonical` ของ `index.html` และรูปแชร์ลิงก์ `assets/img/og-cover.jpg` (1200×630)
 
+## ย่อไฟล์โมเดล .glb ก่อนอัปโหลด
+
+GitHub ไม่รับไฟล์เกิน 100 MB ให้ย่อบนเครื่องก่อน commit (ต้นฉบับ 46 MB ย่อเหลือ ~2 MB ใน ~10 วินาที):
+
+```bash
+npm install                                   # ครั้งแรกครั้งเดียว
+npm run shrink -- ต้นฉบับ.glb --out assets/model/prang-sam-yot.glb --ar 0.4
+```
+
+ได้ไฟล์เว็บ (meshopt + WebP) และไฟล์ `.ar.glb` สำหรับ AR (ไม่บีบอัด จัดกึ่งกลาง วางบนพื้น กว้าง 0.4 ม.) ตัวเลือก `--ratio` `--texture` `--target` ดูที่หัวไฟล์ `tools/shrink-glb.mjs` ถ้าไฟล์ยังใหญ่กว่าเป้า (ค่าเริ่มต้น 8 MB) สคริปต์จะลดคุณภาพให้เองทีละขั้น ไฟล์ต้นฉบับไม่ต้องอัปโหลดขึ้น git
+
 ## สมุดเยี่ยมที่แชร์ร่วมกัน
 
 บน GitHub Pages สมุดเยี่ยมเก็บในเบราว์เซอร์ของแต่ละคน ถ้าต้องการให้ทุกคนเห็นข้อความร่วมกัน ใช้ API ใน `backend/cloudflare/` (Cloudflare Workers + D1 ฟรี) แล้วใส่ URL ใน `assets/js/config.js` (`guestbookApi`) — ขั้นตอนติดตั้ง การดูแล/ลบข้อความ การป้องกันสแปม และข้อมูลที่เก็บ อยู่ใน [`backend/cloudflare/README.md`](backend/cloudflare/README.md) ถ้า `guestbookApi` ว่างและไม่มี `node server.js` เว็บจะถอยไปใช้โหมดเก็บในเบราว์เซอร์เหมือนเดิม
