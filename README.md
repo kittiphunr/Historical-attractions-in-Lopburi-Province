@@ -56,7 +56,7 @@ npm start          # เสิร์ฟหน้าเว็บ + API สมุ�
            licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/', sourceUrl: 'https://commons.wikimedia.org/wiki/File:...' }
   ```
 - วิดีโอ: ตอนนี้เป็นปุ่มค้นหา YouTube (ลิงก์ใช้ได้จริงเสมอ) ถ้าเลือกคลิปแล้วให้ใส่ `video: { id, title, channel, url }` เว็บจะฝังคลิป (youtube-nocookie) พร้อมชื่อช่องและลิงก์ต้นทาง
-- ภาพแผนที่ `assets/img/lopburi-map.jpg` เป็นภาพที่เจ้าของโปรเจกต์จัดเตรียมให้
+- ภาพแผนที่ไอโซเมตริก (ต้นฉบับ `source-models/map-isometric.original.webp`) ย่อเป็น `assets/img/lopburi-map-768.webp` / `lopburi-map-1536.webp` เป็นภาพที่เจ้าของโปรเจกต์จัดเตรียมให้ พิกัดหมายเลขที่กดได้เก็บเป็นเปอร์เซ็นต์ของภาพที่ฟิลด์ `map` ใน `assets/js/data.js` (ถ้าเปลี่ยนภาพแผนที่ต้องปรับค่านี้ด้วย)
 
 ## ความถูกต้องของข้อมูล
 

@@ -115,12 +115,12 @@
   const mapWrap = $('#mapWrap');
   A.filter(a => a.map).forEach(a => {
     const b = document.createElement('a');
-    b.href = '#' + a.id; b.className = 'group absolute -translate-x-1/2 -translate-y-1/2';
+    b.href = '#' + a.id; b.className = 'group absolute -translate-y-1/2 -translate-x-[calc(100%+6px)]';
     b.style.left = a.map[0] + '%'; b.style.top = a.map[1] + '%';
     b.setAttribute('aria-label', `${a.name} — ดูรายละเอียด`);
-    b.innerHTML = `<span class="absolute inset-0 -m-2 animate-ping rounded-full bg-terra-400/40"></span>
-      <span class="relative grid h-9 w-9 place-items-center rounded-full border-2 border-white bg-terra-500 text-sm font-semibold text-white shadow-dark transition group-hover:scale-125">${a.no}</span>
-      <span class="pointer-events-none absolute left-1/2 top-full z-10 mt-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-char-800 px-3 py-1.5 text-xs text-cream-50 opacity-0 shadow-dark transition group-hover:opacity-100 group-focus-visible:opacity-100">${esc(a.name)}</span>`;
+    b.innerHTML = `<span class="absolute inset-0 -m-1 animate-ping rounded-full bg-terra-400/40 sm:-m-2"></span>
+      <span class="absolute -inset-2" aria-hidden="true"></span><span class="relative grid h-5 w-5 place-items-center rounded-full border border-white bg-terra-500 text-[9px] font-semibold text-white shadow-dark transition group-hover:scale-125 sm:h-9 sm:w-9 sm:border-2 sm:text-sm">${a.no}</span>
+      <span class="pointer-events-none absolute right-0 top-full z-10 mt-2 whitespace-nowrap rounded-lg bg-char-800 px-3 py-1.5 text-xs text-cream-50 opacity-0 shadow-dark transition group-hover:opacity-100 group-focus-visible:opacity-100">${esc(a.name)}</span>`;
     mapWrap.appendChild(b);
   });
 
