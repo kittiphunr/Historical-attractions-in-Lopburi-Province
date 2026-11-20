@@ -24,6 +24,9 @@
   const svg = (name, cls = '') => `<svg viewBox="0 0 24 24" class="${cls}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
   $$('i[data-i]').forEach(i => { i.outerHTML = svg(i.dataset.i, i.className); });
 
+  /* ---------- บาร์โค้ดบนตั๋ว: รหัสจังหวัดลพบุรี (ISO 3166-2:TH-16) ---------- */
+  if (window.renderBarcode && $('#ticketBarcode')) window.renderBarcode($('#ticketBarcode'), 'TH-16');
+
   /* ---------- ทักทายตามเวลา ---------- */
   (function () { const h = new Date().getHours(); $('#hello').textContent = h < 12 ? 'สวัสดีตอนเช้า' : h < 17 ? 'สวัสดีตอนบ่าย' : 'สวัสดีตอนเย็น'; })();
 

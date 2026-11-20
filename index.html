@@ -62,17 +62,20 @@
             <div class="flex-1 p-6 sm:p-7">
               <p class="eyebrow">Heritage Pass</p>
               <h2 class="mt-3 text-4xl font-semibold text-ink-900 sm:text-5xl">ลพบุรี</h2>
-              <p class="mt-1 text-lg text-ink-700">เมืองสามยุค · ทวารวดี ขอม อยุธยา</p>
-              <ul class="mt-6 grid grid-cols-3 gap-2 text-center text-xs text-ink-500">
-                <li><i data-i="landmark" class="mx-auto h-5 w-5 text-terra-500"></i><b class="mt-1 block text-sm font-medium text-ink-900">10 แห่ง</b>แหล่งประวัติศาสตร์</li>
-                <li><i data-i="route" class="mx-auto h-5 w-5 text-terra-500"></i><b class="mt-1 block text-sm font-medium text-ink-900">1 วัน</b>เดินเท้าเมืองเก่า</li>
-                <li><i data-i="cube" class="mx-auto h-5 w-5 text-terra-500"></i><b class="mt-1 block text-sm font-medium text-ink-900">3 มิติ</b>หมุนชมได้</li>
+              <p class="mt-1 text-lg text-ink-700"><span class="whitespace-nowrap">เมืองสามยุค</span> · <span class="whitespace-nowrap">ทวารวดี</span> <span class="whitespace-nowrap">ขอม</span> <span class="whitespace-nowrap">อยุธยา</span></p>
+              <ul class="mt-5 grid gap-2.5 text-xs text-ink-500 sm:mt-6 sm:grid-cols-3 sm:gap-2 sm:text-center">
+                <li class="flex items-center gap-2 sm:block"><i data-i="landmark" class="h-5 w-5 shrink-0 text-terra-500 sm:mx-auto"></i><span><b class="text-sm font-medium text-ink-900 sm:mt-1 sm:block">10 แห่ง</b> แหล่งประวัติศาสตร์</span></li>
+                <li class="flex items-center gap-2 sm:block"><i data-i="route" class="h-5 w-5 shrink-0 text-terra-500 sm:mx-auto"></i><span><b class="text-sm font-medium text-ink-900 sm:mt-1 sm:block">1 วัน</b> เดินเท้าเมืองเก่า</span></li>
+                <li class="flex items-center gap-2 sm:block"><i data-i="cube" class="h-5 w-5 shrink-0 text-terra-500 sm:mx-auto"></i><span><b class="text-sm font-medium text-ink-900 sm:mt-1 sm:block">3 มิติ</b> หมุนชมได้</span></li>
               </ul>
             </div>
-            <div class="relative w-[34%] max-w-[190px] shrink-0 overflow-hidden text-white" style="background:linear-gradient(160deg,#e07a4f,#b44a26)">
+            <div class="relative w-[38%] min-w-[150px] max-w-[210px] shrink-0 sm:w-[250px] sm:max-w-none overflow-hidden text-white" style="background:linear-gradient(160deg,#e07a4f,#b44a26)">
               <span class="absolute -left-3 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full bg-cream-100 shadow-press"></span>
-              <img src="assets/img/seal-384.png" alt="ตราประจำจังหวัดลพบุรี" width="384" height="373" class="absolute left-1/2 top-5 w-[72%] -translate-x-1/2 drop-shadow-lg">
-              <div class="barcode absolute inset-x-5 bottom-5 h-10 rounded-sm opacity-90" style="background-color:#fbf7f1"></div>
+              <img src="assets/img/seal-384.png" alt="ตราประจำจังหวัดลพบุรี" width="384" height="373" class="absolute left-1/2 top-4 w-[58%] -translate-x-1/2 drop-shadow-lg">
+              <figure class="absolute inset-x-3 bottom-4 m-0 rounded-lg bg-cream-50 px-5 pb-1.5 pt-2.5 text-center shadow-neu">
+                <svg id="ticketBarcode" class="mx-auto block w-full sm:w-[180px]" role="img" aria-label="บาร์โค้ด Code 128 รหัสจังหวัดลพบุรี TH-16"></svg>
+                <figcaption class="mt-1 text-[10px] font-medium tracking-[.35em] text-ink-700">TH-16</figcaption>
+              </figure>
             </div>
           </article>
         </div>
@@ -278,6 +281,7 @@
   <script src="assets/js/data.js"></script>
   <script src="assets/js/models.js"></script>
   <script src="assets/js/three-scenes.js"></script>
+  <script src="assets/js/barcode.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>

@@ -28,6 +28,10 @@ npm start          # เสิร์ฟหน้าเว็บ + API สมุ�
 
 ต้นฉบับ `source-models/logolopburi.original.png` (1.6 MB) ย่อเป็น `assets/img/seal-192.png`, `seal-384.png`, `favicon-64.png`, `apple-touch-icon.png` ใช้ที่เมนูซ้าย หัวหน้าเว็บบนมือถือ ตั๋ว Heritage Pass ท้ายเว็บ และ favicon เว็บมีข้อความระบุว่าไม่ใช่เว็บไซต์ทางการของจังหวัด
 
+## บาร์โค้ดบนตั๋ว
+
+ตั๋ว Heritage Pass มีบาร์โค้ด **Code 128** จริงที่เข้ารหัส `TH-16` (รหัสจังหวัดลพบุรีตาม ISO 3166-2:TH) สร้างด้วย [JsBarcode](https://github.com/lindell/JsBarcode) (MIT) เป็น SVG (`src/barcode.js` → `assets/js/barcode.js`) ตรวจด้วย ZXing ถอดรหัสได้ทั้งหน้าจอ 1×/2×/3× เปลี่ยนค่าได้ที่ `renderBarcode($('#ticketBarcode'), 'TH-16')` ใน `assets/js/app.js` และแก้ข้อความใต้แถบใน `index.html`
+
 ## สภาพอากาศ
 
 วิดเจ็ตดึงข้อมูลสดจาก [Open-Meteo](https://open-meteo.com/) (CC BY 4.0, ไม่ต้องใช้ API key) ในเบราว์เซอร์ของผู้ชม ส่งเฉพาะพิกัดตัวเมืองลพบุรี (14.7995, 100.6534) รีเฟรชทุก 15 นาที ถ้าเชื่อมต่อไม่ได้จะแจ้งสถานะพร้อมปุ่มลองใหม่ ไม่แสดงตัวเลขสมมติ
