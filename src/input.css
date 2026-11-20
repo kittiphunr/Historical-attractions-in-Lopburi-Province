@@ -31,7 +31,6 @@
   .rail-btn { @apply flex w-[68px] flex-col items-center gap-1 rounded-2xl bg-cream-50 px-1 py-3 text-[11px] text-ink-500 shadow-neu transition hover:text-terra-600; }
   .rail-btn[aria-current="true"] { @apply bg-white text-terra-600 shadow-press; }
   .field { @apply w-full rounded-2xl border-0 bg-cream-100 px-4 py-3 text-ink-900 shadow-press placeholder-ink-400/70; }
-  .barcode { background: repeating-linear-gradient(90deg,#2a2320 0 2px,transparent 2px 4px,#2a2320 4px 5px,transparent 5px 8px,#2a2320 8px 11px,transparent 11px 13px,#2a2320 13px 14px,transparent 14px 17px); }
 
   /* ===== CSS 3D (ตัวสำรองเมื่อไม่มี WebGL) ===== */
   .scene { perspective: 1400px; perspective-origin: 50% 35%; }

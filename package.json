@@ -5,14 +5,15 @@
   "description": "Landing page แหล่งท่องเที่ยวประวัติศาสตร์จังหวัดลพบุรี (Tailwind CSS + CSS 3D)",
   "scripts": {
     "build:css": "tailwindcss -i ./src/input.css -o ./assets/tailwind.css --minify",
-    "build:js": "esbuild src/three-scenes.js --bundle --minify --format=iife --legal-comments=none --outfile=assets/js/three-scenes.js",
+    "build:js": "esbuild src/three-scenes.js --bundle --minify --format=iife --legal-comments=none --outfile=assets/js/three-scenes.js && esbuild src/barcode.js --bundle --minify --format=iife --legal-comments=none --outfile=assets/js/barcode.js",
     "build": "npm run build:css && npm run build:js",
     "watch": "tailwindcss -i ./src/input.css -o ./assets/tailwind.css --watch",
     "start": "node server.js"
   },
   "devDependencies": {
+    "esbuild": "^0.28.2",
+    "jsbarcode": "^3.12.3",
     "tailwindcss": "^3.4.17",
-    "three": "^0.187.0",
-    "esbuild": "^0.28.2"
+    "three": "^0.187.0"
   }
 }
