@@ -181,7 +181,7 @@
       <div class="reveal max-w-2xl">
         <p class="eyebrow">Interactive Map</p>
         <h2 class="h-sec mt-2">แผนที่แบบแตะได้</h2>
-        <p class="mt-3 text-ink-500">แตะหมายเลขบนหมุดเพื่อไปอ่านรายละเอียด แผนที่เป็นภาพประกอบเชิงสัญลักษณ์ ไม่ใช่มาตราส่วนจริง</p>
+        <p class="mt-3 text-ink-500">แตะหมายเลขบนหมุดเพื่อไปอ่านรายละเอียด แผนที่เป็นภาพประกอบเชิงสัญลักษณ์ ไม่ใช่มาตราส่วนจริง <a href="#map3d" class="whitespace-nowrap text-terra-600 underline underline-offset-4">ดูแบบ 3 มิติ →</a></p>
       </div>
       <div class="reveal mt-8">
         <div class="card p-2 sm:p-3" id="mapTilt"><div class="relative" id="mapWrap">
@@ -189,6 +189,20 @@
         </div></div>
         <p class="mt-3 text-center text-xs text-ink-400">ภาพแผนที่ประกอบ: จัดเตรียมโดยเจ้าของโปรเจกต์ (ภาพแสดงเฉพาะ 7 จากทั้งหมด 10 แห่ง)</p>
       </div>
+    </section>
+
+    <!-- ===== MAP 3D ===== -->
+    <section id="map3d" class="scroll-mt-6 pt-24">
+      <div class="reveal max-w-2xl">
+        <p class="eyebrow">3D Province Map</p>
+        <h2 class="h-sec mt-2">แผนที่ 3 มิติทั้งจังหวัด</h2>
+        <p class="mt-3 text-ink-500">หมุน เอียง และซูมแผนที่ได้อิสระ แตะหมุดหรือแตะที่ตัวแผนที่ใกล้สถานที่เพื่อให้กล้องบินเข้าไปดู แล้วเปิดอ่านรายละเอียดหรือดูโมเดลอาคารแบบ AR ได้ทันที</p>
+      </div>
+      <div class="reveal card mt-8 overflow-hidden">
+        <div id="mapViewer" role="application" aria-label="แผนที่ 3 มิติทั้งจังหวัดลพบุรี ลากเพื่อหมุน ปุ่มลูกศรเพื่อหมุน บวกและลบเพื่อซูม" class="relative h-[460px] select-none overflow-hidden bg-[radial-gradient(ellipse_at_50%_35%,#fff,transparent_65%),linear-gradient(180deg,#f7efe5,#ecdccb)] sm:h-[560px] lg:h-[660px]"></div>
+        <div id="mvChips" class="flex flex-wrap gap-2 p-4" role="group" aria-label="เลือกสถานที่บนแผนที่ 3 มิติ"></div>
+      </div>
+      <p class="mt-3 text-center text-xs text-ink-400">โมเดลแผนที่ 3 มิติ: ปั้นโดยเจ้าของโปรเจกต์ · ลาก = หมุน/เอียง · Ctrl + เลื่อนล้อเมาส์ หรือหนีบสองนิ้ว = ซูม · ภาพประกอบเชิงสัญลักษณ์ ไม่ใช่มาตราส่วนจริง</p>
     </section>
 
     <!-- ===== PLACES ===== -->
@@ -263,7 +277,7 @@
         <h2 class="h-sec mt-2">เครดิตและแหล่งอ้างอิง</h2>
         <div class="mt-5 space-y-3 text-ink-500">
           <p><b class="text-ink-900">นโยบายภาพและวิดีโอ:</b> เว็บนี้ไม่คัดลอกภาพถ่ายหรือวิดีโอของบุคคลอื่นมาฝังโดยไม่ระบุที่มา ภาพถ่ายจริงแต่ละที่จะแสดงชื่อผู้ถ่าย สัญญาอนุญาต และลิงก์ต้นทางใต้ภาพทุกครั้ง วิดีโอแสดงชื่อช่องและลิงก์ไปยัง YouTube ซึ่งเป็นผู้ถือสิทธิ์</p>
-          <p><b class="text-ink-900">โมเดล 3 มิติ:</b> โมเดลพระปรางค์สามยอด (ไฟล์ .glb) ปั้นโดยเจ้าของโปรเจกต์ ส่วนโมเดลสถานที่อื่นสร้างขึ้นใหม่ด้วยโค้ดเป็นรูปทรงจำลองอย่างง่าย เรนเดอร์ด้วย <a class="text-terra-600 underline" href="https://threejs.org/" target="_blank" rel="noopener noreferrer">Three.js</a> (MIT) มีตัวสำรองเป็น CSS 3D ไม่ได้ดัดแปลงจากภาพถ่ายหรือโมเดลของผู้อื่น</p>
+          <p><b class="text-ink-900">โมเดล 3 มิติ:</b> โมเดลพระปรางค์สามยอดและโมเดลแผนที่ทั้งจังหวัด (ไฟล์ .glb) ปั้นโดยเจ้าของโปรเจกต์ ส่วนโมเดลสถานที่อื่นสร้างขึ้นใหม่ด้วยโค้ดเป็นรูปทรงจำลองอย่างง่าย เรนเดอร์ด้วย <a class="text-terra-600 underline" href="https://threejs.org/" target="_blank" rel="noopener noreferrer">Three.js</a> (MIT) มีตัวสำรองเป็น CSS 3D ไม่ได้ดัดแปลงจากภาพถ่ายหรือโมเดลของผู้อื่น</p>
           <p><b class="text-ink-900">ตราประจำจังหวัดลพบุรี:</b> ภาพที่เจ้าของโปรเจกต์จัดเตรียมให้ ใช้เพื่อประกอบเนื้อหาและการระบุตัวตนของเว็บนี้ สิทธิ์ในตราเป็นของหน่วยงานเจ้าของตรา เว็บนี้ไม่ใช่เว็บไซต์ทางการของจังหวัดลพบุรี</p>
           <p><b class="text-ink-900">ภาพปกหน้าแรก:</b> ภาพตัดต่อพาโนรามา (พระปรางค์สามยอด ทางรถไฟเขื่อนป่าสักชลสิทธิ์ วัดพระศรีรัตนมหาธาตุ) ที่เจ้าของโปรเจกต์จัดเตรียมให้ ภาพนี้ประกอบจากภาพถ่ายหลายภาพ ยังไม่ทราบชื่อผู้ถ่ายและสัญญาอนุญาตของแต่ละภาพ จึงระบุเพียงว่าจัดเตรียมโดยเจ้าของโปรเจกต์ หากทราบที่มาจะเพิ่มเครดิตผู้ถ่ายที่นี่</p>
           <p><b class="text-ink-900">AR:</b> ใช้ <a class="text-terra-600 underline" href="https://modelviewer.dev/" target="_blank" rel="noopener noreferrer">&lt;model-viewer&gt;</a> ของ Google (Apache-2.0) รองรับ WebXR บน Android Chrome, Scene Viewer และ Quick Look บน iPhone/iPad ต้องเปิดผ่าน HTTPS และอุปกรณ์ที่รองรับ AR</p>
