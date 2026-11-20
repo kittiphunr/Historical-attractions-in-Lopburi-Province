@@ -1,7 +1,7 @@
 /* ชั้นอนิเมชันของเว็บ ใช้ anime.js v4 (MIT) — window.Motion
    ทุกฟังก์ชันเคารพ prefers-reduced-motion (ข้ามอนิเมชันและแสดงผลสุดท้ายทันที)
    ถ้าไฟล์นี้โหลดไม่ได้ app.js จะถอยไปใช้ IntersectionObserver ธรรมดา */
-import { animate, stagger, createSpring } from 'animejs';
+import { animate, stagger, createSpring, createAnimatable } from 'animejs';
 
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const clean = (el, ...props) => props.forEach(p => el.style.removeProperty(p));
@@ -87,6 +87,121 @@ const Motion = {
 
   /* รายการที่เพิ่มใหม่ (เช่น ข้อความสมุดเยี่ยม) */
   enter(el) { if (reduce || !el) return; animate(el, { opacity: [0, 1], translateX: [-24, 0], duration: 600, ease: 'outExpo', onComplete: () => clean(el, 'transform') }); }
+};
+
+
+/* ============================================================
+   เคอร์เซอร์และลูกเล่นเมาส์ (anime.js) — เปิดเฉพาะอุปกรณ์ที่มีเมาส์ (hover: hover + pointer: fine)
+   และปิดเมื่อผู้ใช้ตั้งค่าลดการเคลื่อนไหว (prefers-reduced-motion)
+   - จุด + วงแหวนเคอร์เซอร์ที่ลื่นไหล (createAnimatable) เปลี่ยนรูปตามสิ่งที่ชี้: ลิงก์/ปุ่ม, โมเดล 3 มิติ (ขึ้นคำว่า "ลาก")
+   - ประกายทองตามรอยเมาส์ + ระเบิดประกายเมื่อคลิกปุ่ม
+   - ปุ่มถูกดึงเข้าหาเคอร์เซอร์ (magnetic) และแสงสปอตไลต์บนการ์ด
+   ============================================================ */
+const FINE = matchMedia('(hover: hover) and (pointer: fine)');
+const rand = (a, b) => a + Math.random() * (b - a);
+const INTERACTIVE = 'a[href],button,[role="button"],[role="option"],[role="tab"],summary,label[for],.chip,[data-mvsel],[data-ar],[data-sec]';
+const DRAGGABLE = '.model,#heroModel,#mapViewer';
+const MAGNETIC = '.btn-terra,.btn-soft,.btn-dark,#themeBtn,#langBtn,.rail-btn,#arClose';
+
+Motion.cursor = function () {
+  if (reduce || !FINE.matches) return false;
+  const root = document.documentElement;
+  const mk = (cls, html = '') => { const e = document.createElement('div'); e.className = cls; e.setAttribute('aria-hidden', 'true'); e.innerHTML = html; document.body.appendChild(e); return e; };
+  const dot = mk('cur-dot'), ringWrap = mk('cur-ring', '<i></i>'), ring = ringWrap.firstElementChild;
+  const pool = Array.from({ length: 44 }, (_, i) => { const s = mk('sparkle'); s.dataset.k = i % 3; s.style.opacity = 0; return s; });
+  root.classList.add('has-cursor');
+  // วงแหวนตามเคอร์เซอร์แบบนุ่ม (anime.js animatable)
+  const follow = createAnimatable(ringWrap, { x: 430, y: 430, ease: 'out(3)' });
+  let mx = -100, my = -100, lx = -100, ly = -100, shown = false, hidden = false, idx = 0, last = 0, down = false;
+  let state = 'idle';
+
+  const place = () => { dot.style.transform = `translate3d(${mx}px,${my}px,0)`; };
+  const show = (v) => { if (hidden === !v) return; hidden = !v; dot.classList.toggle('cur-hide', !v); ringWrap.classList.toggle('cur-hide', !v); };
+  const setRing = (scale, label) => {
+    animate(ring, { scale, duration: 320, ease: 'outBack' });
+    ring.classList.toggle('is-link', state === 'link');
+    ring.classList.toggle('is-label', !!label);
+    ring.textContent = label || '';
+    animate(dot, { opacity: label ? 0 : 1, duration: 200, ease: 'outQuad' });
+  };
+  const apply = (target) => {
+    if (target.closest('input,textarea,select,option')) { state = 'field'; show(false); return; }
+    if (document.querySelector('dialog:modal')) { root.classList.add('cursor-native'); show(false); return; }
+    root.classList.remove('cursor-native'); show(true);
+    const drag = target.closest(DRAGGABLE), hov = target.closest(INTERACTIVE);
+    const next = drag && !hov ? 'drag' : hov ? 'link' : 'idle';
+    if (next === state) return; state = next;
+    if (next === 'drag') setRing(1.9, (window.T ? window.T('ลาก') : 'ลาก'));
+    else if (next === 'link') setRing(1.55);
+    else setRing(1);
+  };
+
+  // ประกายทอง
+  const spawn = (x, y, burst = false, ang = 0) => {
+    const el = pool[idx++ % pool.length]; if (document.hidden) return;
+    const dx = burst ? Math.cos(ang) * rand(28, 64) : rand(-16, 16), dy = burst ? Math.sin(ang) * rand(28, 64) : rand(10, 42);
+    const s = burst ? rand(0.7, 1.25) : rand(0.5, 1);
+    animate(el, { translateX: [x, x + dx], translateY: [y, y + dy], scale: [s, 0], rotate: [0, rand(-140, 140)], opacity: [1, 0], duration: burst ? rand(650, 950) : rand(750, 1150), ease: burst ? 'outCubic' : 'outQuad' });
+  };
+
+  let raf = 0;
+  const loop = () => { raf = 0; lx = mx; ly = my; place(); follow.x(mx).y(my); };
+  addEventListener('pointermove', (e) => {
+    if (e.pointerType !== 'mouse') return;
+    mx = e.clientX; my = e.clientY;
+    if (!shown) { shown = true; show(true); follow.x(mx, 0).y(my, 0); } // ครั้งแรกวางทันที ไม่ให้วงแหวนวิ่งมาจากมุมจอ
+    if (!raf) raf = requestAnimationFrame(loop);
+    const now = performance.now();
+    if (state !== 'field' && !root.classList.contains('cursor-native') && now - last > 18 && Math.hypot(mx - lx, my - ly) > 0 && (idx === 0 || now - last > 40)) { last = now; if (Math.random() < 0.55) spawn(mx, my); }
+    magnet(e); spotlight(e);
+  }, { passive: true });
+  addEventListener('pointerover', (e) => { if (e.pointerType === 'mouse') apply(e.target); }, { passive: true });
+  document.addEventListener('pointerleave', () => show(false));
+  document.addEventListener('mouseleave', () => show(false));
+  document.addEventListener('mouseenter', () => { if (state !== 'field') show(true); });
+  addEventListener('pointerdown', (e) => {
+    if (e.pointerType !== 'mouse') return; down = true;
+    animate(ring, { scale: (state === 'link' ? 1.55 : state === 'drag' ? 1.9 : 1) * 0.78, duration: 160, ease: 'outQuad' });
+    if (e.target.closest(INTERACTIVE) && !e.target.closest('input,textarea,select')) for (let i = 0; i < 9; i++) spawn(e.clientX, e.clientY, true, (i / 9) * Math.PI * 2 + rand(-0.2, 0.2));
+  }, { passive: true });
+  addEventListener('pointerup', () => { if (!down) return; down = false; animate(ring, { scale: state === 'link' ? 1.55 : state === 'drag' ? 1.9 : 1, duration: 320, ease: 'outBack' }); }, { passive: true });
+
+  // ปุ่มถูกดึงเข้าหาเคอร์เซอร์
+  const mags = new WeakMap(); let curMag = null, magTimer = 0;
+  const magOf = (el) => { let a = mags.get(el); if (!a) { a = createAnimatable(el, { x: 380, y: 380, ease: 'out(4)' }); mags.set(el, a); } return a; };
+  function release(el) { magOf(el).x(0).y(0); clearTimeout(magTimer); magTimer = setTimeout(() => { if (curMag !== el) el.style.removeProperty('transform'); }, 520); }
+  function magnet(e) {
+    const el = e.target.closest ? e.target.closest(MAGNETIC) : null;
+    if (curMag && curMag !== el) { release(curMag); curMag = null; }
+    if (!el) return;
+    curMag = el; const r = el.getBoundingClientRect();
+    const cl = (v, m) => Math.max(-m, Math.min(m, v));
+    magOf(el).x(cl((e.clientX - (r.left + r.width / 2)) * 0.28, 9)).y(cl((e.clientY - (r.top + r.height / 2)) * 0.28, 7));
+  }
+  // แสงสปอตไลต์บนการ์ด + เอียงเล็กน้อยบนการ์ดที่ติด data-tilt
+  let spotEl = null;
+  function spotlight(e) {
+    const c = e.target.closest ? e.target.closest('.card,.card-dark') : null;
+    if (spotEl && spotEl !== c) { spotEl.classList.remove('tilt-on'); spotEl.style.removeProperty('--rx'); spotEl.style.removeProperty('--ry'); }
+    spotEl = c; if (!c) return;
+    const r = c.getBoundingClientRect(), px = (e.clientX - r.left) / r.width, py = (e.clientY - r.top) / r.height;
+    c.style.setProperty('--mx', (e.clientX - r.left).toFixed(0) + 'px'); c.style.setProperty('--my', (e.clientY - r.top).toFixed(0) + 'px');
+    if (c.hasAttribute('data-tilt') && c.classList.contains('in')) { c.classList.add('tilt-on'); c.style.setProperty('--rx', ((0.5 - py) * 7).toFixed(2) + 'deg'); c.style.setProperty('--ry', ((px - 0.5) * 9).toFixed(2) + 'deg'); }
+  }
+  // เปิด/ปิด dialog ระหว่างที่เมาส์อยู่นิ่ง
+  document.addEventListener('close', () => { root.classList.remove('cursor-native'); }, true);
+  return true;
+};
+
+/* ระลอกคลื่นตอนแตะ/คลิก (ใช้ได้ทุกอุปกรณ์ รวมมือถือ) */
+Motion.ripples = function () {
+  if (reduce) return;
+  addEventListener('pointerdown', (e) => {
+    if (e.target.closest('input,textarea,select,model-viewer')) return;
+    const r = document.createElement('div'); r.className = 'tap-ripple'; r.setAttribute('aria-hidden', 'true');
+    r.style.left = e.clientX + 'px'; r.style.top = e.clientY + 'px'; document.body.appendChild(r);
+    animate(r, { scale: [0.1, 1], opacity: [0.55, 0], duration: 750, ease: 'outCubic', onComplete: () => r.remove() });
+  }, { passive: true });
 };
 
 window.Motion = Motion;

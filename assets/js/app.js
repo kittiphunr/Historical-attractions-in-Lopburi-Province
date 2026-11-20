@@ -428,4 +428,7 @@
   /* ---------- หลายภาษา ---------- */
   window.addEventListener('langchange', () => { draw(); loadWeather(); paintThemeLabel(isDark() ? 'dark' : 'light'); });
   if (window.I18N) I18N.init();
+
+  /* ---------- เคอร์เซอร์และลูกเล่นเมาส์ (anime.js) ---------- */
+  if (window.Motion) { window.Motion.cursor(); window.Motion.ripples(); }
 })();
