@@ -435,5 +435,10 @@
  "ลาก": "Drag",
  "ข้อความและชื่อที่ส่งจะแสดงให้ผู้เข้าชมทุกคนเห็น กรุณาอย่าใส่ข้อมูลส่วนตัว เช่น เบอร์โทรหรืออีเมล ผู้ดูแลอาจลบข้อความที่ไม่เหมาะสม": "Your name and message will be visible to all visitors. Please do not include personal details such as a phone number or email. Inappropriate messages may be removed.",
  "ห้ามใส่ลิงก์ในข้อความ": "Links are not allowed in messages",
- "ระบบรับข้อความหนาแน่น ลองใหม่ภายหลัง": "The guestbook is busy; please try again later"
+ "ระบบรับข้อความหนาแน่น ลองใหม่ภายหลัง": "The guestbook is busy; please try again later",
+ "แตะเพื่อดู 3 มิติ": "Tap to view in 3D",
+ "แตะเพื่อดูแผนที่ 3 มิติ": "Tap to view the 3D map",
+ "กำลังโหลดโมเดล…": "Loading model…",
+ "เปิดโมเดล 3 มิติ: {0}": "Open 3D model: {0}",
+ "เปิดแผนที่ 3 มิติทั้งจังหวัด": "Open the 3D map of the whole province"
 }
