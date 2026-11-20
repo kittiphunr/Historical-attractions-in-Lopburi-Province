@@ -8,7 +8,7 @@ import {
   WebGLRenderer, Scene, PerspectiveCamera, Group, Mesh, BoxGeometry, ConeGeometry, CylinderGeometry, TorusGeometry,
   BufferGeometry, Float32BufferAttribute, MeshStandardMaterial, CanvasTexture, SRGBColorSpace, RepeatWrapping,
   HemisphereLight, DirectionalLight, PointLight, Box3, Sphere, Vector3, PCFShadowMap, ACESFilmicToneMapping,
-  PMREMGenerator, Shape, ExtrudeGeometry, ShadowMaterial, PlaneGeometry, InstancedMesh, Object3D, Color, Points, PointsMaterial, AdditiveBlending, MathUtils
+  PMREMGenerator, Raycaster, Vector2, Shape, ExtrudeGeometry, ShadowMaterial, PlaneGeometry, InstancedMesh, Object3D, Color, Points, PointsMaterial, AdditiveBlending, MathUtils
 } from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
@@ -290,6 +290,133 @@ async function exportGLB(type, meters = 0.4) {
   } finally { EXPORTING = false; }
 }
 
+
+/* ---------- ตัวดูแผนที่ทั้งจังหวัดแบบ 3 มิติ (แตะได้) ----------
+   ใช้ renderer/canvas ของตัวเองอยู่ใน host เพื่อให้หมุดและการ์ดข้อมูล (DOM) วางซ้อนบนภาพได้
+   cfg = { url, hotspots: [{ id, x, z, el }] }  x,z = พิกัดในหน่วยของไฟล์โมเดลต้นฉบับ (กึ่งกลาง ~0,0)
+   คืนค่า controller { ready, select(id), reset(), zoom(f), onSelect(cb) } หรือ null ถ้าไม่มี WebGL */
+function createMapViewer(host, cfg) {
+  const canvas = document.createElement('canvas');
+  canvas.className = 'absolute inset-0 h-full w-full'; canvas.setAttribute('aria-hidden', 'true');
+  let renderer;
+  try {
+    renderer = new WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: 'high-performance' });
+    if (!renderer.getContext()) throw new Error('no ctx');
+  } catch (e) { console.warn('WebGL ไม่พร้อมสำหรับแผนที่ 3 มิติ', e); return null; }
+  host.prepend(canvas);
+  renderer.setClearColor(0x000000, 0); renderer.shadowMap.enabled = true; renderer.shadowMap.type = PCFShadowMap;
+  renderer.toneMapping = ACESFilmicToneMapping; renderer.toneMappingExposure = 0.95; renderer.outputColorSpace = SRGBColorSpace;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const scene = new Scene(), camera = new PerspectiveCamera(34, 1, 10, 8000);
+  const pm = new PMREMGenerator(renderer); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture; scene.environmentIntensity = 0.35; pm.dispose();
+  scene.add(new HemisphereLight('#fff1dc', '#b98a64', 1.0));
+  const sun = new DirectionalLight('#fff0d6', 2.6); sun.position.set(520, 900, 560); sun.target.position.set(0, 0, 0);
+  sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.bias = -0.0005; sun.shadow.normalBias = 1.2;
+  Object.assign(sun.shadow.camera, { left: -520, right: 520, top: 520, bottom: -520, near: 10, far: 2600 }); scene.add(sun, sun.target);
+  const rim = new DirectionalLight('#ffd2a8', 0.6); rim.position.set(-500, 300, -600); scene.add(rim);
+
+  const S = { az: 0.55, el: 0.9, dist: 1400, target: new Vector3(0, 10, 0), fit: 1400, auto: !reduce, userTouched: false };
+  const goal = { az: S.az, el: S.el, dist: S.dist, target: S.target.clone() };
+  const model = new Group(); scene.add(model);
+  const hs = cfg.hotspots.map(h => ({ ...h, pos: new Vector3() }));
+  let selected = null, onSel = () => {}, ready = false, visible = true, dragging = false;
+  const ray = new Raycaster(), ndc = new Vector2();
+
+  const size = () => { const w = host.clientWidth, h = host.clientHeight; if (!w || !h) return; renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 1.75)); renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); fitDist(); };
+  const fitDist = () => { const vf = MathUtils.degToRad(camera.fov), hf = 2 * Math.atan(Math.tan(vf / 2) * camera.aspect); S.fit = (S.radius || 450) / Math.sin(Math.min(vf, hf) / 2) * 0.74; if (!S.userTouched && !selected) { goal.dist = S.fit; if (!ready) S.dist = S.fit; } };
+  new ResizeObserver(size).observe(host); new IntersectionObserver(es => es.forEach(e => (visible = e.isIntersecting)), { rootMargin: '120px' }).observe(host);
+
+  const loader = new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder);
+  const readyP = new Promise((res, rej) => loader.load(cfg.url, (g) => {
+    const root = g.scene; const b = new Box3().setFromObject(root), sz = b.getSize(new Vector3()), c = b.getCenter(new Vector3());
+    const k = 600 / Math.max(sz.x, sz.z);
+    root.position.set(-c.x, -b.min.y, -c.z); const holder = new Group(); holder.add(root); holder.scale.setScalar(k); model.add(holder);
+    root.traverse(o => { if (o.isMesh) { o.castShadow = o.receiveShadow = true; const m = o.material; if (m) { m.metalness = Math.min(m.metalness ?? 0, 0.1); m.envMapIntensity = 0.6; m.needsUpdate = true; } } });
+    model.updateMatrixWorld(true);
+    const nb = new Box3().setFromObject(model); S.radius = nb.getBoundingSphere(new Sphere()).radius; S.height = nb.max.y;
+    const ground = new Mesh(new PlaneGeometry(2600, 2600), new ShadowMaterial({ opacity: 0.2 })); ground.rotation.x = -Math.PI / 2; ground.position.y = -1; ground.receiveShadow = true; scene.add(ground);
+    // วางหมุดบนผิวโมเดล: ยิงรังสีลงจากด้านบนที่ (x,z) ของแต่ละสถานที่
+    const rc = new Raycaster();
+    hs.forEach(h => {
+      const x = (h.x - c.x) * k, z = (h.z - c.z) * k; rc.set(new Vector3(x, 2000, z), new Vector3(0, -1, 0));
+      const hit = rc.intersectObject(model, true)[0]; h.pos.set(x, (hit ? hit.point.y : 20) + 6, z);
+    });
+    ready = true; fitDist(); S.dist = goal.dist = S.fit; res();
+  }, (e) => { if (e.total) api.onProgress && api.onProgress(e.loaded / e.total); }, rej));
+
+  const api = { ready: readyP, onProgress: null, onSelect(cb) { onSel = cb; },
+    select(id) {
+      selected = id; S.auto = false;
+      const h = hs.find(x => x.id === id);
+      if (h) { goal.target.copy(h.pos); goal.dist = Math.max(S.fit * 0.38, 260); goal.el = Math.max(goal.el, 0.85); }
+      onSel(id);
+    },
+    reset() { selected = null; S.userTouched = false; goal.target.set(0, 10, 0); goal.dist = S.fit; goal.el = 0.9; goal.az = 0.55; onSel(null); },
+    zoom(f) { S.userTouched = true; S.auto = false; goal.dist = MathUtils.clamp(goal.dist / f, 220, S.fit * 1.5); },
+    rotate(da, de) { S.userTouched = true; S.auto = false; goal.az -= da; goal.el = MathUtils.clamp(goal.el + de, 0.12, 1.5); S.az = goal.az; S.el = goal.el; } };
+
+  // ---- การควบคุม ----
+  const ptrs = new Map(); let down = null;
+  host.addEventListener('pointerdown', (e) => {
+    if (e.target.closest('[data-map-ui]')) return;
+    host.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+    if (ptrs.size === 1) down = { x: e.clientX, y: e.clientY, t: performance.now(), moved: 0 }; else down = null;
+    dragging = true;
+  });
+  host.addEventListener('pointermove', (e) => {
+    const p = ptrs.get(e.pointerId); if (!p) return;
+    if (ptrs.size === 2) {
+      const [a, b] = [...ptrs.values()]; const d0 = Math.hypot(a.x - b.x, a.y - b.y);
+      p.x = e.clientX; p.y = e.clientY; const [c, d] = [...ptrs.values()]; const d1 = Math.hypot(c.x - d.x, c.y - d.y);
+      if (d0 > 0) api.zoom(d1 / d0); return;
+    }
+    const dx = e.clientX - p.x, dy = e.clientY - p.y; p.x = e.clientX; p.y = e.clientY;
+    if (down) down.moved += Math.abs(dx) + Math.abs(dy);
+    api.rotate(dx * 0.008, dy * 0.006);
+  });
+  const up = (e) => {
+    const was = ptrs.has(e.pointerId); ptrs.delete(e.pointerId); if (!ptrs.size) dragging = false;
+    if (was && down && down.moved < 8 && performance.now() - down.t < 600 && e.type === 'pointerup') pick(e.clientX, e.clientY);
+    if (!ptrs.size) down = null;
+  };
+  host.addEventListener('pointerup', up); host.addEventListener('pointercancel', up);
+  host.addEventListener('wheel', (e) => { if (!(e.ctrlKey || e.metaKey)) return; e.preventDefault(); api.zoom(Math.exp(-e.deltaY * 0.01)); }, { passive: false });
+  host.addEventListener('keydown', (e) => {
+    const m = { ArrowLeft: () => api.rotate(-0.15, 0), ArrowRight: () => api.rotate(0.15, 0), ArrowUp: () => api.rotate(0, -0.08), ArrowDown: () => api.rotate(0, 0.08), '+': () => api.zoom(1.25), '=': () => api.zoom(1.25), '-': () => api.zoom(0.8), Escape: () => api.reset() }[e.key];
+    if (m) { e.preventDefault(); m(); }
+  });
+  function pick(cx, cy) {
+    if (!ready) return; const r = host.getBoundingClientRect();
+    ndc.set(((cx - r.left) / r.width) * 2 - 1, -((cy - r.top) / r.height) * 2 + 1); ray.setFromCamera(ndc, camera);
+    const hit = ray.intersectObject(model, true)[0]; if (!hit) { selected = null; onSel(null); return; }
+    let best = null, bd = 70; hs.forEach(h => { const d = Math.hypot(h.pos.x - hit.point.x, h.pos.z - hit.point.z); if (d < bd) { bd = d; best = h; } });
+    if (best) api.select(best.id); else { selected = null; onSel(null); }
+  }
+
+  // ---- วนเรนเดอร์ ----
+  const v3 = new Vector3(); let last = performance.now();
+  function frame(t) {
+    requestAnimationFrame(frame); const dt = Math.min(0.05, (t - last) / 1000); last = t;
+    if (!visible || !ready) return;
+    if (S.auto && !dragging) { goal.az += dt * 0.12; S.az = goal.az; }
+    const f = 1 - Math.exp(-dt * 7);
+    S.az += (goal.az - S.az) * f; S.el += (goal.el - S.el) * f; S.dist += (goal.dist - S.dist) * f; S.target.lerp(goal.target, f);
+    // ตอนเลือกสถานที่: เลื่อนภาพขึ้นเล็กน้อยให้อาคารพ้นการ์ดข้อมูลด้านล่าง
+    S.vo = (S.vo || 0) + ((selected ? 1 : 0) - (S.vo || 0)) * f;
+    const W = host.clientWidth, H = host.clientHeight;
+    if (S.vo > 0.002) camera.setViewOffset(W, H, 0, Math.round(H * 0.16 * S.vo), W, H); else if (camera.view) camera.clearViewOffset();
+    camera.position.set(S.target.x + S.dist * Math.cos(S.el) * Math.sin(S.az), S.target.y + S.dist * Math.sin(S.el), S.target.z + S.dist * Math.cos(S.el) * Math.cos(S.az)); camera.lookAt(S.target);
+    renderer.render(scene, camera);
+    const w = host.clientWidth, h = host.clientHeight;
+    hs.forEach(o => { if (!o.el) return; v3.copy(o.pos).project(camera); const on = v3.z < 1 && Math.abs(v3.x) < 1.15 && Math.abs(v3.y) < 1.15; o.el.style.visibility = on ? 'visible' : 'hidden'; if (on) o.el.style.transform = `translate(${((v3.x * 0.5 + 0.5) * w).toFixed(1)}px,${((-v3.y * 0.5 + 0.5) * h).toFixed(1)}px)`; });
+  }
+  host.style.touchAction = 'none'; host.tabIndex = 0; host.style.cursor = 'grab';
+  size(); requestAnimationFrame(frame);
+  canvas.addEventListener('webglcontextlost', (e) => { e.preventDefault(); ready = false; api.onLost && api.onLost(); });
+  return api;
+}
+
 /* ---------- ตัวจัดการกลาง ---------- */
 const GL = (() => {
   let renderer, canvas, views = [], shared, running = false, failCb = null, ro, dead = false;
@@ -344,6 +471,7 @@ const GL = (() => {
     },
     onFail(cb) { failCb = cb; },
     exportGLB,
+    createMapViewer,
     addView(host, type, opts = {}) {
       if (!renderer || dead) return false;
       let v;

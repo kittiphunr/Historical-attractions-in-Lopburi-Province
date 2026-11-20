@@ -12,6 +12,19 @@ npm run build      # Tailwind -> assets/tailwind.css และ bundle Three.js (
 npm start          # เสิร์ฟหน้าเว็บ + API สมุดเยี่ยม ที่ http://localhost:3000
 ```
 
+## แผนที่ 3 มิติทั้งจังหวัด
+
+ส่วน "แผนที่ 3 มิติทั้งจังหวัด" (`#map3d`) ใช้โมเดลที่เจ้าของโปรเจกต์ปั้น: ลากเพื่อหมุน/เอียง, Ctrl + ล้อเมาส์ หรือหนีบสองนิ้วเพื่อซูม, ปุ่ม +/−/รีเซ็ต, ปุ่มลูกศรบนคีย์บอร์ด (+/− ซูม, Esc รีเซ็ต) แตะหมุด แตะที่ตัวแผนที่ใกล้สถานที่ หรือเลือกจากแถบรายชื่อ กล้องจะบินเข้าไปและขึ้นการ์ดข้อมูลพร้อมลิงก์ไปอ่านรายละเอียดและดูโมเดลอาคารแบบ AR มีปุ่ม AR ของแผนที่ทั้งแผ่น (กว้าง ~50 ซม.)
+
+- ไฟล์: `assets/model/lopburi-province.glb` (2.5 MB สำหรับเว็บ: ลดจาก 1.29M เหลือ ~155k สามเหลี่ยม + meshopt + WebP) และ `lopburi-province.ar.glb` (6.2 MB สำหรับ AR ไม่บีบอัด) ต้นฉบับ 48 MB อยู่ที่ `source-models/lopburi-province.original.glb`
+  ```bash
+  npx @gltf-transform/cli optimize source-models/lopburi-province.original.glb assets/model/lopburi-province.glb \
+    --compress meshopt --simplify true --simplify-ratio 0.12 --simplify-error 0.0008 --texture-compress webp --texture-size 2048 --no-instance --no-palette
+  # ไฟล์ AR: optimize แบบ --compress false --texture-compress false, resize 1024, แล้ว node tools/make-ar-glb.mjs in.glb out.glb 0.5
+  ```
+- ตำแหน่งหมุดเก็บที่ `PROVINCE_MODEL.hotspots` ใน `assets/js/data.js` (พิกัด x,z ในหน่วยของไฟล์ต้นฉบับ เหนืออยู่บนเมื่อมองจากด้านบน) ความสูงคำนวณจากผิวโมเดลเอง ถ้าเปลี่ยนโมเดลต้องวัดพิกัดใหม่ ปัจจุบันโมเดลมี 7 สถานที่ (ไม่มีปรางค์แขก วัดเสาธงทอง วัดนครโกษา)
+- ตัวดู: `createMapViewer` ใน `src/three-scenes.js` ใช้ renderer ของตัวเอง โหลดโมเดลเมื่อเลื่อนใกล้ถึง ถ้าไม่มี WebGL จะแจ้งและให้ใช้แผนที่ภาพแทน
+
 ## AR (ดูโมเดลบนโต๊ะจริง)
 
 ทุกการแสดงผล 3 มิติมีปุ่ม **ดูแบบ AR** (ไดโอรามาหน้าแรก + 10 สถานที่) เปิดหน้าต่างดู 3 มิติเต็มจอด้วย [`<model-viewer>`](https://modelviewer.dev/) ของ Google ถ้าอุปกรณ์รองรับจะมีปุ่ม "ดูใน AR" (WebXR บน Android Chrome, Scene Viewer บน Android, Quick Look บน iPhone/iPad)

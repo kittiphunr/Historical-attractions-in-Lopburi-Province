@@ -268,3 +268,21 @@ window.ROUTE = [
   ['วัดเสาธงทอง', 'sao-thong-thong', 'หน้าต่างโกธิคกลางเมือง'],
   ['บ้านวิชาเยนทร์', 'wichayen', 'ปิดวันด้วยเรื่องเล่าต่างชาติ']
 ];
+
+/* โมเดลแผนที่ 3 มิติทั้งจังหวัด (ปั้นโดยเจ้าของโปรเจกต์)
+   hotspots: พิกัด x,z ในหน่วยของไฟล์ต้นฉบับ (กึ่งกลางโมเดล ≈ 0,0; x ขวา, z ลงล่างในมุมมองจากด้านบน เหนืออยู่บน)
+   ความสูงของหมุดคำนวณจากผิวโมเดลอัตโนมัติ — ถ้าเปลี่ยนโมเดลต้องวัดพิกัดใหม่ */
+window.PROVINCE_MODEL = {
+  url: 'assets/model/lopburi-province.glb',
+  ar: 'assets/model/lopburi-province.ar.glb',
+  credit: 'โมเดลแผนที่ 3 มิติ: ปั้นโดยเจ้าของโปรเจกต์ (Kittiphun Ruttanakorn)',
+  hotspots: [
+    { id: 'sam-yot', x: 0.022, z: 0.168 },
+    { id: 'sala-phra-kan', x: 0.288, z: -0.070 },
+    { id: 'narai-palace', x: 0.186, z: 0.590 },
+    { id: 'wat-lai', x: -0.644, z: 0.044 },
+    { id: 'mahathat', x: 0.535, z: 0.273 },
+    { id: 'wichayen', x: -0.266, z: 0.338 },
+    { id: 'khao-wong', x: -0.135, z: -0.812 }
+  ]
+};
