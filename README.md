@@ -12,6 +12,17 @@ npm run build      # Tailwind -> assets/tailwind.css และ bundle Three.js (
 npm start          # เสิร์ฟหน้าเว็บ + API สมุดเยี่ยม ที่ http://localhost:3000
 ```
 
+## เผยแพร่ด้วย GitHub Pages
+
+`.github/workflows/pages.yml` build (`npm ci && npm run build`) แล้วเผยแพร่เฉพาะ `index.html` + `assets/` (ราว 17 MB, 27 ไฟล์ — ไม่รวม `source-models/` ไฟล์ต้นฉบับโมเดลขนาดใหญ่ `src/` `tools/` `i18n/` และไฟล์สำรอง `file://`) ทุกครั้งที่ push เข้า `main` หรือสั่งเองจากแท็บ Actions ผลคือเว็บอยู่ที่ `https://<ผู้ใช้>.github.io/<ชื่อ repo>/` เป็น HTTPS จึงใช้ AR บนมือถือได้
+
+ตั้งค่าครั้งเดียว (ทำได้เฉพาะเจ้าของ repo):
+1. **Settings → Pages → Build and deployment → Source = GitHub Actions**
+2. repo แบบ **private** ต้องใช้แผนเสียเงิน (GitHub Pro/Team) ถึงจะเปิด Pages ได้ แผนฟรีต้องเปลี่ยน repo เป็น public (Settings → General → Danger Zone → Change visibility) — ก่อนเปลี่ยนให้พิจารณาว่าประวัติ git มีไฟล์ต้นฉบับโมเดล/ภาพ (`source-models/`) ซึ่งจะเปิดเผยตามไปด้วย
+3. merge เข้า `main` แล้วดูผลที่แท็บ Actions → "Deploy to GitHub Pages" (หรือกด Run workflow)
+
+ข้อจำกัดของ Pages: ไม่มีเซิร์ฟเวอร์ สมุดเยี่ยมจึงเก็บในเบราว์เซอร์ของผู้ชมแต่ละคนเท่านั้น (ไม่แชร์ร่วมกัน) ถ้าต้องการสมุดเยี่ยมร่วมกัน ให้รัน `server.js` บนโฮสต์ที่มี Node (เช่น Render/Fly/VPS) แล้วชี้ `API` ใน `assets/js/app.js` ไปที่โฮสต์นั้น (ต้องเปิด CORS) ถ้าใช้โดเมนของตัวเอง ให้แก้ URL ใน `og:url`, `og:image`, `canonical` ของ `index.html` และรูปแชร์ลิงก์ `assets/img/og-cover.jpg` (1200×630)
+
 ## แผนที่ 3 มิติทั้งจังหวัด
 
 ส่วน "แผนที่ 3 มิติทั้งจังหวัด" (`#map3d`) ใช้โมเดลที่เจ้าของโปรเจกต์ปั้น: ลากเพื่อหมุน/เอียง, Ctrl + ล้อเมาส์ หรือหนีบสองนิ้วเพื่อซูม, ปุ่ม +/−/รีเซ็ต, ปุ่มลูกศรบนคีย์บอร์ด (+/− ซูม, Esc รีเซ็ต) แตะหมุด แตะที่ตัวแผนที่ใกล้สถานที่ หรือเลือกจากแถบรายชื่อ กล้องจะบินเข้าไปและขึ้นการ์ดข้อมูลพร้อมลิงก์ไปอ่านรายละเอียดและดูโมเดลอาคารแบบ AR มีปุ่ม AR ของแผนที่ทั้งแผ่น (กว้าง ~50 ซม.)

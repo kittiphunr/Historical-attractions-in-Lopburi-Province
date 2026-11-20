@@ -379,6 +379,7 @@
 
   async function load() {
     try {
+      if (/\.github\.io$/i.test(location.hostname)) throw 0; // GitHub Pages ไม่มีเซิร์ฟเวอร์: ใช้โหมดเก็บในเบราว์เซอร์ทันที ไม่ต้องลองเรียก API
       const r = await fetch(API, { headers: { Accept: 'application/json' } });
       if (!r.ok || !(r.headers.get('content-type') || '').includes('json')) throw 0;
       entries = await r.json(); mode = 'server';
