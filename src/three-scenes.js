@@ -229,12 +229,29 @@ function makeView(host, type, opts, shared) {
   return v;
 }
 
+
+/* ---------- ตัวโหลด .glb กลาง: http(s) ใช้ fetch ปกติ, file:// ใช้ไฟล์สำรอง base64 ที่โหลดผ่าน <script> ---------- */
+const OFFLINE = location.protocol === 'file:';
+function loadScriptOnce(src) {
+  return new Promise((res, rej) => { const el = document.createElement('script'); el.src = src; el.onload = res; el.onerror = () => rej(new Error('ไม่พบไฟล์สำรอง ' + src)); document.head.appendChild(el); });
+}
+async function loadGLTF(url, onProgress) {
+  const loader = new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder);
+  if (OFFLINE) {
+    if (!(window.__GLB && window.__GLB[url])) await loadScriptOnce('assets/model/offline/' + url.split('/').pop() + '.js');
+    const bin = atob(window.__GLB[url]), buf = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+    if (onProgress) onProgress({ loaded: 1, total: 1 });
+    return new Promise((res, rej) => loader.parse(buf.buffer, '', res, rej));
+  }
+  return new Promise((res, rej) => loader.load(url, res, onProgress, rej));
+}
+
 /* ---------- โหลดโมเดล .glb (เช่น ที่ปั้นเอง) ---------- */
 const glbCache = new Map();
 function loadGlb(url) {
   if (glbCache.has(url)) return glbCache.get(url);
-  const loader = new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder);
-  const pr = new Promise((res, rej) => loader.load(url, (g) => {
+  const pr = loadGLTF(url).then((g) => {
     const root = g.scene;
     // ปรับขนาด/ตำแหน่ง: กว้างใกล้เคียงโมเดลจำลอง (~370 หน่วย) วางฐานบนพื้น y=0 กึ่งกลางที่ x,z=0
     const b = new Box3().setFromObject(root), sz = b.getSize(new Vector3()), c = b.getCenter(new Vector3());
@@ -248,8 +265,8 @@ function loadGlb(url) {
         const m = o.material; if (m) { m.metalness = Math.min(m.metalness ?? 0, 0.15); m.envMapIntensity = 0.6; m.needsUpdate = true; }
       }
     });
-    res(outer);
-  }, undefined, rej));
+    return outer;
+  });
   glbCache.set(url, pr); return pr;
 }
 
@@ -327,8 +344,7 @@ function createMapViewer(host, cfg) {
   const fitDist = () => { const vf = MathUtils.degToRad(camera.fov), hf = 2 * Math.atan(Math.tan(vf / 2) * camera.aspect); S.fit = (S.radius || 450) / Math.sin(Math.min(vf, hf) / 2) * 0.74; if (!S.userTouched && !selected) { goal.dist = S.fit; if (!ready) S.dist = S.fit; } };
   new ResizeObserver(size).observe(host); new IntersectionObserver(es => es.forEach(e => (visible = e.isIntersecting)), { rootMargin: '120px' }).observe(host);
 
-  const loader = new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder);
-  const readyP = new Promise((res, rej) => loader.load(cfg.url, (g) => {
+  const readyP = loadGLTF(cfg.url, (e) => { if (e.total) api.onProgress && api.onProgress(e.loaded / e.total); }).then((g) => {
     const root = g.scene; const b = new Box3().setFromObject(root), sz = b.getSize(new Vector3()), c = b.getCenter(new Vector3());
     const k = 600 / Math.max(sz.x, sz.z);
     root.position.set(-c.x, -b.min.y, -c.z); const holder = new Group(); holder.add(root); holder.scale.setScalar(k); model.add(holder);
@@ -342,8 +358,8 @@ function createMapViewer(host, cfg) {
       const x = (h.x - c.x) * k, z = (h.z - c.z) * k; rc.set(new Vector3(x, 2000, z), new Vector3(0, -1, 0));
       const hit = rc.intersectObject(model, true)[0]; h.pos.set(x, (hit ? hit.point.y : 20) + 6, z);
     });
-    ready = true; fitDist(); S.dist = goal.dist = S.fit; res();
-  }, (e) => { if (e.total) api.onProgress && api.onProgress(e.loaded / e.total); }, rej));
+    ready = true; fitDist(); S.dist = goal.dist = S.fit;
+  });
 
   const api = { ready: readyP, onProgress: null, onSelect(cb) { onSel = cb; },
     select(id) {
@@ -482,7 +498,7 @@ const GL = (() => {
         loadGlb(opts.glb).then(obj => {
           const parts = buildParts(type, opts, shared, obj.clone(true));
           v.dispose(); Object.assign(v, parts); host.dataset.glb = 'ready';
-        }).catch(e => { host.dataset.glb = 'failed'; console.warn('โหลด .glb ไม่สำเร็จ ใช้โมเดลจำลองแทน', e); });
+        }).catch(e => { host.dataset.glb = 'failed'; console.warn('โหลด .glb ไม่สำเร็จ ใช้โมเดลจำลองแทน', e); host.dispatchEvent(new CustomEvent('glbfail')); });
       }
       if (!running) { running = true; requestAnimationFrame(frame); }
       return true;

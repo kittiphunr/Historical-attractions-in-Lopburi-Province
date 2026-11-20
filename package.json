@@ -6,9 +6,10 @@
   "scripts": {
     "build:css": "tailwindcss -i ./src/input.css -o ./assets/tailwind.css --minify",
     "build:js": "esbuild src/three-scenes.js --bundle --minify --format=iife --legal-comments=none --outfile=assets/js/three-scenes.js && esbuild src/barcode.js --bundle --minify --format=iife --legal-comments=none --outfile=assets/js/barcode.js && esbuild src/ar.js --bundle --minify --format=iife --legal-comments=none --alias:three=three-mv --outfile=assets/js/ar.js",
-    "build": "npm run build:css && npm run build:js",
+    "build": "npm run build:css && npm run build:js && npm run build:offline",
     "watch": "tailwindcss -i ./src/input.css -o ./assets/tailwind.css --watch",
-    "start": "node server.js"
+    "start": "node server.js",
+    "build:offline": "node tools/make-offline-glb.mjs"
   },
   "devDependencies": {
     "@google/model-viewer": "^4.4.0",

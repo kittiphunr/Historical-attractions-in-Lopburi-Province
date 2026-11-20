@@ -83,6 +83,7 @@
   /* ---------- โมเดล 3 มิติ: Three.js เป็นหลัก / CSS 3D เป็นตัวสำรอง ---------- */
   const GL = window.LopburiGL && window.LopburiGL.init() ? window.LopburiGL : null;
   function mountModel(host, type, size, opts = {}) {
+    if (opts.glb) host.addEventListener('glbfail', () => host.insertAdjacentHTML('afterend', `<p class="relative z-10 px-4 pb-2 text-center text-[11px] text-terra-600">กำลังแสดงโมเดลจำลองแทน เพราะโหลดไฟล์ .glb ไม่สำเร็จ${location.protocol === 'file:' ? ' (เปิดแบบ file://) — เปิดผ่านเซิร์ฟเวอร์ด้วย npm start' : ''}</p>`), { once: true });
     if (GL && GL.addView(host, type, opts)) return 'webgl';
     const m = window.Lopburi3D.createModel(type, size);
     host.appendChild(m.root);
@@ -113,6 +114,7 @@
     try {
       await ensureAR();
       let src, isBlob = false;
+      if (a.glb && a.glb.ar && location.protocol === 'file:') throw new Error('เปิดผ่านเซิร์ฟเวอร์ (npm start) หรือเว็บ HTTPS เพื่อดูไฟล์ AR นี้');
       if (a.glb && a.glb.ar) src = a.glb.ar;                      // ไฟล์ .glb ที่ทำไว้สำหรับ AR
       else { const blob = await window.LopburiGL.exportGLB(a.model); arBlobUrl = src = URL.createObjectURL(blob); isBlob = true; } // โมเดลที่สร้างด้วยโค้ด: ส่งออกขนาดจริง ~40 ซม.
       const mv = document.createElement('model-viewer');
@@ -188,7 +190,7 @@
       if (!viewer) { $('#mvLoadTxt').textContent = 'อุปกรณ์นี้แสดง 3 มิติแบบ WebGL ไม่ได้ ใช้แผนที่ภาพด้านบนแทน'; $('#mvSpin').style.display = 'none'; $('#mvMarkers').style.display = 'none'; return; }
       viewer.onSelect(showInfo);
       viewer.onProgress = (f) => { $('#mvLoadTxt').textContent = `กำลังโหลดโมเดลแผนที่… ${Math.round(f * 100)}%`; };
-      viewer.ready.then(() => { $('#mvLoading').style.display = 'none'; host.dataset.ready = '1'; }).catch(() => { $('#mvLoadTxt').textContent = 'โหลดโมเดลแผนที่ไม่สำเร็จ ลองรีเฟรชหน้า'; });
+      viewer.ready.then(() => { $('#mvLoading').style.display = 'none'; host.dataset.ready = '1'; }).catch((e) => { console.warn('โหลดโมเดลแผนที่ไม่สำเร็จ', e); $('#mvSpin').style.display = 'none'; $('#mvLoadTxt').textContent = 'โหลดโมเดลแผนที่ไม่สำเร็จ ' + (location.protocol === 'file:' ? '(เปิดแบบ file:// — เปิดผ่านเซิร์ฟเวอร์ด้วย npm start)' : 'ลองรีเฟรชหน้า'); });
     }
     new IntersectionObserver((es, o) => { if (es.some(e => e.isIntersecting)) { start(); o.disconnect(); } }, { rootMargin: '500px' }).observe(host);
   })();
