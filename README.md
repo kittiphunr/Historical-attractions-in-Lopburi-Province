@@ -12,6 +12,17 @@ npm run build      # Tailwind -> assets/tailwind.css และ bundle Three.js (
 npm start          # เสิร์ฟหน้าเว็บ + API สมุดเยี่ยม ที่ http://localhost:3000
 ```
 
+## โมเดล 3 มิติของเจ้าของโปรเจกต์ (.glb)
+
+- `assets/model/prang-sam-yot.glb` (2.7 MB) คือโมเดลพระปรางค์สามยอดที่ปั้นเอง ใช้ในไดโอรามาหน้าแรกและหน้ารายละเอียด โหลดแบบ progressive: แสดงโมเดลจำลองก่อน แล้วสลับเป็นไฟล์จริงเมื่อโหลดเสร็จ ถ้าโหลดไม่ได้จะใช้โมเดลจำลองต่อ
+- ไฟล์ต้นฉบับ 71 MB (2.1 ล้านสามเหลี่ยม) เก็บไว้ที่ `source-models/prang-sam-yot.original.glb` (อยู่นอกโฟลเดอร์ที่เว็บเสิร์ฟ)
+- สร้างไฟล์เว็บด้วย gltf-transform: weld + simplify (ราว 147k สามเหลี่ยม) + บีบอัด geometry ด้วย meshopt + texture เป็น WebP ขนาด 2048
+  ```bash
+  npx @gltf-transform/cli optimize source-models/prang-sam-yot.original.glb assets/model/prang-sam-yot.glb \
+    --compress meshopt --simplify true --simplify-ratio 0.07 --simplify-error 0.002 --texture-compress webp --texture-size 2048 --no-instance --no-palette
+  ```
+- ใส่ .glb ให้สถานที่อื่น: เพิ่มฟิลด์ `glb: { url, credit }` ใน `assets/js/data.js`
+
 ## สภาพอากาศ
 
 วิดเจ็ตดึงข้อมูลสดจาก [Open-Meteo](https://open-meteo.com/) (CC BY 4.0, ไม่ต้องใช้ API key) ในเบราว์เซอร์ของผู้ชม ส่งเฉพาะพิกัดตัวเมืองลพบุรี (14.7995, 100.6534) รีเฟรชทุก 15 นาที ถ้าเชื่อมต่อไม่ได้จะแจ้งสถานะพร้อมปุ่มลองใหม่ ไม่แสดงตัวเลขสมมติ

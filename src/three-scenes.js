@@ -11,6 +11,8 @@ import {
   PMREMGenerator, Shape, ExtrudeGeometry, ShadowMaterial, PlaneGeometry, InstancedMesh, Object3D, Color, Points, PointsMaterial, AdditiveBlending, MathUtils
 } from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+import { MeshoptDecoder } from 'three/addons/libs/meshopt_decoder.module.js';
 
 const L = () => window.Lopburi3D;
 const CAP = 512;
@@ -164,11 +166,11 @@ function mountain(w, h, pal, cx, by, cz, opt) {
 
 /* ---------- สร้างฉากต่อโมเดล ---------- */
 const FIT = { palace: 1.0, mountain: 1.0 };
-function buildView(host, type, opts, shared) {
+function buildParts(type, opts, shared, custom) {
   const scene = new Scene();
   scene.environment = shared.env; scene.environmentIntensity = 0.32;
   const body = new Group(); scene.add(body);
-  (L().MODEL_BUILDERS[type] || L().MODEL_BUILDERS.bigprang)(body, THREEP);
+  if (custom) body.add(custom); else (L().MODEL_BUILDERS[type] || L().MODEL_BUILDERS.bigprang)(body, THREEP);
 
   const box = new Box3().setFromObject(body), size = box.getSize(new Vector3()), sph = box.getBoundingSphere(new Sphere());
   const r = Math.max(sph.radius * (FIT[type] || 1), Math.hypot(size.x, size.z) * 0.5 * 1.18 + 18), target = sph.center.clone(); target.y = Math.min(target.y, size.y * 0.5);
@@ -208,13 +210,40 @@ function buildView(host, type, opts, shared) {
   }
 
   const camera = new PerspectiveCamera(30, 1, 5, r * 40);
-  const v = {
-    host, scene, camera, r, target, particles, size,
-    az: opts.az ?? 0.62, el: opts.el ?? 0.34, speed: opts.speed ?? 0.0035, mx: 0, hover: false, dragging: false,
-    dispose() { scene.traverse(o => { if (o.geometry) o.geometry.dispose(); }); }
+  return {
+    scene, camera, r, target, particles, size,
+    dispose() { scene.traverse(o => { if (o.geometry && !o.userData.keep) o.geometry.dispose(); }); }
   };
+}
+
+function makeView(host, type, opts, shared) {
+  const v = { host, az: opts.az ?? 0.62, el: opts.el ?? 0.34, speed: opts.speed ?? 0.0035, mx: 0, hover: false, dragging: false, ...buildParts(type, opts, shared, null) };
   bindInput(v, opts);
   return v;
+}
+
+/* ---------- โหลดโมเดล .glb (เช่น ที่ปั้นเอง) ---------- */
+const glbCache = new Map();
+function loadGlb(url) {
+  if (glbCache.has(url)) return glbCache.get(url);
+  const loader = new GLTFLoader(); loader.setMeshoptDecoder(MeshoptDecoder);
+  const pr = new Promise((res, rej) => loader.load(url, (g) => {
+    const root = g.scene;
+    // ปรับขนาด/ตำแหน่ง: กว้างใกล้เคียงโมเดลจำลอง (~370 หน่วย) วางฐานบนพื้น y=0 กึ่งกลางที่ x,z=0
+    const b = new Box3().setFromObject(root), sz = b.getSize(new Vector3()), c = b.getCenter(new Vector3());
+    const k = 370 / Math.max(sz.x, sz.z);
+    const holder = new Group(); holder.add(root);
+    root.position.set(-c.x, -b.min.y, -c.z); holder.scale.setScalar(k);
+    const outer = new Group(); outer.add(holder);
+    root.traverse(o => {
+      if (o.isMesh) {
+        o.castShadow = o.receiveShadow = true; o.userData.keep = true;
+        const m = o.material; if (m) { m.metalness = Math.min(m.metalness ?? 0, 0.15); m.envMapIntensity = 0.6; m.needsUpdate = true; }
+      }
+    });
+    res(outer);
+  }, undefined, rej));
+  glbCache.set(url, pr); return pr;
 }
 
 function bindInput(v, opts) {
@@ -291,7 +320,16 @@ const GL = (() => {
     onFail(cb) { failCb = cb; },
     addView(host, type, opts = {}) {
       if (!renderer || dead) return false;
-      try { views.push(buildView(host, type, opts, shared)); } catch (e) { console.warn('สร้างฉาก Three.js ไม่สำเร็จ', e); return false; }
+      let v;
+      try { v = makeView(host, type, opts, shared); views.push(v); } catch (e) { console.warn('สร้างฉาก Three.js ไม่สำเร็จ', e); return false; }
+      if (opts.glb) {
+        // แสดงโมเดลจำลองไปก่อน แล้วสลับเป็นไฟล์ .glb เมื่อโหลดเสร็จ (ล้มเหลว = ใช้โมเดลจำลองต่อ)
+        host.dataset.glb = 'loading';
+        loadGlb(opts.glb).then(obj => {
+          const parts = buildParts(type, opts, shared, obj.clone(true));
+          v.dispose(); Object.assign(v, parts); host.dataset.glb = 'ready';
+        }).catch(e => { host.dataset.glb = 'failed'; console.warn('โหลด .glb ไม่สำเร็จ ใช้โมเดลจำลองแทน', e); });
+      }
       if (!running) { running = true; requestAnimationFrame(frame); }
       return true;
     }
