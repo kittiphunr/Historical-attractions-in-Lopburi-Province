@@ -109,3 +109,11 @@
   .reveal { opacity: 1; transform: none; transition: none; }
   html { scroll-behavior: auto; }
 }
+
+/* ภาพปกโมเดล 3 มิติ: กลางวัน/กลางคืน และซ่อนปุ่มควบคุมแผนที่จนกว่าจะเปิด 3 มิติ */
+.poster-night { display: none; }
+.dark .poster-day { display: none; }
+.dark .poster-night { display: block; }
+.poster[data-busy] { cursor: progress; }
+.poster[data-busy] [data-pl]::before { content: ''; display: inline-block; width: .9em; height: .9em; margin-right: .5em; vertical-align: -.1em; border: 2px solid currentColor; border-right-color: transparent; border-radius: 9999px; animation: spin .8s linear infinite; }
+[data-state='poster'] [data-mv] { display: none; }

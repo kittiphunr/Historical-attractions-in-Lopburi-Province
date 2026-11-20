@@ -101,7 +101,41 @@
   $$('main > section[id]').forEach(s => spy.observe(s)); setActive('top');
 
   /* ---------- โมเดล 3 มิติ: Three.js เป็นหลัก / CSS 3D เป็นตัวสำรอง ---------- */
-  const GL = window.LopburiGL && window.LopburiGL.init() ? window.LopburiGL : null;
+  // สร้างตัวเรนเดอร์ WebGL ตอนผู้ใช้กดเปิดโมเดลครั้งแรกเท่านั้น (หน้าแรกจึงเบา: โหลดแค่ภาพปก)
+  let GL = null, glTried = false;
+  function ensureGL() {
+    if (!glTried) {
+      glTried = true;
+      GL = window.LopburiGL && window.LopburiGL.init() ? window.LopburiGL : null;
+      if (GL) { GL.setNight(isDark()); GL.onFail(() => location.reload()); }
+    }
+    return GL;
+  }
+  /* ภาพปก (poster) ก่อน แล้วกดเพื่อโหลด 3 มิติ — ภาพสร้างด้วย npm run posters (assets/poster/<id>-day|night.webp) */
+  const ACTIVE3D = new Set();
+  function mountLazy(host, key, label, type, size, opts = {}) {
+    const go = () => {
+      ACTIVE3D.add(key); ensureGL();
+      mountModel(host, type, size, opts);
+      host.dataset.active = '1';
+      if (host.hasAttribute('aria-label')) host.setAttribute('role', 'img');
+      const hint = host.parentElement && host.parentElement.querySelector('[data-hint]'); if (hint) hint.classList.remove('hidden');
+      const p = host.querySelector('.poster'); if (!p) return;
+      const done = () => { p.classList.add('opacity-0'); setTimeout(() => p.remove(), 450); };
+      if (host.dataset.glb === 'loading') {
+        p.disabled = true; p.dataset.busy = '1'; p.querySelector('[data-pl]').textContent = T('กำลังโหลดโมเดล…');
+        const mo = new MutationObserver(() => { if (host.dataset.glb !== 'loading') { mo.disconnect(); done(); } }); mo.observe(host, { attributes: true, attributeFilter: ['data-glb'] });
+      } else done();
+    };
+    if (ACTIVE3D.has(key)) { go(); return; }
+    const b = document.createElement('button'); b.type = 'button';
+    b.className = 'poster group absolute inset-0 z-10 block h-full w-full overflow-hidden transition-opacity duration-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-terra-500';
+    b.setAttribute('aria-label', 'เปิดโมเดล 3 มิติ: ' + label);
+    const img = (m) => `<img src="assets/poster/${key}-${m}.webp" alt="" loading="lazy" decoding="async" draggable="false" class="poster-img poster-${m} absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.03]" onerror="this.remove()">`;
+    b.innerHTML = `${img('day')}${img('night')}<span class="pointer-events-none absolute inset-x-0 bottom-3 grid justify-items-center"><span class="btn-terra !px-4 !py-2 text-sm">${svg('cube', 'h-4 w-4')}<span data-pl>แตะเพื่อดู 3 มิติ</span></span></span>`;
+    b.addEventListener('click', go, { once: true });
+    host.appendChild(b);
+  }
   function mountModel(host, type, size, opts = {}) {
     if (opts.glb) host.addEventListener('glbfail', () => host.insertAdjacentHTML('afterend', `<p class="relative z-10 px-4 pb-2 text-center text-[11px] text-terra-600">กำลังแสดงโมเดลจำลองแทน เพราะโหลดไฟล์ .glb ไม่สำเร็จ${location.protocol === 'file:' ? ' (เปิดแบบ file://) — เปิดผ่านเซิร์ฟเวอร์ด้วย npm start' : ''}</p>`), { once: true });
     if (GL && GL.addView(host, type, opts)) return 'webgl';
@@ -110,10 +144,8 @@
     window.Lopburi3D.interactive(host, m.stage, { speed: 0.1, ry: -28 + (opts.shift || 0) });
     return 'css';
   }
-  if (GL) GL.setNight(isDark());
   const heroHost = $('#heroModel');
-  mountModel(heroHost, 'triprang', 520, { speed: 0.0042, glb: A.find(x => x.id === 'sam-yot').glb.url });
-  if (GL) GL.onFail(() => location.reload());
+  mountLazy(heroHost, 'hero', 'พระปรางค์สามยอด', 'triprang', 520, { speed: 0.0042, glb: A.find(x => x.id === 'sam-yot').glb.url });
   if (window.Motion) { window.Motion.countOnView($('#srcCount'), S.length, { suffix: '+' }); $$('[data-count]').forEach(el => window.Motion.countOnView(el, +el.dataset.count)); window.Motion.float($('#bannerSeal')); } else $('#srcCount').textContent = S.length + '+';
 
 
@@ -167,7 +199,7 @@
     const host = $('#mapViewer'), P = window.PROVINCE_MODEL; if (!host || !P) return;
     const places = P.hotspots.map(h => ({ ...h, a: A.find(x => x.id === h.id) })).filter(h => h.a);
     host.insertAdjacentHTML('beforeend', `
-      <div id="mvLoading" data-map-ui class="absolute inset-0 z-20 grid place-items-center bg-cream-100/80 px-6 text-center text-sm text-ink-500"><div><div id="mvSpin" class="mx-auto mb-3 h-9 w-9 animate-spin rounded-full border-4 border-terra-400/30 border-t-terra-500"></div><p id="mvLoadTxt">กำลังโหลดโมเดลแผนที่ (ราว 2.5 MB)…</p></div></div>
+      <div id="mvLoading" data-map-ui style="display:none" class="absolute inset-0 z-20 grid place-items-center bg-cream-100/80 px-6 text-center text-sm text-ink-500"><div><div id="mvSpin" class="mx-auto mb-3 h-9 w-9 animate-spin rounded-full border-4 border-terra-400/30 border-t-terra-500"></div><p id="mvLoadTxt">กำลังโหลดโมเดลแผนที่ (ราว 2.5 MB)…</p></div></div>
       <div id="mvMarkers" class="pointer-events-none absolute inset-0 z-10 overflow-hidden"></div>
       <div data-map-ui class="absolute right-3 top-[76px] z-20 flex flex-col gap-2">
         <button type="button" data-mv="in" class="neu grid h-10 w-10 place-items-center text-xl text-ink-700" aria-label="ซูมเข้า">+</button>
@@ -187,6 +219,16 @@
       layer.appendChild(w); h.el = w; h.btn = w.firstElementChild;
     });
     let viewer = null, started = false;
+    host.dataset.state = 'poster';
+    (function poster() {
+      const img = (m) => `<img src="assets/poster/map-${m}.webp" alt="" loading="lazy" decoding="async" draggable="false" class="poster-img poster-${m} absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]" onerror="this.remove()">`;
+      const b = document.createElement('button'); b.type = 'button'; b.id = 'mvPoster';
+      b.className = 'poster group absolute inset-0 z-[15] block h-full w-full overflow-hidden transition-opacity duration-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-terra-500';
+      b.setAttribute('aria-label', 'เปิดแผนที่ 3 มิติทั้งจังหวัด');
+      b.innerHTML = `${img('day')}${img('night')}<span class="pointer-events-none absolute inset-x-0 bottom-5 grid justify-items-center"><span class="btn-terra">${svg('cube', 'h-5 w-5')}แตะเพื่อดูแผนที่ 3 มิติ</span></span>`;
+      b.addEventListener('click', () => start());
+      host.appendChild(b);
+    })();
     const info = $('#mvInfo');
     function showInfo(id) {
       places.forEach(h => { const on = h.id === id, dot = h.btn.firstElementChild; dot.classList.toggle('scale-125', on); dot.classList.toggle('bg-char-800', on); dot.classList.toggle('bg-terra-500', !on); h.btn.setAttribute('aria-pressed', on); });
@@ -204,16 +246,20 @@
       const act = { in: () => viewer.zoom(1.3), out: () => viewer.zoom(0.77), reset: () => viewer.reset(), close: () => viewer.reset() }[t.dataset.mv];
       if (act) act();
     });
-    document.addEventListener('click', (e) => { const t = e.target.closest('[data-mvsel]'); if (t && viewer) { viewer.select(t.dataset.mvsel); host.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } });
+    document.addEventListener('click', (e) => {
+      const t = e.target.closest('[data-mvsel]'); if (!t) return;
+      if (!viewer) start();
+      if (viewer) { const id = t.dataset.mvsel; Promise.resolve(viewer.ready).then(() => viewer.select(id)).catch(() => {}); host.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+    });
     function start() {
       if (started) return; started = true;
+      host.dataset.state = 'loading'; $('#mvLoading').style.display = '';
       viewer = (window.LopburiGL && window.LopburiGL.createMapViewer(host, { url: P.url, hotspots: places.map(h => ({ id: h.id, x: h.x, z: h.z, el: h.el })) })) || null;
-      if (!viewer) { $('#mvLoadTxt').textContent = 'อุปกรณ์นี้แสดง 3 มิติแบบ WebGL ไม่ได้ ใช้แผนที่ภาพด้านบนแทน'; $('#mvSpin').style.display = 'none'; $('#mvMarkers').style.display = 'none'; return; }
+      if (!viewer) { const pp = $('#mvPoster'); if (pp) pp.remove(); host.dataset.state = 'live'; $('#mvLoadTxt').textContent = 'อุปกรณ์นี้แสดง 3 มิติแบบ WebGL ไม่ได้ ใช้แผนที่ภาพด้านบนแทน'; $('#mvSpin').style.display = 'none'; $('#mvMarkers').style.display = 'none'; return; }
       viewer.onSelect(showInfo);
       viewer.onProgress = (f) => { $('#mvLoadTxt').textContent = `กำลังโหลดโมเดลแผนที่… ${Math.round(f * 100)}%`; };
-      viewer.ready.then(() => { $('#mvLoading').style.display = 'none'; host.dataset.ready = '1'; if (window.Motion) window.Motion.pop($$('#mvMarkers [data-mvsel] > span:first-child'), { delay: 110 }); }).catch((e) => { console.warn('โหลดโมเดลแผนที่ไม่สำเร็จ', e); $('#mvSpin').style.display = 'none'; $('#mvLoadTxt').textContent = 'โหลดโมเดลแผนที่ไม่สำเร็จ ' + (location.protocol === 'file:' ? '(เปิดแบบ file:// — เปิดผ่านเซิร์ฟเวอร์ด้วย npm start)' : 'ลองรีเฟรชหน้า'); });
+      viewer.ready.then(() => { $('#mvLoading').style.display = 'none'; host.dataset.ready = '1'; host.dataset.state = 'live'; const p = $('#mvPoster'); if (p) { p.classList.add('opacity-0'); p.disabled = true; setTimeout(() => p.remove(), 450); } if (window.Motion) window.Motion.pop($$('#mvMarkers [data-mvsel] > span:first-child'), { delay: 110 }); }).catch((e) => { const pp = $('#mvPoster'); if (pp) pp.remove(); host.dataset.state = 'live'; console.warn('โหลดโมเดลแผนที่ไม่สำเร็จ', e); $('#mvSpin').style.display = 'none'; $('#mvLoadTxt').textContent = 'โหลดโมเดลแผนที่ไม่สำเร็จ ' + (location.protocol === 'file:' ? '(เปิดแบบ file:// — เปิดผ่านเซิร์ฟเวอร์ด้วย npm start)' : 'ลองรีเฟรชหน้า'); });
     }
-    new IntersectionObserver((es, o) => { if (es.some(e => e.isIntersecting)) { start(); o.disconnect(); } }, { rootMargin: '500px' }).observe(host);
   })();
 
   /* ---------- timeline ---------- */
@@ -281,8 +327,8 @@
           <div class="${flip ? 'lg:order-2' : ''} lg:col-span-5 lg:sticky lg:top-6">
             <div class="stage-bg relative overflow-hidden rounded-3xl shadow-press">
               <span class="absolute left-5 top-3 z-10 text-6xl font-semibold text-terra-500/20">${a.no}</span>
-              <div class="model h-[320px] sm:h-[380px]" role="img" aria-label="โมเดล 3 มิติจำลอง ${esc(a.name)} ลากเพื่อหมุน"></div>
-              <p class="relative pt-1 text-center text-[11px] text-ink-500">↻ ลาก / ปุ่มลูกศร เพื่อหมุน · ดับเบิลคลิกรีเซ็ต${a.glb ? `<br>${esc(a.glb.credit)}` : ''}</p>
+              <div class="model relative h-[320px] sm:h-[380px]" aria-label="โมเดล 3 มิติจำลอง ${esc(a.name)} ลากเพื่อหมุน"></div>
+              <p class="relative pt-1 text-center text-[11px] text-ink-500"><span data-hint class="hidden">↻ ลาก / ปุ่มลูกศร เพื่อหมุน · ดับเบิลคลิกรีเซ็ต</span>${a.glb ? `<span class="block">${esc(a.glb.credit)}</span>` : ''}</p>
               <div class="relative flex justify-center pb-3 pt-2"><button type="button" data-ar="${a.id}" class="btn-soft !px-4 !py-2 text-sm">${svg('cube', 'h-4 w-4 text-terra-500')}ดูแบบ AR</button></div>
             </div>
             <div class="mt-5 space-y-4">${photoBlock(a)}${videoBlock(a)}</div>
@@ -315,7 +361,7 @@
           </div>
         </div>`;
       list.appendChild(el);
-      mountModel($('.model', el), a.model, 360, { az: 0.62 + idx * 0.35, shift: idx * 20, glb: a.glb && a.glb.url });
+      mountLazy($('.model', el), a.id, a.name, a.model, 360, { az: 0.62 + idx * 0.35, shift: idx * 20, glb: a.glb && a.glb.url });
     });
     observeReveal();
   }

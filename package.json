@@ -11,7 +11,8 @@
     "start": "node server.js",
     "build:offline": "node tools/make-offline-glb.mjs",
     "build:lang": "node tools/build-lang.mjs",
-    "shrink": "node tools/shrink-glb.mjs"
+    "shrink": "node tools/shrink-glb.mjs",
+    "posters": "node tools/make-posters.mjs"
   },
   "devDependencies": {
     "@gltf-transform/cli": "^4.5.1",
