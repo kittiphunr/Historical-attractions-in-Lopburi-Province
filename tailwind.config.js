@@ -1,32 +1,29 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
-  content: ['./index.html', './assets/js/**/*.js'],
+  content: ['./index.html', './assets/js/app.js', './assets/js/data.js', './assets/js/models.js'],
   theme: {
     extend: {
       colors: {
-        ink: { 950: '#120d09', 900: '#1a130d', 800: '#241a12', 700: '#33251a' },
-        gold: { 200: '#f3dfa6', 300: '#e6c473', 400: '#d4a548', 500: '#b8893a', 600: '#8f6a2a' },
-        laterite: { 300: '#d98a62', 400: '#c0683f', 500: '#a4502d', 700: '#6b301a' },
-        sand: { 50: '#fbf5e6', 100: '#f6e7c1', 200: '#ecd69b' },
-        river: { 400: '#6fb4d8', 500: '#4a9bc4' }
+        cream: { 50: '#fbf7f1', 100: '#f4ece2', 200: '#eadfd1', 300: '#dccdba' },
+        terra: { 300: '#e59570', 400: '#d9693f', 500: '#c4552f', 600: '#a8431f', 700: '#7f3217' },
+        char: { 900: '#201c19', 800: '#2b2623', 700: '#3a332e' },
+        ink: { 900: '#2a2320', 700: '#4a3f38', 500: '#7a6c60', 400: '#9a8c80' }
       },
       fontFamily: {
-        display: ['"Noto Serif Thai"', 'Georgia', 'serif'],
+        display: ['"Prompt"', '"Sarabun"', 'system-ui', 'sans-serif'],
         sans: ['"Prompt"', '"Sarabun"', 'system-ui', 'sans-serif']
       },
       boxShadow: {
-        glow: '0 0 60px -10px rgba(212,165,72,.45)',
-        deep: '0 30px 60px -20px rgba(0,0,0,.65)'
+        soft: '0 22px 40px -22px rgba(120,72,40,.38), 0 2px 0 rgba(255,255,255,.95) inset',
+        neu: '7px 7px 18px rgba(135,92,60,.17), -6px -6px 16px rgba(255,255,255,.95)',
+        dark: '0 26px 44px -20px rgba(30,20,12,.65)',
+        press: 'inset 3px 3px 8px rgba(135,92,60,.18), inset -3px -3px 8px rgba(255,255,255,.9)'
       },
       keyframes: {
-        floaty: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-10px)' } },
-        spin3d: { to: { transform: 'rotateY(360deg)' } },
-        shimmer: { to: { backgroundPosition: '200% center' } }
+        floaty: { '0%,100%': { transform: 'translateY(0)' }, '50%': { transform: 'translateY(-6px)' } },
+        spinSlow: { to: { transform: 'rotate(360deg)' } }
       },
-      animation: {
-        floaty: 'floaty 6s ease-in-out infinite',
-        shimmer: 'shimmer 6s linear infinite'
-      }
+      animation: { floaty: '5s ease-in-out infinite floaty', spinSlow: 'spinSlow 40s linear infinite' }
     }
   },
   plugins: []

@@ -1,234 +1,281 @@
 <!doctype html>
-<html lang="th" class="scroll-smooth">
+<html lang="th">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>ลพบุรี เมืองสามยุค — สำรวจ 10 แหล่งประวัติศาสตร์</title>
-  <meta name="description" content="เว็บไซต์แนะนำ 10 แหล่งท่องเที่ยวประวัติศาสตร์จังหวัดลพบุรี พร้อมโมเดลสถาปัตยกรรม 3 มิติ เส้นทางเดินเที่ยว วิดีโอแนะนำ แหล่งอ้างอิง และสมุดเยี่ยม">
-  <meta name="theme-color" content="#120d09">
+  <meta name="description" content="เว็บไซต์แนะนำ 10 แหล่งท่องเที่ยวประวัติศาสตร์จังหวัดลพบุรี พร้อมสภาพอากาศสด ไดโอรามา 3 มิติด้วย Three.js เส้นทางเดินเที่ยว แหล่งอ้างอิง และสมุดเยี่ยม">
+  <meta name="theme-color" content="#f4ece2">
   <meta property="og:title" content="ลพบุรี เมืองสามยุค">
-  <meta property="og:description" content="สำรวจพระปรางค์สามยอด พระนารายณ์ราชนิเวศน์ วัดไลย์ และอีก 7 แหล่งประวัติศาสตร์ผ่านโมเดล 3 มิติ">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23120d09'/><path d='M16 3l3 8h-6zM11 12h10l2 6H9zM8 19h16l2 8H6z' fill='%23d4a548'/></svg>">
+  <meta property="og:description" content="สำรวจพระปรางค์สามยอด พระนารายณ์ราชนิเวศน์ วัดไลย์ และอีก 7 แหล่งประวัติศาสตร์">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='8' fill='%23c4552f'/><path d='M16 4l3 8h-6zM11 13h10l2 6H9zM8 20h16l2 8H6z' fill='white'/></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@500;600;700&family=Prompt:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/tailwind.css">
 </head>
-<body class="relative overflow-x-hidden">
-  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded focus:bg-gold-400 focus:px-4 focus:py-2 focus:text-ink-950">ข้ามไปยังเนื้อหา</a>
+<body class="relative overflow-x-hidden pb-28 lg:pb-10">
+  <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-terra-500 focus:px-4 focus:py-2 focus:text-white">ข้ามไปยังเนื้อหา</a>
 
-  <!-- ===== NAV ===== -->
-  <header id="nav" class="fixed inset-x-0 top-0 z-50 transition-all duration-300">
-    <div class="mx-auto flex max-w-7xl items-center justify-between px-5 py-4">
-      <a href="#top" class="flex items-center gap-3">
-        <span class="grid h-9 w-9 place-items-center rounded-lg border border-gold-400/60 bg-ink-900">
-          <svg viewBox="0 0 32 32" class="h-5 w-5 fill-gold-400" aria-hidden="true"><path d="M16 3l3 8h-6zM11 12h10l2 6H9zM8 19h16l2 8H6z"/></svg>
-        </span>
-        <span class="font-display text-lg font-semibold tracking-wide text-sand-50">ลพบุรี<span class="text-gold-400"> · เมืองสามยุค</span></span>
-      </a>
-      <nav class="hidden items-center gap-8 text-sm text-sand-200 md:flex" aria-label="เมนูหลัก">
-        <a class="hover:text-gold-300" href="#story">เรื่องราว</a>
-        <a class="hover:text-gold-300" href="#map">แผนที่</a>
-        <a class="hover:text-gold-300" href="#places">10 สถานที่</a>
-        <a class="hover:text-gold-300" href="#route">เส้นทาง</a>
-        <a class="hover:text-gold-300" href="#guestbook">สมุดเยี่ยม</a>
-        <a class="hover:text-gold-300" href="#credits">เครดิต</a>
-      </nav>
-      <button id="menuBtn" class="grid h-10 w-10 place-items-center rounded-lg border border-gold-500/40 md:hidden" aria-label="เปิดเมนู" aria-expanded="false" aria-controls="mobileMenu">
-        <svg viewBox="0 0 24 24" class="h-5 w-5 stroke-gold-300" fill="none" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-      </button>
-    </div>
-    <div id="mobileMenu" class="hidden border-t border-gold-500/20 bg-ink-950/95 px-5 py-4 backdrop-blur md:hidden">
-      <div class="flex flex-col gap-4 text-sand-100">
-        <a href="#story">เรื่องราว</a><a href="#map">แผนที่</a><a href="#places">10 สถานที่</a><a href="#route">เส้นทาง</a><a href="#guestbook">สมุดเยี่ยม</a><a href="#credits">เครดิต</a>
-      </div>
-    </div>
-    <div id="progress" class="h-px origin-left scale-x-0 bg-gradient-to-r from-gold-600 via-gold-300 to-gold-600"></div>
-  </header>
+  <!-- ===== แถบเมนูซ้าย (เดสก์ท็อป) ===== -->
+  <aside class="fixed bottom-6 left-5 top-6 z-40 hidden w-[68px] flex-col items-center gap-3 lg:flex" aria-label="เมนูหลัก">
+    <a href="#top" class="grid h-[68px] w-[68px] place-items-center rounded-2xl text-white shadow-dark" style="background:linear-gradient(145deg,#dc6f45,#a8431f)" aria-label="ลพบุรี เมืองสามยุค — กลับขึ้นบนสุด"><i data-i="prang" class="h-8 w-8"></i></a>
+    <nav class="mt-2 flex flex-col gap-3">
+      <a class="rail-btn" href="#top" data-sec="top"><i data-i="home" class="h-6 w-6"></i>หน้าแรก</a>
+      <a class="rail-btn" href="#map" data-sec="map"><i data-i="compass" class="h-6 w-6"></i>แผนที่</a>
+      <a class="rail-btn" href="#places" data-sec="places"><i data-i="landmark" class="h-6 w-6"></i>10 แห่ง</a>
+      <a class="rail-btn" href="#route" data-sec="route"><i data-i="route" class="h-6 w-6"></i>เส้นทาง</a>
+      <a class="rail-btn" href="#guestbook" data-sec="guestbook"><i data-i="book" class="h-6 w-6"></i>สมุดเยี่ยม</a>
+    </nav>
+    <a class="rail-btn mt-auto" href="#credits" data-sec="credits"><i data-i="info" class="h-6 w-6"></i>เครดิต</a>
+  </aside>
 
-  <main id="main">
-    <!-- ===== HERO ===== -->
-    <section id="top" class="grain relative isolate flex min-h-[100svh] items-center overflow-hidden pt-24">
-      <div class="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_70%_30%,rgba(184,137,58,.28),transparent_55%),radial-gradient(ellipse_at_10%_90%,rgba(164,80,45,.25),transparent_50%),linear-gradient(180deg,#120d09,#1a130d)]"></div>
-      <canvas id="dust" class="pointer-events-none absolute inset-0 -z-10 h-full w-full opacity-70" aria-hidden="true"></canvas>
-      <div class="mx-auto grid w-full max-w-7xl items-center gap-6 px-5 lg:grid-cols-[1.05fr_1fr]">
-        <div class="reveal">
-          <p class="eyebrow mb-5">Lopburi · Historical Guide</p>
-          <h1 class="font-display text-[2.6rem] font-bold leading-[1.15] text-sand-50 sm:text-6xl lg:text-7xl">
-            เมืองที่ <span class="gold-text">สามยุคสมัย</span><br>ซ้อนกันอยู่ใน<br>ผืนดินเดียว
-          </h1>
-          <p class="mt-7 max-w-xl text-base leading-relaxed text-sand-200/90 sm:text-lg">
-            จากเมืองละโว้สมัยทวารวดี ปราสาทขอมที่เหลืออยู่กลางเมือง สู่ราชธานีแห่งที่สองของสมเด็จพระนารายณ์ —
-            สำรวจ <strong class="text-gold-300">10 แหล่งประวัติศาสตร์</strong> ผ่านโมเดลอาคาร 3 มิติที่หมุนได้ ข้อมูลเชิงลึก และแหล่งอ้างอิงที่ตรวจสอบได้
-          </p>
-          <div class="mt-9 flex flex-wrap gap-4">
-            <a href="#places" class="btn-gold">เริ่มสำรวจ
-              <svg viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
-            <a href="#guestbook" class="btn-ghost">ลงชื่อในสมุดเยี่ยม</a>
+  <!-- ===== แถบเมนูล่าง (มือถือ) ===== -->
+  <nav class="fixed inset-x-3 bottom-3 z-40 lg:hidden" aria-label="เมนูหลัก (มือถือ)">
+    <div class="card mx-auto flex max-w-md items-center justify-between rounded-full px-3 py-2">
+      <a class="grid w-14 place-items-center gap-0.5 py-1 text-[10px] text-ink-500" data-sec="top" href="#top"><i data-i="home" class="h-5 w-5"></i>หน้าแรก</a>
+      <a class="grid w-14 place-items-center gap-0.5 py-1 text-[10px] text-ink-500" data-sec="places" href="#places"><i data-i="landmark" class="h-5 w-5"></i>10 แห่ง</a>
+      <a href="#map" aria-label="แผนที่" class="-mt-8 grid h-16 w-16 place-items-center rounded-full text-white shadow-dark ring-4 ring-cream-100" style="background:linear-gradient(145deg,#dc6f45,#a8431f)"><i data-i="compass" class="h-7 w-7"></i></a>
+      <a class="grid w-14 place-items-center gap-0.5 py-1 text-[10px] text-ink-500" data-sec="route" href="#route"><i data-i="route" class="h-5 w-5"></i>เส้นทาง</a>
+      <a class="grid w-14 place-items-center gap-0.5 py-1 text-[10px] text-ink-500" data-sec="guestbook" href="#guestbook"><i data-i="book" class="h-5 w-5"></i>สมุดเยี่ยม</a>
+    </div>
+  </nav>
+
+  <main id="main" class="mx-auto max-w-6xl px-4 lg:pl-[112px] lg:pr-6">
+
+    <!-- ===== HERO / BENTO ===== -->
+    <section id="top" class="scroll-mt-6 pt-6 lg:pt-8">
+      <div class="grid gap-5 lg:grid-cols-12">
+
+        <div class="space-y-5 lg:col-span-7">
+          <header class="reveal pt-2">
+            <h1 class="text-3xl font-semibold text-ink-900 sm:text-4xl"><span id="hello">สวัสดี</span> นักเดินทาง <span aria-hidden="true">👋</span></h1>
+            <p class="mt-1 text-ink-500">พร้อมสำรวจเมืองสามยุคแห่งลพบุรีหรือยัง?</p>
+          </header>
+
+          <!-- Heritage Pass (ตั๋ว) -->
+          <article class="reveal card relative flex overflow-hidden" aria-label="Heritage Pass ลพบุรี">
+            <div class="flex-1 p-6 sm:p-7">
+              <p class="eyebrow">Heritage Pass</p>
+              <h2 class="mt-3 text-4xl font-semibold text-ink-900 sm:text-5xl">ลพบุรี</h2>
+              <p class="mt-1 text-lg text-ink-700">เมืองสามยุค · ทวารวดี ขอม อยุธยา</p>
+              <ul class="mt-6 grid grid-cols-3 gap-2 text-center text-xs text-ink-500">
+                <li><i data-i="landmark" class="mx-auto h-5 w-5 text-terra-500"></i><b class="mt-1 block text-sm font-medium text-ink-900">10 แห่ง</b>แหล่งประวัติศาสตร์</li>
+                <li><i data-i="route" class="mx-auto h-5 w-5 text-terra-500"></i><b class="mt-1 block text-sm font-medium text-ink-900">1 วัน</b>เดินเท้าเมืองเก่า</li>
+                <li><i data-i="cube" class="mx-auto h-5 w-5 text-terra-500"></i><b class="mt-1 block text-sm font-medium text-ink-900">3 มิติ</b>หมุนชมได้</li>
+              </ul>
+            </div>
+            <div class="relative w-[34%] max-w-[190px] shrink-0 overflow-hidden text-white" style="background:linear-gradient(160deg,#e07a4f,#b44a26)">
+              <span class="absolute -left-3 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full bg-cream-100 shadow-press"></span>
+              <svg viewBox="0 0 120 150" class="absolute inset-x-0 top-0 h-[78%] w-full" aria-hidden="true">
+                <circle cx="78" cy="38" r="15" fill="#f6c9a4" opacity=".75"/>
+                <path d="M0 150V108l20-10 14 10 16-14 22 12 22-8 26 10v42z" fill="#8f3a1a" opacity=".55"/>
+                <g fill="#4a1f10"><path d="M60 38l5 14h-10zM54 54h12l3 12H51zM48 68h24l4 20H44zM42 90h36l4 28H38z"/><path d="M28 86l3 8h-6zM25 96h6l2 9h-10zM22 106h12l3 14H19z" opacity=".85"/><path d="M92 86l3 8h-6zM89 96h6l2 9h-10zM86 106h12l3 14H83z" opacity=".85"/></g>
+              </svg>
+              <div class="barcode absolute inset-x-5 bottom-5 h-10 rounded-sm opacity-90" style="background-color:#fbf7f1"></div>
+            </div>
+          </article>
+        </div>
+
+        <!-- สภาพอากาศ -->
+        <section class="reveal card-dark p-5 sm:p-6 lg:col-span-5" aria-labelledby="wxTitle" id="weather">
+          <h2 id="wxTitle" class="sr-only">สภาพอากาศลพบุรี</h2>
+          <div class="flex items-start justify-between gap-3">
+            <div class="flex items-center gap-4">
+              <span id="wxIcon" class="h-16 w-16 shrink-0 text-amber-300"></span>
+              <div>
+                <p class="flex items-start text-5xl font-medium leading-none text-white"><span id="wxTemp">--</span><span class="mt-1 text-3xl">°</span></p>
+                <p id="wxDesc" class="mt-1 text-sm text-cream-200/80">กำลังโหลดสภาพอากาศ…</p>
+              </div>
+            </div>
+            <p class="text-right text-xs text-cream-200/70"><i data-i="pin" class="mr-1 inline h-3.5 w-3.5"></i>ลพบุรี<br><span id="wxUpdated" class="text-cream-200/50"></span></p>
           </div>
-          <dl class="mt-12 grid max-w-lg grid-cols-3 gap-4 border-t border-gold-500/20 pt-6">
-            <div><dt class="text-xs text-sand-200/60">แหล่งประวัติศาสตร์</dt><dd class="font-display text-3xl text-gold-300" data-count="10">10</dd></div>
-            <div><dt class="text-xs text-sand-200/60">ยุคสมัยหลัก</dt><dd class="font-display text-3xl text-gold-300">3</dd></div>
-            <div><dt class="text-xs text-sand-200/60">แหล่งอ้างอิง</dt><dd class="font-display text-3xl text-gold-300" id="srcCount">30+</dd></div>
-          </dl>
-        </div>
-        <div class="relative h-[420px] sm:h-[520px] lg:h-[640px]" aria-label="โมเดลพระปรางค์สามยอด 3 มิติ ลากเพื่อหมุน">
-          <div id="heroModel" class="absolute inset-0"></div>
-          <p class="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full border border-gold-500/30 bg-ink-900/70 px-4 py-1.5 text-xs text-sand-200 backdrop-blur">
-            ↻ ลากเพื่อหมุนโมเดล · พระปรางค์สามยอด (แบบจำลองเรียบง่าย)
-          </p>
-        </div>
+          <ol id="wxHours" class="mt-5 grid grid-cols-5 gap-1 border-t border-white/10 pt-4 text-center text-xs text-cream-200/80" aria-label="พยากรณ์รายชั่วโมง"></ol>
+          <div class="mt-4 flex flex-wrap justify-between gap-x-4 gap-y-1 border-t border-white/10 pt-3 text-xs text-cream-200/70">
+            <span>ความชื้น <b id="wxHum" class="font-medium text-white">--</b></span>
+            <span>ลม <b id="wxWind" class="font-medium text-white">--</b></span>
+            <span>โอกาสฝน <b id="wxRain" class="font-medium text-white">--</b></span>
+          </div>
+          <p id="wxErr" class="mt-3 hidden text-xs text-amber-200" role="status"></p>
+          <p class="mt-3 text-[10px] text-cream-200/40">ข้อมูล: Open-Meteo.com (CC BY 4.0) · อัปเดตอัตโนมัติทุก 15 นาที</p>
+        </section>
+
+        <!-- ไดโอรามา 3 มิติ -->
+        <section class="reveal card relative min-h-[430px] overflow-hidden sm:min-h-[520px] lg:col-span-7 lg:row-span-2 lg:min-h-[640px]" aria-label="ไดโอรามาพระปรางค์สามยอด 3 มิติ ลากเพื่อหมุน">
+          <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,#fff,transparent_62%),linear-gradient(180deg,#f7efe5,#ecdccb)]"></div>
+          <div class="relative z-10 flex items-start justify-between p-5">
+            <div><p class="eyebrow">Diorama</p><h2 class="mt-1 text-xl font-semibold text-ink-900">พระปรางค์สามยอด</h2></div>
+            <a href="#sam-yot" class="btn-soft !px-4 !py-2 text-sm">อ่านเรื่องราว <i data-i="arrow" class="h-4 w-4"></i></a>
+          </div>
+          <div id="heroModel" class="absolute inset-x-0 bottom-12 top-16"></div>
+          <p class="absolute inset-x-0 bottom-4 text-center text-xs text-ink-500">↻ ลาก / ปุ่มลูกศร เพื่อหมุน · ดับเบิลคลิกเพื่อรีเซ็ต · แบบจำลองเรียบง่าย</p>
+        </section>
+
+        <!-- แผนที่ย่อ -->
+        <section class="reveal card p-5 lg:col-span-5">
+          <div class="flex items-center justify-between"><h2 class="text-base font-semibold text-ink-900">แผนที่ท่องเที่ยวลพบุรี</h2><span class="text-ink-400" aria-hidden="true">⋮</span></div>
+          <div class="relative mt-3 overflow-hidden rounded-2xl shadow-press">
+            <img src="assets/img/lopburi-map.jpg" alt="แผนที่ท่องเที่ยวลพบุรีแบบภาพประกอบ" width="1376" height="768" class="h-44 w-full object-cover" loading="lazy">
+            <a href="#map" class="btn-dark absolute bottom-3 right-3">สำรวจแผนที่ <i data-i="arrow" class="h-4 w-4"></i></a>
+          </div>
+        </section>
+
+        <!-- Top experiences -->
+        <section class="reveal card p-5 lg:col-span-5">
+          <div class="flex items-center justify-between"><h2 class="text-base font-semibold text-ink-900">แนะนำสำหรับเริ่มต้น</h2><a href="#places" class="text-sm text-terra-500 hover:underline">ดูทั้งหมด</a></div>
+          <ul id="topList" class="mt-3 space-y-3"></ul>
+        </section>
+
+        <!-- ช่วงเวลาที่ควรไป -->
+        <section class="reveal card flex flex-col gap-4 p-5 sm:flex-row sm:items-center lg:col-span-7">
+          <div class="grid h-20 w-20 shrink-0 place-items-center rounded-2xl text-white shadow-neu" style="background:linear-gradient(145deg,#dc6f45,#a8431f)"><i data-i="calendar" class="h-10 w-10"></i></div>
+          <div>
+            <h2 class="text-base font-semibold text-ink-900">ช่วงที่น่าไป: พ.ย. – ก.พ.</h2>
+            <p class="mt-1 text-sm text-ink-500">ช่วงฤดูหนาวของไทยอากาศเย็นสบาย เหมาะกับการเดินเมืองเก่าและขึ้นเขา (คำแนะนำทั่วไป ตรวจพยากรณ์ล่าสุดที่วิดเจ็ตอากาศ)</p>
+            <p class="mt-2 flex flex-wrap gap-2 text-xs">
+              <a class="rounded-full bg-cream-100 px-3 py-1 text-terra-600 shadow-neu" href="#sala-phra-kan">ปลาย พ.ย. · งานเลี้ยงลิง</a>
+              <a class="rounded-full bg-cream-100 px-3 py-1 text-terra-600 shadow-neu" href="#khao-wong">ปลาย ม.ค.–ต้น ก.พ. · งานนมัสการเขาวงพระจันทร์</a>
+            </p>
+          </div>
+        </section>
+
+        <!-- สถิติ -->
+        <section class="reveal card grid grid-cols-3 divide-x divide-cream-300 p-5 text-center lg:col-span-5" aria-label="สรุป">
+          <div><p class="text-3xl font-semibold text-terra-500">10</p><p class="text-xs text-ink-500">แหล่งประวัติศาสตร์</p></div>
+          <div><p class="text-3xl font-semibold text-terra-500">3</p><p class="text-xs text-ink-500">ยุคสมัยหลัก</p></div>
+          <div><p class="text-3xl font-semibold text-terra-500" id="srcCount">33+</p><p class="text-xs text-ink-500">แหล่งอ้างอิง</p></div>
+        </section>
       </div>
-      <a href="#story" class="absolute bottom-6 left-1/2 hidden -translate-x-1/2 text-gold-400/70 sm:block animate-floaty" aria-label="เลื่อนลง">
-        <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg>
-      </a>
     </section>
 
-    <!-- ===== STORY / TIMELINE ===== -->
-    <section id="story" class="relative px-5 py-28">
-      <div class="mx-auto max-w-6xl">
-        <div class="reveal max-w-2xl">
-          <p class="eyebrow mb-3">Timeline</p>
-          <h2 class="font-display text-3xl font-semibold text-sand-50 sm:text-5xl">เส้นเวลาของ <span class="gold-text">ละโว้–ลพบุรี</span></h2>
-          <p class="mt-5 text-sand-200/80">ลพบุรีบางครั้งปรากฏในชื่อ “ละโว้” หรือ “ลวปุระ” เป็นเมืองท่าสำคัญของวัฒนธรรมทวารวดีและเขมรพระนคร ก่อนจะกลับมารุ่งเรืองอีกครั้งในฐานะราชธานีแห่งที่สองสมัยสมเด็จพระนารายณ์</p>
-        </div>
-        <ol id="timeline" class="relative mt-16 grid gap-6 md:grid-cols-3"></ol>
+    <!-- ===== TIMELINE ===== -->
+    <section id="story" class="scroll-mt-6 pt-24">
+      <div class="reveal max-w-2xl">
+        <p class="eyebrow">Timeline</p>
+        <h2 class="h-sec mt-2">เส้นเวลาของ ละโว้–ลพบุรี</h2>
+        <p class="mt-3 text-ink-500">ลพบุรีบางครั้งปรากฏในชื่อ “ละโว้” หรือ “ลวปุระ” เป็นเมืองท่าสำคัญของวัฒนธรรมทวารวดีและเขมรพระนคร ก่อนกลับมารุ่งเรืองอีกครั้งในฐานะราชธานีแห่งที่สองสมัยสมเด็จพระนารายณ์</p>
       </div>
+      <ol id="timeline" class="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3"></ol>
     </section>
 
     <!-- ===== MAP ===== -->
-    <section id="map" class="relative bg-ink-900/60 px-5 py-28">
-      <div class="mx-auto max-w-6xl">
-        <div class="reveal flex flex-wrap items-end justify-between gap-6">
-          <div class="max-w-2xl">
-            <p class="eyebrow mb-3">Interactive Map</p>
-            <h2 class="font-display text-3xl font-semibold text-sand-50 sm:text-5xl">แผนที่ท่องเที่ยว <span class="gold-text">แบบแตะได้</span></h2>
-            <p class="mt-5 text-sand-200/80">แตะที่อาคารบนแผนที่เพื่อกระโดดไปอ่านรายละเอียด แผนที่เป็นภาพประกอบเชิงสัญลักษณ์ ไม่ใช่มาตราส่วนจริง</p>
-          </div>
-        </div>
-        <div class="reveal mt-12">
-          <div class="tilt glass relative overflow-hidden rounded-3xl p-2 shadow-deep sm:p-3" id="mapTilt">
-            <div class="relative" id="mapWrap">
-              <img src="assets/img/lopburi-map.jpg" width="1376" height="768" alt="แผนที่ท่องเที่ยวจังหวัดลพบุรีแบบภาพประกอบ แสดงพระปรางค์สามยอด ศาลพระกาฬ พระนารายณ์ราชนิเวศน์ วัดไลย์ วัดพระศรีรัตนมหาธาตุ บ้านวิชาเยนทร์ และวัดเขาวงพระจันทร์" class="block w-full rounded-2xl" loading="lazy">
-            </div>
-          </div>
-          <p class="mt-3 text-center text-xs text-sand-200/60">ภาพแผนที่ประกอบ: จัดเตรียมโดยเจ้าของโปรเจกต์ (ภาพแสดงเฉพาะ 7 จากทั้งหมด 10 แห่ง)</p>
-        </div>
+    <section id="map" class="scroll-mt-6 pt-24">
+      <div class="reveal max-w-2xl">
+        <p class="eyebrow">Interactive Map</p>
+        <h2 class="h-sec mt-2">แผนที่แบบแตะได้</h2>
+        <p class="mt-3 text-ink-500">แตะหมายเลขบนอาคารเพื่อไปอ่านรายละเอียด แผนที่เป็นภาพประกอบเชิงสัญลักษณ์ ไม่ใช่มาตราส่วนจริง</p>
+      </div>
+      <div class="reveal mt-8">
+        <div class="card p-2 sm:p-3" id="mapTilt"><div class="relative" id="mapWrap">
+          <img src="assets/img/lopburi-map.jpg" width="1376" height="768" alt="แผนที่ท่องเที่ยวจังหวัดลพบุรีแบบภาพประกอบ แสดงพระปรางค์สามยอด ศาลพระกาฬ พระนารายณ์ราชนิเวศน์ วัดไลย์ วัดพระศรีรัตนมหาธาตุ บ้านวิชาเยนทร์ และวัดเขาวงพระจันทร์" class="block w-full rounded-[1.4rem]" loading="lazy">
+        </div></div>
+        <p class="mt-3 text-center text-xs text-ink-400">ภาพแผนที่ประกอบ: จัดเตรียมโดยเจ้าของโปรเจกต์ (ภาพแสดงเฉพาะ 7 จากทั้งหมด 10 แห่ง)</p>
       </div>
     </section>
 
     <!-- ===== PLACES ===== -->
-    <section id="places" class="relative px-5 py-28">
-      <div class="mx-auto max-w-7xl">
-        <div class="reveal max-w-3xl">
-          <p class="eyebrow mb-3">10 Historical Sites</p>
-          <h2 class="font-display text-3xl font-semibold text-sand-50 sm:text-5xl">สิบแหล่งที่ควรรู้จัก <span class="gold-text">ก่อนไปถึง</span></h2>
-          <p class="mt-5 text-sand-200/80">ลากโมเดลเพื่อหมุนชมอาคารจำลอง (เป็นรูปทรงเรียบง่ายเพื่อสื่อโครงสร้างหลัก ไม่ใช่แบบสำรวจจริง) อ่านข้อมูลแยกเป็นประวัติ สถาปัตยกรรม ไฮไลต์ และเคล็ดลับ พร้อมแหล่งอ้างอิงของแต่ละสถานที่</p>
-        </div>
-        <div id="filters" class="reveal mt-10 flex flex-wrap gap-3" role="group" aria-label="กรองตามยุค"></div>
-        <div id="placeList" class="mt-14 space-y-28"></div>
-        <p id="emptyMsg" class="hidden py-20 text-center text-sand-200/70">ไม่พบสถานที่ในหมวดนี้</p>
+    <section id="places" class="scroll-mt-6 pt-24">
+      <div class="reveal max-w-3xl">
+        <p class="eyebrow">10 Historical Sites</p>
+        <h2 class="h-sec mt-2">สิบแหล่งที่ควรรู้จักก่อนไปถึง</h2>
+        <p class="mt-3 text-ink-500">ลากโมเดล 3 มิติ (Three.js) เพื่อหมุนชมอาคารจำลอง — เป็นรูปทรงเรียบง่ายเพื่อสื่อโครงสร้างหลัก ไม่ใช่แบบสำรวจจริง อ่านข้อมูลแยกเป็นประวัติ สถาปัตยกรรม ไฮไลต์ และเคล็ดลับ พร้อมแหล่งอ้างอิง</p>
       </div>
+      <div id="filters" class="reveal mt-8 flex flex-wrap gap-3" role="group" aria-label="กรองตามยุค"></div>
+      <div id="placeList" class="mt-10 space-y-10"></div>
+      <p id="emptyMsg" class="hidden py-20 text-center text-ink-500">ไม่พบสถานที่ในหมวดนี้</p>
     </section>
 
     <!-- ===== ROUTE ===== -->
-    <section id="route" class="relative bg-ink-900/60 px-5 py-28">
-      <div class="mx-auto max-w-4xl">
-        <div class="reveal">
-          <p class="eyebrow mb-3">One-Day Walk</p>
-          <h2 class="font-display text-3xl font-semibold text-sand-50 sm:text-5xl">เดินเมืองเก่า <span class="gold-text">ในหนึ่งวัน</span></h2>
-          <p class="mt-5 text-sand-200/80">แปดจุดอยู่ในย่านเมืองเก่าและใกล้กันมาก เหมาะกับการเดินเท้า (ลำดับเป็นข้อเสนอแนะ ตรวจสอบเวลาเปิดของแต่ละแห่งก่อนไป) ส่วนวัดเขาวงพระจันทร์อยู่ห่างออกไป ควรแยกเป็นอีกทริป</p>
-        </div>
-        <ol id="routeList" class="relative mt-14 space-y-2 border-l border-gold-500/30 pl-8"></ol>
-        <div class="reveal mt-10 rounded-2xl border border-gold-500/20 bg-ink-800/50 p-6">
-          <p class="text-sm text-sand-200/80"><span class="text-gold-300">ทริปแยก ·</span> วัดเขาวงพระจันทร์ อ.โคกสำโรง — ขึ้นลง 3,790 ขั้น ใช้เวลาหลายชั่วโมง ควรไปช่วงเช้า</p>
-          <a href="#khao-wong" class="mt-3 inline-block text-sm text-gold-300 underline-offset-4 hover:underline">อ่านรายละเอียด →</a>
-        </div>
+    <section id="route" class="scroll-mt-6 pt-24">
+      <div class="reveal max-w-2xl">
+        <p class="eyebrow">One-Day Walk</p>
+        <h2 class="h-sec mt-2">เดินเมืองเก่าในหนึ่งวัน</h2>
+        <p class="mt-3 text-ink-500">แปดจุดอยู่ในย่านเมืองเก่าและใกล้กันมาก เหมาะกับการเดินเท้า (ลำดับเป็นข้อเสนอแนะ ตรวจสอบเวลาเปิดของแต่ละแห่งก่อนไป) วัดเขาวงพระจันทร์อยู่ไกลออกไป ควรแยกเป็นอีกทริป</p>
+      </div>
+      <ol id="routeList" class="mt-10 grid gap-4 sm:grid-cols-2"></ol>
+      <div class="reveal card mt-5 flex flex-wrap items-center justify-between gap-3 p-5">
+        <p class="text-sm text-ink-500"><b class="text-terra-600">ทริปแยก ·</b> วัดเขาวงพระจันทร์ อ.โคกสำโรง — ขึ้นลง 3,790 ขั้น ใช้เวลาหลายชั่วโมง ควรไปช่วงเช้า</p>
+        <a href="#khao-wong" class="btn-soft !px-4 !py-2 text-sm">อ่านรายละเอียด <i data-i="arrow" class="h-4 w-4"></i></a>
       </div>
     </section>
 
     <!-- ===== GUESTBOOK ===== -->
-    <section id="guestbook" class="relative px-5 py-28">
-      <div class="mx-auto max-w-6xl">
-        <div class="reveal max-w-2xl">
-          <p class="eyebrow mb-3">Guestbook</p>
-          <h2 class="font-display text-3xl font-semibold text-sand-50 sm:text-5xl">สมุดเยี่ยม <span class="gold-text">ผู้มาเยือน</span></h2>
-          <p class="mt-5 text-sand-200/80">เขียนความประทับใจ เคล็ดลับ หรือภาพจำจากการไปเยือนลพบุรี</p>
-          <p id="gbMode" class="mt-3 inline-flex items-center gap-2 rounded-full border border-gold-500/30 px-3 py-1 text-xs text-sand-200"></p>
-        </div>
-        <div class="mt-12 grid gap-10 lg:grid-cols-[420px_1fr] [&>*]:min-w-0">
-          <form id="gbForm" class="reveal glass space-y-5 rounded-3xl p-6 shadow-deep" novalidate>
-            <div>
-              <label for="gbName" class="mb-1.5 block text-sm text-sand-200">ชื่อ <span class="text-laterite-300">*</span></label>
-              <input id="gbName" name="name" maxlength="40" required autocomplete="nickname" class="w-full rounded-xl border border-gold-500/25 bg-ink-950/70 px-4 py-3 text-sand-50 placeholder-sand-200/30 focus:border-gold-300" placeholder="เช่น คุณปลา จากเชียงใหม่">
-            </div>
-            <div class="grid grid-cols-2 gap-4">
-              <div>
-                <span id="rateLbl" class="mb-1.5 block text-sm text-sand-200">ให้คะแนน</span>
-                <div id="stars" role="radiogroup" aria-labelledby="rateLbl" class="flex gap-1 text-2xl"></div>
-              </div>
-              <div>
-                <label for="gbPlace" class="mb-1.5 block text-sm text-sand-200">ที่ประทับใจ</label>
-                <select id="gbPlace" name="place" class="w-full rounded-xl border border-gold-500/25 bg-ink-950/70 px-3 py-3 text-sm text-sand-50"></select>
-              </div>
-            </div>
-            <div>
-              <label for="gbMsg" class="mb-1.5 block text-sm text-sand-200">ข้อความ <span class="text-laterite-300">*</span></label>
-              <textarea id="gbMsg" name="message" rows="5" maxlength="500" required class="w-full resize-y rounded-xl border border-gold-500/25 bg-ink-950/70 px-4 py-3 text-sand-50 placeholder-sand-200/30 focus:border-gold-300" placeholder="บอกเล่าประสบการณ์ของคุณ…"></textarea>
-              <div class="mt-1 flex justify-between text-xs text-sand-200/50"><span id="gbErr" class="text-laterite-300" role="alert"></span><span id="gbCount">0/500</span></div>
-            </div>
-            <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true">
-            <button class="btn-gold w-full justify-center" type="submit">บันทึกลงสมุดเยี่ยม</button>
-          </form>
-          <div class="reveal">
-            <div class="mb-4 flex items-center justify-between text-sm text-sand-200/70">
-              <span id="gbTotal">กำลังโหลด…</span>
-              <span id="gbAvg"></span>
-            </div>
-            <ul id="gbList" class="space-y-4"></ul>
+    <section id="guestbook" class="scroll-mt-6 pt-24">
+      <div class="reveal max-w-2xl">
+        <p class="eyebrow">Guestbook</p>
+        <h2 class="h-sec mt-2">สมุดเยี่ยมผู้มาเยือน</h2>
+        <p class="mt-3 text-ink-500">เขียนความประทับใจ เคล็ดลับ หรือภาพจำจากการไปเยือนลพบุรี</p>
+        <p id="gbMode" class="mt-3 inline-flex rounded-full bg-cream-50 px-3 py-1 text-xs text-ink-500 shadow-neu"></p>
+      </div>
+      <div class="mt-10 grid gap-6 lg:grid-cols-[400px_1fr] [&>*]:min-w-0">
+        <form id="gbForm" class="reveal card space-y-5 p-6" novalidate>
+          <div>
+            <label for="gbName" class="mb-1.5 block text-sm text-ink-700">ชื่อ <span class="text-terra-500">*</span></label>
+            <input id="gbName" name="name" maxlength="40" required autocomplete="nickname" class="field" placeholder="เช่น คุณปลา จากเชียงใหม่">
           </div>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <span id="rateLbl" class="mb-1.5 block text-sm text-ink-700">ให้คะแนน</span>
+              <div id="stars" role="radiogroup" aria-labelledby="rateLbl" class="flex gap-1 text-2xl"></div>
+            </div>
+            <div>
+              <label for="gbPlace" class="mb-1.5 block text-sm text-ink-700">ที่ประทับใจ</label>
+              <select id="gbPlace" name="place" class="field !px-3 text-sm"></select>
+            </div>
+          </div>
+          <div>
+            <label for="gbMsg" class="mb-1.5 block text-sm text-ink-700">ข้อความ <span class="text-terra-500">*</span></label>
+            <textarea id="gbMsg" name="message" rows="5" maxlength="500" required class="field resize-y" placeholder="บอกเล่าประสบการณ์ของคุณ…"></textarea>
+            <div class="mt-1 flex justify-between text-xs text-ink-400"><span id="gbErr" class="text-terra-600" role="alert"></span><span id="gbCount">0/500</span></div>
+          </div>
+          <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true">
+          <button class="btn-terra w-full" type="submit">บันทึกลงสมุดเยี่ยม</button>
+        </form>
+        <div class="reveal">
+          <div class="mb-4 flex items-center justify-between text-sm text-ink-500"><span id="gbTotal">กำลังโหลด…</span><span id="gbAvg"></span></div>
+          <ul id="gbList" class="space-y-4"></ul>
         </div>
       </div>
     </section>
 
     <!-- ===== CREDITS ===== -->
-    <section id="credits" class="relative bg-ink-900/60 px-5 py-28">
-      <div class="mx-auto max-w-6xl">
-        <div class="reveal max-w-3xl">
-          <p class="eyebrow mb-3">Credits & Sources</p>
-          <h2 class="font-display text-3xl font-semibold text-sand-50 sm:text-5xl">เครดิตและ<span class="gold-text">แหล่งอ้างอิง</span></h2>
-          <div class="mt-6 space-y-3 text-sand-200/80">
-            <p><strong class="text-gold-300">นโยบายภาพและวิดีโอ:</strong> เว็บนี้ไม่คัดลอกภาพถ่ายหรือวิดีโอของบุคคลอื่นมาฝังโดยไม่ระบุที่มา ภาพถ่ายจริงแต่ละที่จะแสดงชื่อผู้ถ่าย สัญญาอนุญาต และลิงก์ต้นทางใต้ภาพทุกครั้ง วิดีโอแสดงชื่อช่องและลิงก์ไปยัง YouTube ซึ่งเป็นผู้ถือสิทธิ์</p>
-            <p><strong class="text-gold-300">โมเดล 3 มิติ:</strong> สร้างขึ้นใหม่ด้วย CSS เป็นรูปทรงจำลองอย่างง่าย ไม่ได้ดัดแปลงจากภาพถ่ายหรือโมเดลของผู้อื่น</p>
-            <p><strong class="text-gold-300">ข้อควรระวัง:</strong> ข้อมูลเวลาเปิด ค่าเข้าชม และการเดินทางเปลี่ยนแปลงได้ โปรดตรวจสอบกับกรมศิลปากรหรือสำนักศิลปากรที่ 4 ลพบุรีก่อนเดินทาง</p>
+    <section id="credits" class="scroll-mt-6 pt-24">
+      <div class="reveal max-w-3xl">
+        <p class="eyebrow">Credits & Sources</p>
+        <h2 class="h-sec mt-2">เครดิตและแหล่งอ้างอิง</h2>
+        <div class="mt-5 space-y-3 text-ink-500">
+          <p><b class="text-ink-900">นโยบายภาพและวิดีโอ:</b> เว็บนี้ไม่คัดลอกภาพถ่ายหรือวิดีโอของบุคคลอื่นมาฝังโดยไม่ระบุที่มา ภาพถ่ายจริงแต่ละที่จะแสดงชื่อผู้ถ่าย สัญญาอนุญาต และลิงก์ต้นทางใต้ภาพทุกครั้ง วิดีโอแสดงชื่อช่องและลิงก์ไปยัง YouTube ซึ่งเป็นผู้ถือสิทธิ์</p>
+          <p><b class="text-ink-900">โมเดล 3 มิติ:</b> สร้างขึ้นใหม่ด้วยโค้ดเป็นรูปทรงจำลองอย่างง่าย เรนเดอร์ด้วย <a class="text-terra-600 underline" href="https://threejs.org/" target="_blank" rel="noopener noreferrer">Three.js</a> (MIT) มีตัวสำรองเป็น CSS 3D ไม่ได้ดัดแปลงจากภาพถ่ายหรือโมเดลของผู้อื่น</p>
+          <p><b class="text-ink-900">สภาพอากาศ:</b> ข้อมูลจาก <a class="text-terra-600 underline" href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo.com</a> (CC BY 4.0) ดึงในเบราว์เซอร์ของผู้ชม โดยส่งเฉพาะพิกัดตัวเมืองลพบุรี</p>
+          <p><b class="text-ink-900">ข้อควรระวัง:</b> เวลาเปิด ค่าเข้าชม และการเดินทางเปลี่ยนแปลงได้ โปรดตรวจสอบกับกรมศิลปากรหรือสำนักศิลปากรที่ 4 ลพบุรีก่อนเดินทาง</p>
+        </div>
+      </div>
+      <div class="mt-10 grid gap-8 lg:grid-cols-2 [&>*]:min-w-0">
+        <div class="reveal">
+          <h3 class="mb-3 text-lg font-semibold text-ink-900">สถานะสื่อประกอบรายสถานที่</h3>
+          <div class="card overflow-x-auto p-1">
+            <table class="w-full min-w-[420px] text-left text-sm">
+              <thead class="text-terra-600"><tr><th class="px-4 py-3 font-medium">สถานที่</th><th class="px-4 py-3 font-medium">ภาพถ่ายจริง</th><th class="px-4 py-3 font-medium">วิดีโอ</th></tr></thead>
+              <tbody id="mediaTable" class="divide-y divide-cream-200 text-ink-500"></tbody>
+            </table>
           </div>
         </div>
-        <div class="mt-14 grid gap-12 lg:grid-cols-2 [&>*]:min-w-0">
-          <div class="reveal">
-            <h3 class="mb-4 font-display text-xl text-sand-50">สถานะสื่อประกอบรายสถานที่</h3>
-            <div class="overflow-x-auto rounded-2xl border border-gold-500/20">
-              <table class="w-full min-w-[420px] text-left text-sm">
-                <thead class="bg-ink-800 text-gold-300"><tr><th class="px-4 py-3 font-medium">สถานที่</th><th class="px-4 py-3 font-medium">ภาพถ่ายจริง</th><th class="px-4 py-3 font-medium">วิดีโอ</th></tr></thead>
-                <tbody id="mediaTable" class="divide-y divide-gold-500/10 text-sand-200"></tbody>
-              </table>
-            </div>
-          </div>
-          <div class="reveal">
-            <h3 class="mb-4 font-display text-xl text-sand-50">แหล่งข้อมูลที่ใช้ (<span id="srcTotal"></span> แหล่ง)</h3>
-            <ul id="srcList" class="max-h-[460px] space-y-2 overflow-y-auto pr-2 text-sm"></ul>
-          </div>
+        <div class="reveal">
+          <h3 class="mb-3 text-lg font-semibold text-ink-900">แหล่งข้อมูลที่ใช้ (<span id="srcTotal"></span> แหล่ง)</h3>
+          <ul id="srcList" class="max-h-[460px] space-y-2 overflow-y-auto pr-2 text-sm"></ul>
         </div>
       </div>
     </section>
   </main>
 
-  <footer class="border-t border-gold-500/20 px-5 py-10 text-center text-sm text-sand-200/60">
-    <p class="font-display text-lg text-sand-100">ลพบุรี · เมืองสามยุค</p>
-    <p class="mt-2">รวบรวมเพื่อการศึกษาและการท่องเที่ยว ข้อมูลอาจคลาดเคลื่อน โปรดอ้างอิงกรมศิลปากรเป็นหลัก</p>
+  <footer class="mx-auto mt-24 max-w-6xl px-4 pb-6 text-center text-sm text-ink-400 lg:pl-[112px]">
+    <p class="font-medium text-ink-700">ลพบุรี · เมืองสามยุค</p>
+    <p class="mt-1">รวบรวมเพื่อการศึกษาและการท่องเที่ยว ข้อมูลอาจคลาดเคลื่อน โปรดอ้างอิงกรมศิลปากรเป็นหลัก</p>
   </footer>
 
   <script src="assets/js/data.js"></script>
   <script src="assets/js/models.js"></script>
+  <script src="assets/js/three-scenes.js"></script>
   <script src="assets/js/app.js"></script>
 </body>
 </html>

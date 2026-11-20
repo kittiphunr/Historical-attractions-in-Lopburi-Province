@@ -1,15 +1,20 @@
 # ลพบุรี · เมืองสามยุค
 
 Landing page แนะนำ 10 แหล่งท่องเที่ยวประวัติศาสตร์จังหวัดลพบุรี สร้างด้วย **Tailwind CSS** เป็นแกนหลัก
-พร้อมโมเดลอาคาร 3 มิติ (CSS 3D ล้วน ลากหมุนได้), แผนที่แตะได้, เส้นทางเดินเมืองเก่า, ลิงก์วิดีโอ YouTube, แหล่งอ้างอิง และสมุดเยี่ยม
+UI แบบ bento โทนครีม–ส้มดินเผา (การ์ดตั๋ว, วิดเจ็ตสภาพอากาศสด, แผนที่แตะได้, เมนูซ้าย/ล่าง) พร้อมไดโอรามาและโมเดลอาคาร 3 มิติด้วย **Three.js** (ลากหมุนได้, มีแสงเงา) และตัวสำรอง CSS 3D เมื่อไม่มี WebGL, เส้นทางเดินเมืองเก่า, ลิงก์วิดีโอ YouTube, แหล่งอ้างอิง และสมุดเยี่ยม
 
 ## รันบนเครื่อง
 
 ```bash
 npm install
-npm run build      # คอมไพล์ Tailwind -> assets/tailwind.css (ไฟล์ที่ build แล้วถูก commit ไว้ เปิด index.html ได้เลย)
+npm run build      # Tailwind -> assets/tailwind.css และ bundle Three.js (src/three-scenes.js) -> assets/js/three-scenes.js
+                   # ไฟล์ที่ build แล้วถูก commit ไว้ เปิดผ่าน server ได้เลย
 npm start          # เสิร์ฟหน้าเว็บ + API สมุดเยี่ยม ที่ http://localhost:3000
 ```
+
+## สภาพอากาศ
+
+วิดเจ็ตดึงข้อมูลสดจาก [Open-Meteo](https://open-meteo.com/) (CC BY 4.0, ไม่ต้องใช้ API key) ในเบราว์เซอร์ของผู้ชม ส่งเฉพาะพิกัดตัวเมืองลพบุรี (14.7995, 100.6534) รีเฟรชทุก 15 นาที ถ้าเชื่อมต่อไม่ได้จะแจ้งสถานะพร้อมปุ่มลองใหม่ ไม่แสดงตัวเลขสมมติ
 
 ## สมุดเยี่ยม
 
@@ -39,8 +44,9 @@ npm start          # เสิร์ฟหน้าเว็บ + API สมุ�
 | ไฟล์ | หน้าที่ |
 |---|---|
 | `index.html` | โครงหน้า (Tailwind utility classes) |
-| `src/input.css`, `tailwind.config.js` | ธีม ทอง/ศิลาแลง/หมึก + คอมโพเนนต์ + CSS 3D |
+| `src/input.css`, `tailwind.config.js` | ธีมครีม/ส้มดินเผา + คอมโพเนนต์การ์ดนูน + CSS 3D สำรอง |
 | `assets/js/data.js` | ข้อมูลสถานที่, แหล่งอ้างอิง, timeline, เส้นทาง |
-| `assets/js/models.js` | เอนจิน 3 มิติ (box/pyramid/gable) และโมเดล 10 แบบ |
+| `assets/js/models.js` | นิยามอาคาร 10 แบบ (ไม่ผูกตัวเรนเดอร์) + ตัวเรนเดอร์สำรอง CSS 3D |
+| `src/three-scenes.js` → `assets/js/three-scenes.js` | ตัวเรนเดอร์ Three.js: renderer เดียว/canvas เดียว วาดหลาย viewport |
 | `assets/js/app.js` | เรนเดอร์, ตัวกรอง, แท็บ, แผนที่, สมุดเยี่ยม |
 | `server.js` | static server + API สมุดเยี่ยม (ไม่มี dependency) |
