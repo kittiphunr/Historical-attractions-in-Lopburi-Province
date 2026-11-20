@@ -34,6 +34,10 @@
     background-image: radial-gradient(1100px 600px at 90% -5%, rgba(217,105,63,.14), transparent 60%), radial-gradient(900px 500px at -10% 40%, rgb(var(--paper) / .8), transparent 60%);
     background-attachment: fixed;
   }
+  html[lang="zh-Hans"] * { font-family: 'Prompt', 'Noto Sans SC', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif; }
+  html[lang="ja"] * { font-family: 'Prompt', 'Noto Sans JP', 'Hiragino Sans', 'Yu Gothic', 'Meiryo', system-ui, sans-serif; }
+  html[lang="ja"] [data-sec] { font-size: 9.5px; letter-spacing: -.02em; }
+  html[lang="en"] .eyebrow, html[lang="zh-Hans"] .eyebrow, html[lang="ja"] .eyebrow { letter-spacing: .2em; }
   ::selection { @apply bg-terra-500 text-white; }
   :focus-visible { @apply outline outline-2 outline-offset-2 outline-terra-500; }
   h1, h2, h3 { @apply text-ink-900; }

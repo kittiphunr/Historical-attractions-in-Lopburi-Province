@@ -1,4 +1,5 @@
 (function () {
+  const T = window.T || ((s, ...v) => v.reduce((r, x, i) => r.replace('{' + i + '}', x), s));
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => [...r.querySelectorAll(s)];
   const A = window.ATTRACTIONS, S = window.SOURCES, SRC = Object.fromEntries(S.map(s => [s.id, s]));
@@ -31,10 +32,11 @@
   /* ---------- โหมดกลางวัน / กลางคืน ---------- */
   const THEME_KEY = 'lopburi.theme';
   const isDark = () => document.documentElement.classList.contains('dark');
+  function paintThemeLabel(mode) { const btn = $('#themeBtn'); if (!btn) return; btn.setAttribute('aria-pressed', mode === 'dark'); btn.setAttribute('aria-label', T(mode === 'dark' ? 'สลับเป็นโหมดกลางวัน' : 'สลับเป็นโหมดกลางคืน')); }
   function applyTheme(mode, persist) {
     document.documentElement.classList.toggle('dark', mode === 'dark');
     const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.content = mode === 'dark' ? '#1e1814' : '#f4ece2';
-    const btn = $('#themeBtn'); if (btn) { btn.setAttribute('aria-pressed', mode === 'dark'); btn.setAttribute('aria-label', mode === 'dark' ? 'สลับเป็นโหมดกลางวัน' : 'สลับเป็นโหมดกลางคืน'); }
+    paintThemeLabel(mode);
     if (window.LopburiGL && window.LopburiGL.setNight) window.LopburiGL.setNight(mode === 'dark');
     const mv = document.querySelector('#arStage model-viewer'); if (mv) mv.setAttribute('exposure', mode === 'dark' ? '0.75' : '1');
     if (persist) { try { localStorage.setItem(THEME_KEY, mode); } catch (e) { /* โหมดส่วนตัว */ } }
@@ -394,7 +396,7 @@
       head.append(n, st);
       const meta = document.createElement('p'); meta.className = 'mt-1 text-xs text-ink-400';
       const pl = A.find(a => a.id === e.place);
-      meta.textContent = [pl ? 'ประทับใจ: ' + pl.name : null, new Date(e.at).toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' })].filter(Boolean).join(' · ');
+      meta.textContent = [pl ? T('ประทับใจ:') + ' ' + T(pl.name) : null, new Date(e.at).toLocaleDateString(window.I18N ? I18N.locale : 'th-TH', { year: 'numeric', month: 'long', day: 'numeric' })].filter(Boolean).join(' · ');
       const p = document.createElement('p'); p.className = 'mt-3 whitespace-pre-wrap break-words text-ink-700'; p.textContent = e.message;
       li.append(head, meta, p); gbList.appendChild(li);
     });
@@ -422,4 +424,8 @@
     btn.disabled = false;
   });
   load();
+
+  /* ---------- หลายภาษา ---------- */
+  window.addEventListener('langchange', () => { draw(); loadWeather(); paintThemeLabel(isDark() ? 'dark' : 'light'); });
+  if (window.I18N) I18N.init();
 })();
