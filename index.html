@@ -123,7 +123,7 @@
           <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_50%_30%,#fff,transparent_62%),linear-gradient(180deg,#f7efe5,#ecdccb)]"></div>
           <div class="relative z-10 flex items-start justify-between p-5">
             <div><p class="eyebrow">Diorama</p><h2 class="mt-1 text-xl font-semibold text-ink-900">พระปรางค์สามยอด</h2></div>
-            <a href="#sam-yot" class="btn-soft !px-4 !py-2 text-sm">อ่านเรื่องราว <i data-i="arrow" class="h-4 w-4"></i></a>
+            <div class="flex flex-wrap justify-end gap-2"><button type="button" data-ar="sam-yot" class="btn-soft !px-4 !py-2 text-sm"><i data-i="cube" class="h-4 w-4 text-terra-500"></i>ดูแบบ AR</button><a href="#sam-yot" class="btn-soft !px-4 !py-2 text-sm">อ่านเรื่องราว <i data-i="arrow" class="h-4 w-4"></i></a></div>
           </div>
           <div id="heroModel" class="absolute inset-x-0 bottom-12 top-16"></div>
           <p class="absolute inset-x-0 bottom-4 text-center text-xs text-ink-500">↻ ลาก / ปุ่มลูกศร เพื่อหมุน · ดับเบิลคลิกเพื่อรีเซ็ต · แบบจำลองเรียบง่าย · โมเดลพระปรางค์สามยอดปั้นโดยเจ้าของโปรเจกต์</p>
@@ -266,6 +266,7 @@
           <p><b class="text-ink-900">โมเดล 3 มิติ:</b> โมเดลพระปรางค์สามยอด (ไฟล์ .glb) ปั้นโดยเจ้าของโปรเจกต์ ส่วนโมเดลสถานที่อื่นสร้างขึ้นใหม่ด้วยโค้ดเป็นรูปทรงจำลองอย่างง่าย เรนเดอร์ด้วย <a class="text-terra-600 underline" href="https://threejs.org/" target="_blank" rel="noopener noreferrer">Three.js</a> (MIT) มีตัวสำรองเป็น CSS 3D ไม่ได้ดัดแปลงจากภาพถ่ายหรือโมเดลของผู้อื่น</p>
           <p><b class="text-ink-900">ตราประจำจังหวัดลพบุรี:</b> ภาพที่เจ้าของโปรเจกต์จัดเตรียมให้ ใช้เพื่อประกอบเนื้อหาและการระบุตัวตนของเว็บนี้ สิทธิ์ในตราเป็นของหน่วยงานเจ้าของตรา เว็บนี้ไม่ใช่เว็บไซต์ทางการของจังหวัดลพบุรี</p>
           <p><b class="text-ink-900">ภาพปกหน้าแรก:</b> ภาพตัดต่อพาโนรามา (พระปรางค์สามยอด ทางรถไฟเขื่อนป่าสักชลสิทธิ์ วัดพระศรีรัตนมหาธาตุ) ที่เจ้าของโปรเจกต์จัดเตรียมให้ ภาพนี้ประกอบจากภาพถ่ายหลายภาพ ยังไม่ทราบชื่อผู้ถ่ายและสัญญาอนุญาตของแต่ละภาพ จึงระบุเพียงว่าจัดเตรียมโดยเจ้าของโปรเจกต์ หากทราบที่มาจะเพิ่มเครดิตผู้ถ่ายที่นี่</p>
+          <p><b class="text-ink-900">AR:</b> ใช้ <a class="text-terra-600 underline" href="https://modelviewer.dev/" target="_blank" rel="noopener noreferrer">&lt;model-viewer&gt;</a> ของ Google (Apache-2.0) รองรับ WebXR บน Android Chrome, Scene Viewer และ Quick Look บน iPhone/iPad ต้องเปิดผ่าน HTTPS และอุปกรณ์ที่รองรับ AR</p>
           <p><b class="text-ink-900">สภาพอากาศ:</b> ข้อมูลจาก <a class="text-terra-600 underline" href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo.com</a> (CC BY 4.0) ดึงในเบราว์เซอร์ของผู้ชม โดยส่งเฉพาะพิกัดตัวเมืองลพบุรี</p>
           <p><b class="text-ink-900">ข้อควรระวัง:</b> เวลาเปิด ค่าเข้าชม และการเดินทางเปลี่ยนแปลงได้ โปรดตรวจสอบกับกรมศิลปากรหรือสำนักศิลปากรที่ 4 ลพบุรีก่อนเดินทาง</p>
         </div>
@@ -293,6 +294,19 @@
     <p class="font-medium text-ink-700">ลพบุรี · เมืองสามยุค</p>
     <p class="mt-1">รวบรวมเพื่อการศึกษาและการท่องเที่ยว ไม่ใช่เว็บไซต์ทางการของจังหวัด ข้อมูลอาจคลาดเคลื่อน โปรดอ้างอิงกรมศิลปากรเป็นหลัก</p>
   </footer>
+
+  <!-- ===== หน้าต่าง 3 มิติ / AR (โหลด model-viewer ตอนกดเท่านั้น) ===== -->
+  <dialog id="arDialog" class="m-auto w-[min(94vw,760px)] max-h-[94vh] overflow-hidden rounded-[1.75rem] border-0 bg-cream-50 p-0 text-ink-700 shadow-dark backdrop:bg-char-900/60 backdrop:backdrop-blur-sm" aria-labelledby="arTitle">
+    <div class="flex items-center justify-between gap-3 px-5 py-4">
+      <div><p class="eyebrow">3D · AR</p><h2 id="arTitle" class="text-lg font-semibold text-ink-900">โมเดล 3 มิติ</h2></div>
+      <button id="arClose" type="button" class="neu grid h-10 w-10 place-items-center text-ink-700" aria-label="ปิดหน้าต่าง"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+    <div id="arStage" class="relative h-[56vh] min-h-[320px] bg-gradient-to-b from-cream-100 to-cream-200"></div>
+    <div class="space-y-2 px-5 py-4 text-sm text-ink-500">
+      <p id="arStatus" role="status">กำลังเตรียมโมเดล…</p>
+      <p id="arHelp" class="hidden rounded-2xl bg-cream-100 p-3 text-xs leading-relaxed shadow-press"></p>
+    </div>
+  </dialog>
 
   <script src="assets/js/data.js"></script>
   <script src="assets/js/models.js"></script>

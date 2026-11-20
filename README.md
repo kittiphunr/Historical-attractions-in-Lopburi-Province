@@ -12,6 +12,16 @@ npm run build      # Tailwind -> assets/tailwind.css และ bundle Three.js (
 npm start          # เสิร์ฟหน้าเว็บ + API สมุดเยี่ยม ที่ http://localhost:3000
 ```
 
+## AR (ดูโมเดลบนโต๊ะจริง)
+
+ทุกการแสดงผล 3 มิติมีปุ่ม **ดูแบบ AR** (ไดโอรามาหน้าแรก + 10 สถานที่) เปิดหน้าต่างดู 3 มิติเต็มจอด้วย [`<model-viewer>`](https://modelviewer.dev/) ของ Google ถ้าอุปกรณ์รองรับจะมีปุ่ม "ดูใน AR" (WebXR บน Android Chrome, Scene Viewer บน Android, Quick Look บน iPhone/iPad)
+
+- `src/ar.js` → `assets/js/ar.js` (~1 MB) โหลดเฉพาะตอนกดปุ่ม ใช้ three 0.183 (`three-mv`) แยกจากตัวเรนเดอร์หลัก (three 0.187) เพราะ model-viewer 4.4 ผูกกับ 0.183 (alias ตอน build)
+- โมเดลที่สร้างด้วยโค้ด: `LopburiGL.exportGLB(type)` ส่งออก .glb ตอนกด (กว้างราว 40 ซม. พร้อมฐานดินเผา ก้นแตะพื้น) ไม่ต้องมีไฟล์สำรอง ผ่านตัวตรวจ Khronos glTF Validator ครบ 10 แบบ
+- โมเดลที่ปั้นเอง: ใช้ไฟล์ AR แยก `assets/model/prang-sam-yot.ar.glb` (2.5 MB, ไม่บีบอัดแบบ meshopt/WebP เพราะ Scene Viewer/Quick Look ไม่รองรับ) สร้างด้วย `tools/make-ar-glb.mjs` (ขั้นตอนอยู่ในคอมเมนต์ต้นไฟล์) กำหนดที่ฟิลด์ `glb.ar` ใน `assets/js/data.js`
+- ข้อกำหนด: ต้องเปิดผ่าน **HTTPS** (หรือ localhost) และอุปกรณ์ที่รองรับ AR ถ้าไม่รองรับจะยังดู 3 มิติได้ พร้อมข้อความอธิบาย
+- ยังไม่ได้ทดสอบ AR บนอุปกรณ์จริง (ทดสอบได้เฉพาะการแสดงผล 3 มิติ การส่งออก และการจัดการกรณีไม่รองรับ)
+
 ## โมเดล 3 มิติของเจ้าของโปรเจกต์ (.glb)
 
 - `assets/model/prang-sam-yot.glb` (2.7 MB) คือโมเดลพระปรางค์สามยอดที่ปั้นเอง ใช้ในไดโอรามาหน้าแรกและหน้ารายละเอียด โหลดแบบ progressive: แสดงโมเดลจำลองก่อน แล้วสลับเป็นไฟล์จริงเมื่อโหลดเสร็จ ถ้าโหลดไม่ได้จะใช้โมเดลจำลองต่อ
