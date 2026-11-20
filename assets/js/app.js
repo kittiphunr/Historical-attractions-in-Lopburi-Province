@@ -169,7 +169,7 @@
     host.insertAdjacentHTML('beforeend', `
       <div id="mvLoading" data-map-ui class="absolute inset-0 z-20 grid place-items-center bg-cream-100/80 px-6 text-center text-sm text-ink-500"><div><div id="mvSpin" class="mx-auto mb-3 h-9 w-9 animate-spin rounded-full border-4 border-terra-400/30 border-t-terra-500"></div><p id="mvLoadTxt">กำลังโหลดโมเดลแผนที่ (ราว 2.5 MB)…</p></div></div>
       <div id="mvMarkers" class="pointer-events-none absolute inset-0 z-10 overflow-hidden"></div>
-      <div data-map-ui class="absolute right-3 top-3 z-20 flex flex-col gap-2">
+      <div data-map-ui class="absolute right-3 top-[76px] z-20 flex flex-col gap-2">
         <button type="button" data-mv="in" class="neu grid h-10 w-10 place-items-center text-xl text-ink-700" aria-label="ซูมเข้า">+</button>
         <button type="button" data-mv="out" class="neu grid h-10 w-10 place-items-center text-xl text-ink-700" aria-label="ซูมออก">−</button>
         <button type="button" data-mv="reset" class="neu grid h-10 w-10 place-items-center text-ink-700" aria-label="รีเซ็ตมุมมอง">${svg('home', 'h-5 w-5')}</button>
