@@ -16,6 +16,7 @@ npm start          # เสิร์ฟหน้าเว็บ + API สมุ�
 
 - `assets/model/prang-sam-yot.glb` (2.7 MB) คือโมเดลพระปรางค์สามยอดที่ปั้นเอง ใช้ในไดโอรามาหน้าแรกและหน้ารายละเอียด โหลดแบบ progressive: แสดงโมเดลจำลองก่อน แล้วสลับเป็นไฟล์จริงเมื่อโหลดเสร็จ ถ้าโหลดไม่ได้จะใช้โมเดลจำลองต่อ
 - ไฟล์ต้นฉบับ 71 MB (2.1 ล้านสามเหลี่ยม) เก็บไว้ที่ `source-models/prang-sam-yot.original.glb` (อยู่นอกโฟลเดอร์ที่เว็บเสิร์ฟ)
+- ทำความสะอาดโมเดล: `tools/clean-sam-yot-glb.mjs` ลบเศษที่ลอย/ขาดวิ่นออกจากไฟล์สแกน (รั้วแผ่นบาง จุดเล็กหน้าขวา และแถบพื้นที่ยื่นไปด้านหน้า รวมราว 11k จาก 2.1M สามเหลี่ยม) ไฟล์ต้นฉบับไม่ถูกแก้ ทำก่อนขั้น optimize
 - สร้างไฟล์เว็บด้วย gltf-transform: weld + simplify (ราว 147k สามเหลี่ยม) + บีบอัด geometry ด้วย meshopt + texture เป็น WebP ขนาด 2048
   ```bash
   npx @gltf-transform/cli optimize source-models/prang-sam-yot.original.glb assets/model/prang-sam-yot.glb \
