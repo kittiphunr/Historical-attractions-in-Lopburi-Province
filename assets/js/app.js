@@ -87,7 +87,7 @@
     return 'css';
   }
   const heroHost = $('#heroModel');
-  mountModel(heroHost, 'triprang', 520, { speed: 0.0042 });
+  mountModel(heroHost, 'triprang', 520, { speed: 0.0042, glb: A.find(x => x.id === 'sam-yot').glb.url });
   if (GL) GL.onFail(() => location.reload());
   $('#srcCount').textContent = S.length + '+';
 
@@ -157,7 +157,7 @@
             <div class="relative overflow-hidden rounded-3xl shadow-press" style="background:radial-gradient(ellipse at 50% 30%,#fff,transparent 65%),linear-gradient(180deg,#f7efe5,#ecdccb)">
               <span class="absolute left-5 top-3 z-10 text-6xl font-semibold text-terra-500/20">${a.no}</span>
               <div class="model h-[320px] sm:h-[380px]" role="img" aria-label="โมเดล 3 มิติจำลอง ${esc(a.name)} ลากเพื่อหมุน"></div>
-              <p class="relative pb-3 pt-1 text-center text-[11px] text-ink-500">↻ ลาก / ปุ่มลูกศร เพื่อหมุน · ดับเบิลคลิกรีเซ็ต</p>
+              <p class="relative pb-3 pt-1 text-center text-[11px] text-ink-500">↻ ลาก / ปุ่มลูกศร เพื่อหมุน · ดับเบิลคลิกรีเซ็ต${a.glb ? `<br>${esc(a.glb.credit)}` : ''}</p>
             </div>
             <div class="mt-5 space-y-4">${photoBlock(a)}${videoBlock(a)}</div>
           </div>
@@ -189,7 +189,7 @@
           </div>
         </div>`;
       list.appendChild(el);
-      mountModel($('.model', el), a.model, 360, { az: 0.62 + idx * 0.35, shift: idx * 20 });
+      mountModel($('.model', el), a.model, 360, { az: 0.62 + idx * 0.35, shift: idx * 20, glb: a.glb && a.glb.url });
     });
     observeReveal();
   }
