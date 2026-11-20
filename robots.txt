@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://kittiphunr.github.io/Historical-attractions-in-Lopburi-Province/sitemap.xml
