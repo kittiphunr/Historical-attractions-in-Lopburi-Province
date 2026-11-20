@@ -48,9 +48,24 @@
     <section id="top" class="scroll-mt-6 pt-6 lg:pt-8">
       <div class="grid gap-5 lg:grid-cols-12">
 
+        <!-- แบนเนอร์หน้าปก: ภาพพาโนรามาลพบุรี + ตราประจำจังหวัดซ้อนด้านหน้า -->
+        <section class="reveal card relative isolate overflow-hidden lg:col-span-12" aria-label="ภาพปกจังหวัดลพบุรี">
+          <img src="assets/img/banner-lopburi-1600.webp" srcset="assets/img/banner-lopburi-800.webp 800w, assets/img/banner-lopburi-1600.webp 1600w" sizes="(min-width:1024px) 960px, 100vw" width="1600" height="418" fetchpriority="high"
+               alt="ภาพตัดต่อแหล่งท่องเที่ยวลพบุรี: พระปรางค์สามยอด ทางรถไฟลอยน้ำเขื่อนป่าสักชลสิทธิ์ และวัดพระศรีรัตนมหาธาตุ" class="h-48 w-full object-cover sm:h-60 lg:h-72">
+          <div class="absolute inset-0 bg-gradient-to-t from-char-900/75 via-char-900/10 to-transparent"></div>
+          <p class="absolute right-3 top-3 rounded-full bg-black/35 px-2.5 py-1 text-[10px] text-white/90 backdrop-blur">ภาพประกอบ: จัดเตรียมโดยเจ้าของโปรเจกต์</p>
+          <div class="absolute inset-x-0 bottom-0 flex items-end gap-4 p-4 sm:gap-5 sm:p-6">
+            <img src="assets/img/seal-384.png" alt="ตราประจำจังหวัดลพบุรี" width="112" height="109" class="w-20 shrink-0 drop-shadow-[0_6px_14px_rgba(0,0,0,.45)] sm:w-28">
+            <div class="min-w-0 pb-1 text-white">
+              <p class="text-[11px] font-medium uppercase tracking-[.3em] text-amber-200 [text-shadow:0_1px_8px_rgba(0,0,0,.7)]">Lopburi Province</p>
+              <p class="text-3xl font-semibold leading-tight sm:text-5xl [text-shadow:0_2px_14px_rgba(0,0,0,.5)]">จังหวัดลพบุรี</p>
+              <p class="text-sm text-cream-100/95 sm:text-base [text-shadow:0_1px_8px_rgba(0,0,0,.6)]">เมืองสามยุค · ทวารวดี ขอม อยุธยา</p>
+            </div>
+          </div>
+        </section>
+
         <div class="space-y-5 lg:col-span-7">
           <header class="reveal flex items-center gap-4 pt-2">
-            <img src="assets/img/seal-192.png" alt="ตราประจำจังหวัดลพบุรี" width="56" height="54" class="h-14 w-auto lg:hidden">
             <div>
             <h1 class="text-3xl font-semibold text-ink-900 sm:text-4xl"><span id="hello">สวัสดี</span> นักเดินทาง <span aria-hidden="true">👋</span></h1>
             <p class="mt-1 text-ink-500">พร้อมสำรวจเมืองสามยุคแห่งลพบุรีหรือยัง?</p>
@@ -250,6 +265,7 @@
           <p><b class="text-ink-900">นโยบายภาพและวิดีโอ:</b> เว็บนี้ไม่คัดลอกภาพถ่ายหรือวิดีโอของบุคคลอื่นมาฝังโดยไม่ระบุที่มา ภาพถ่ายจริงแต่ละที่จะแสดงชื่อผู้ถ่าย สัญญาอนุญาต และลิงก์ต้นทางใต้ภาพทุกครั้ง วิดีโอแสดงชื่อช่องและลิงก์ไปยัง YouTube ซึ่งเป็นผู้ถือสิทธิ์</p>
           <p><b class="text-ink-900">โมเดล 3 มิติ:</b> โมเดลพระปรางค์สามยอด (ไฟล์ .glb) ปั้นโดยเจ้าของโปรเจกต์ ส่วนโมเดลสถานที่อื่นสร้างขึ้นใหม่ด้วยโค้ดเป็นรูปทรงจำลองอย่างง่าย เรนเดอร์ด้วย <a class="text-terra-600 underline" href="https://threejs.org/" target="_blank" rel="noopener noreferrer">Three.js</a> (MIT) มีตัวสำรองเป็น CSS 3D ไม่ได้ดัดแปลงจากภาพถ่ายหรือโมเดลของผู้อื่น</p>
           <p><b class="text-ink-900">ตราประจำจังหวัดลพบุรี:</b> ภาพที่เจ้าของโปรเจกต์จัดเตรียมให้ ใช้เพื่อประกอบเนื้อหาและการระบุตัวตนของเว็บนี้ สิทธิ์ในตราเป็นของหน่วยงานเจ้าของตรา เว็บนี้ไม่ใช่เว็บไซต์ทางการของจังหวัดลพบุรี</p>
+          <p><b class="text-ink-900">ภาพปกหน้าแรก:</b> ภาพตัดต่อพาโนรามา (พระปรางค์สามยอด ทางรถไฟเขื่อนป่าสักชลสิทธิ์ วัดพระศรีรัตนมหาธาตุ) ที่เจ้าของโปรเจกต์จัดเตรียมให้ ภาพนี้ประกอบจากภาพถ่ายหลายภาพ ยังไม่ทราบชื่อผู้ถ่ายและสัญญาอนุญาตของแต่ละภาพ จึงระบุเพียงว่าจัดเตรียมโดยเจ้าของโปรเจกต์ หากทราบที่มาจะเพิ่มเครดิตผู้ถ่ายที่นี่</p>
           <p><b class="text-ink-900">สภาพอากาศ:</b> ข้อมูลจาก <a class="text-terra-600 underline" href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo.com</a> (CC BY 4.0) ดึงในเบราว์เซอร์ของผู้ชม โดยส่งเฉพาะพิกัดตัวเมืองลพบุรี</p>
           <p><b class="text-ink-900">ข้อควรระวัง:</b> เวลาเปิด ค่าเข้าชม และการเดินทางเปลี่ยนแปลงได้ โปรดตรวจสอบกับกรมศิลปากรหรือสำนักศิลปากรที่ 4 ลพบุรีก่อนเดินทาง</p>
         </div>
