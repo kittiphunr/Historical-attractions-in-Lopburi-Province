@@ -361,7 +361,8 @@
   $$('a[href^="#"]').forEach(a => a.addEventListener('click', () => { const t = $(a.getAttribute('href')); if (t) t.classList.add('in'); }));
 
   /* ---------- guestbook ---------- */
-  const API = 'api/guestbook', LS = 'lopburi.guestbook.v1';
+  const CFG = window.LOPBURI_CONFIG || {};
+  const API = CFG.guestbookApi || 'api/guestbook', LS = 'lopburi.guestbook.v1';
   let mode = 'local', entries = [], rating = 0;
   const gbList = $('#gbList');
   $('#gbPlace').innerHTML = '<option value="">— ภาพรวมทั้งจังหวัด —</option>' + A.map(a => `<option value="${a.id}">${esc(a.name)}</option>`).join('');
@@ -379,7 +380,7 @@
 
   async function load() {
     try {
-      if (/\.github\.io$/i.test(location.hostname)) throw 0; // GitHub Pages ไม่มีเซิร์ฟเวอร์: ใช้โหมดเก็บในเบราว์เซอร์ทันที ไม่ต้องลองเรียก API
+      if (!CFG.guestbookApi && /\.github\.io$/i.test(location.hostname)) throw 0; // GitHub Pages ไม่มีเซิร์ฟเวอร์: ใช้โหมดเก็บในเบราว์เซอร์ทันที ไม่ต้องลองเรียก API
       const r = await fetch(API, { headers: { Accept: 'application/json' } });
       if (!r.ok || !(r.headers.get('content-type') || '').includes('json')) throw 0;
       entries = await r.json(); mode = 'server';
@@ -421,7 +422,7 @@
         entries.unshift(j);
       } else { entries.unshift({ ...entry, id: 'l' + Date.now(), at: new Date().toISOString() }); writeLocal(entries); }
       f.reset(); rating = 0; paint(); $('#gbCount').textContent = '0/500'; draw(); if (window.Motion) window.Motion.enter(gbList.firstElementChild);
-    } catch (e) { err.textContent = e.message || 'เกิดข้อผิดพลาด'; }
+    } catch (e) { err.textContent = (e instanceof TypeError ? 'บันทึกไม่สำเร็จ' : e.message) || 'เกิดข้อผิดพลาด'; }
     btn.disabled = false;
   });
   load();

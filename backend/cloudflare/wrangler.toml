@@ -1,0 +1,13 @@
+name = "lopburi-guestbook"
+main = "worker.js"
+compatibility_date = "2025-01-01"
+
+[vars]
+# โดเมนที่อนุญาตให้เรียก API (คั่นด้วยจุลภาค) — เพิ่มโดเมนของคุณถ้าใช้โดเมนอื่น
+ALLOWED_ORIGINS = "https://kittiphunr.github.io,http://localhost:4173,http://localhost:3000,http://127.0.0.1:4173"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "lopburi-guestbook"
+# แทนด้วย database_id ที่ได้จากคำสั่ง: npx wrangler d1 create lopburi-guestbook
+database_id = "00000000-0000-0000-0000-000000000000"
