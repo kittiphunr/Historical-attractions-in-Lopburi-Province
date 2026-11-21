@@ -53,6 +53,21 @@ npm start          # เสิร์ฟหน้าเว็บ + API สมุ�
 
 หลังเผยแพร่ แนะนำให้ลงทะเบียนเว็บใน Google Search Console (และ Bing Webmaster Tools) แล้วส่ง `sitemap.xml`
 
+## สมุดเยี่ยมและรีวิวสถานที่แบบ PHP + MySQL (โฮสติ้งทั่วไป)
+
+ทางเลือกแทน Cloudflare Worker สำหรับโฮสต์ที่มี PHP + MySQL (โค้ดอยู่ใน `deploy/php/`):
+
+- `api/guestbook.php` สมุดเยี่ยม (สัญญาเดียวกับ `server.js`/Worker หน้าเว็บเดิมใช้ได้ไม่ต้องแก้) — ข้อความ **แสดงทันที**
+- `api/reviews.php` รีวิวสถานที่ — ต้องให้คะแนนดาว 1–5 และ **รอผู้ดูแลอนุมัติ** จึงแสดงในส่วน "รีวิวจากผู้เข้าชม" ท้ายหน้าสถานที่ (`assets/js/reviews.js`; ซ่อนไว้ถ้าไม่ได้ตั้ง `reviewsApi` ใน `assets/js/config.js`)
+- `admin/` หน้าผู้ดูแลล็อกอินด้วยรหัสผ่าน (อนุมัติ/ซ่อน/ลบ) · `schema.sql` ตารางเดียว `lop_reviews` (utf8mb4) · `api/config.sample.php` ตั้งค่าฐานข้อมูล/รหัสผ่าน/การจำกัดความถี่
+- ความปลอดภัย: prepared statement ทุกคำสั่ง SQL, ตัดอักขระควบคุม, ห้ามลิงก์, ช่องล่อบอต, จำกัดความถี่ต่อผู้ใช้/ต่อสถานที่/ทั้งระบบ (เก็บเฉพาะค่าแฮชของ IP), ตรวจ Origin, ข้อความแสดงด้วย `textContent`, หน้าผู้ดูแลมี CSRF token + เซสชันแบบ HttpOnly/SameSite, ไฟล์ภายในถูกบล็อกด้วย `.htaccess`
+
+สร้างชุดติดตั้ง: `npm run package -- --site https://ชื่อโดเมน/ --php` ได้ `…-site-php.zip` (เว็บ + `api/` + `admin/`), `schema.sql` และ `INSTALL.php.th.md` (ขั้นตอน cPanel + phpMyAdmin) หมายเหตุ: ทดสอบกับ PHP 8.3 + MariaDB 10.11 (นำเข้า schema, ส่ง/อนุมัติ/ซ่อน/ลบ, จำกัดความถี่, XSS, SQL injection, ตรวจ Origin); การบล็อกไฟล์ด้วย `.htaccess` ขึ้นกับ Apache/LiteSpeed ของโฮสต์ ต้องตรวจตามคู่มือหลังติดตั้ง
+
+## ที่อยู่หลักของเว็บ (canonical)
+
+เว็บหลักคือ `https://centralthaiheritage.com/` ตั้งไว้ใน `site.config.json` (`canonicalUrl`) และใช้เป็น `canonical`, `hreflang`, `og:url`, JSON-LD และ `sitemap.xml` ของทุกหน้า ส่วนสำเนาบน GitHub Pages เป็นฉบับสำรอง: หน้าทุกหน้าชี้ canonical ไปที่เว็บหลัก เพื่อไม่ให้เสิร์ชเอนจินนับเป็นเนื้อหาซ้ำ และไม่ประกาศ sitemap ของตัวเอง (`robots.txt` บน GitHub Pages ไม่มีบรรทัด Sitemap) ภาพแชร์ลิงก์ (`og:image`) ชี้ที่ `previewUrl` (GitHub Pages) เพื่อให้เปิดได้เสมอแม้เว็บหลักยังไม่ขึ้น เปลี่ยนโดเมนหลักโดยแก้ `canonicalUrl` แล้ว `npm run build` (และแก้บรรทัด `canonical`/`og:url` ใน `index.html` ให้ตรงกัน)
+
 ## ติดตั้งลงโฮสต์จริง (นอก GitHub Pages)
 
 ```bash

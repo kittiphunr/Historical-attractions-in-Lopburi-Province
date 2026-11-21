@@ -1,5 +1,6 @@
 /* สร้างชุดไฟล์พร้อมติดตั้งลงโฮสต์จริง: dist/site (เนื้อหาเว็บ) + .htaccess + nginx.conf.example + INSTALL.th.md และไฟล์ zip
-   ใช้:  npm run build && node tools/package-site.mjs --site https://ชื่อโดเมน/ [--out dist] [--guestbook-api https://…/api/guestbook]
+   ใช้:  npm run build && node tools/package-site.mjs --site https://ชื่อโดเมน/ [--out dist] [--php] [--guestbook-api https://…/api/guestbook]
+   - --php: ใส่ระบบสมุดเยี่ยม + รีวิวสถานที่แบบ PHP + MySQL (โฟลเดอร์ api/ และ admin/ + schema.sql + INSTALL.php.th.md) และตั้ง config.js ให้เรียก api/guestbook.php, api/reviews.php
    - ใส่ที่อยู่จริงแทน GitHub Pages ทุกที่ (canonical, hreflang, og:url/og:image, JSON-LD, sitemap, robots) รองรับโฟลเดอร์ย่อย เช่น https://example.com/lopburi/
    - ตัดไฟล์สำรองสำหรับเปิดแบบ file:// (assets/model/offline ~44 MB) ออก เพราะใช้เฉพาะตอนดับเบิลคลิกเปิดบนเครื่อง
    - ปรับข้อความในนโยบายความเป็นส่วนตัวที่ระบุ "GitHub Pages" เป็นผู้ให้บริการโฮสติ้งทั่วไป (4 ภาษา)
@@ -8,6 +9,7 @@ import { readFileSync, writeFileSync, mkdirSync, cpSync, rmSync, readdirSync, st
 import { join, dirname, resolve, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { spawnSync } from 'node:child_process';
+import { runInNewContext } from 'node:vm';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const args = process.argv.slice(2);
@@ -17,8 +19,9 @@ if (!site) { console.error('ต้องระบุที่อยู่เว�
 if (!/^https?:\/\//.test(site)) site = 'https://' + site;
 if (!site.endsWith('/')) site += '/';
 const url = new URL(site), HOST = url.host, PATH = url.pathname, ORIGIN = url.origin;
-const OLD = 'https://kittiphunr.github.io/Historical-attractions-in-Lopburi-Province/';
-const out = resolve(root, flag('out', 'dist')), dir = join(out, 'site');
+const cfg = JSON.parse(readFileSync(join(root, 'site.config.json'), 'utf8'));
+const OLDS = [cfg.canonicalUrl, cfg.previewUrl]; // ที่อยู่หลักและที่อยู่ภาพแชร์ลิงก์ในโปรเจกต์ -> ที่อยู่ใหม่ทั้งสอง
+const out = resolve(root, flag('out', 'dist')), dir = join(out, 'site'), PHP = args.includes('--php');
 const slug = HOST.replace(/[^a-z0-9.-]/gi, '-');
 
 for (const f of ['index.html', 'en/index.html', 'places/sam-yot.html', 'sitemap.xml']) if (!existsSync(join(root, f))) { console.error(`ยังไม่ได้ build (ไม่พบ ${f}) — รัน npm run build ก่อน`); process.exit(1); }
@@ -45,35 +48,54 @@ let hostingReplaced = 0;
 
 for (const f of textFiles) {
   let t = readFileSync(f, 'utf8'), o = t;
-  t = t.split(OLD).join(site);
+  for (const old of OLDS) if (old !== site) t = t.split(old).join(site);
   if (ghLeaf) for (const c of ['th', 'en', 'zh', 'ja']) if (ghLeaf[c] && t.includes(ghLeaf[c])) { t = t.split(ghLeaf[c]).join(generic[c]); hostingReplaced++; }
   if (f.endsWith('404.html')) t = t.replace(/\(function \(\) \{ var p = location\.pathname[\s\S]*?document\.write\('<base href="' \+ base \+ '">'\); \}\)\(\);/, `document.write('<base href="${PATH}">');`);
   if (t !== o) writeFileSync(f, t);
 }
 
-const guestbook = flag('guestbook-api');
-if (guestbook) {
-  const cfg = join(dir, 'assets/js/config.js');
-  writeFileSync(cfg, readFileSync(cfg, 'utf8').replace(/guestbookApi:\s*'[^']*'/, `guestbookApi: '${guestbook}'`));
+const guestbook = flag('guestbook-api') || (PHP ? 'api/guestbook.php' : '');
+const reviews = PHP ? 'api/reviews.php' : '';
+if (guestbook || reviews) {
+  const cfgFile = join(dir, 'assets/js/config.js');
+  let c = readFileSync(cfgFile, 'utf8');
+  if (guestbook) c = c.replace(/guestbookApi:\s*'[^']*'/, `guestbookApi: '${guestbook}'`);
+  if (reviews) c = c.replace(/reviewsApi:\s*'[^']*'/, `reviewsApi: '${reviews}'`);
+  writeFileSync(cfgFile, c);
+}
+
+/* ระบบสมุดเยี่ยม + รีวิวแบบ PHP + MySQL (เฉพาะเมื่อใส่ --php) */
+let phpFiles = [];
+if (PHP) {
+  const dataCtx = { window: {} };
+  runInNewContext(readFileSync(join(root, 'assets/js/data.js'), 'utf8'), dataCtx);
+  const places = Object.fromEntries(dataCtx.window.ATTRACTIONS.map(a => [a.id, a.name]));
+  cpSync(join(root, 'deploy/php/api'), join(dir, 'api'), { recursive: true });
+  cpSync(join(root, 'deploy/php/admin'), join(dir, 'admin'), { recursive: true });
+  for (const d of ['api', 'admin']) cpSync(join(dir, d, 'htaccess'), join(dir, d, '.htaccess')) || rmSync(join(dir, d, 'htaccess'));
+  writeFileSync(join(dir, 'api/places.json'), JSON.stringify(places, null, 2) + '\n');
+  cpSync(join(root, 'deploy/php/schema.sql'), join(out, 'schema.sql'));
+  phpFiles = ['schema.sql', 'INSTALL.php.th.md'];
 }
 
 /* ไฟล์ตั้งค่าเซิร์ฟเวอร์และคู่มือ */
-const mb = files.reduce((s, f) => s + statSync(f).size, 0) / 1048576;
+const mb = walk(dir).reduce((s, f) => s + statSync(f).size, 0) / 1048576;
 const fill = (s) => s.replaceAll('{{SITE_ORIGIN}}', ORIGIN).replaceAll('{{SITE}}', site).replaceAll('{{HOST}}', HOST).replaceAll('{{PATH}}', PATH).replaceAll('{{SIZE}}', `${Math.round(mb)} MB`);
 writeFileSync(join(dir, '.htaccess'), fill(readFileSync(join(root, 'deploy/htaccess.template'), 'utf8')));
 writeFileSync(join(out, 'nginx.conf.example'), fill(readFileSync(join(root, 'deploy/nginx.conf.template'), 'utf8')));
 writeFileSync(join(out, 'INSTALL.th.md'), fill(readFileSync(join(root, 'deploy/INSTALL.th.template.md'), 'utf8')));
+if (PHP) writeFileSync(join(out, 'INSTALL.php.th.md'), fill(readFileSync(join(root, 'deploy/INSTALL.php.th.template.md'), 'utf8')));
 
 /* ตรวจความสมบูรณ์ */
-const left = textFiles.filter(f => readFileSync(f, 'utf8').includes('kittiphunr.github.io'));
+const left = textFiles.filter(f => OLDS.some(o => o !== site && readFileSync(f, 'utf8').includes(o)));
 const gh = textFiles.filter(f => /github\.com|GitHub Pages/i.test(readFileSync(f, 'utf8')));
-console.log(`ที่อยู่เว็บ: ${site}  (host ${HOST}, path ${PATH})`);
+console.log(`ที่อยู่เว็บ: ${site}  (host ${HOST}, path ${PATH})${PHP ? '  + PHP/MySQL (api/, admin/)' : ''}`);
 console.log(`ไฟล์ในเว็บ: ${files.length + 1} ไฟล์ ${mb.toFixed(1)} MB ; แก้ที่อยู่ในไฟล์ข้อความ ${textFiles.length} ไฟล์ ; ข้อความผู้ให้บริการโฮสติ้งที่ปรับ ${hostingReplaced} จุด`);
-if (left.length) console.warn('⚠ ยังเหลือที่อยู่ GitHub Pages ใน:', left.map(f => f.replace(dir, '')).slice(0, 5));
+if (left.length) console.warn('⚠ ยังเหลือที่อยู่เดิมของโปรเจกต์ใน:', left.map(f => f.replace(dir, '')).slice(0, 5));
 console.log(`ลิงก์ GitHub (Issues ในนโยบายความเป็นส่วนตัว) ใน ${gh.length} ไฟล์ — ตรวจแล้วควรเป็นช่องทางติดต่อเท่านั้น`);
 
 /* zip */
-const zipName = `${slug}-site.zip`, zipPath = join(out, zipName);
-const z = spawnSync('zip', ['-r', '-q', '-X', zipName, 'site', 'nginx.conf.example', 'INSTALL.th.md'], { cwd: out });
+const zipName = `${slug}-site${PHP ? '-php' : ''}.zip`, zipPath = join(out, zipName);
+const z = spawnSync('zip', ['-r', '-q', '-X', zipName, 'site', 'nginx.conf.example', 'INSTALL.th.md', ...phpFiles], { cwd: out });
 if (z.status === 0) console.log(`สร้างแล้ว: ${zipPath}  (${(statSync(zipPath).size / 1048576).toFixed(1)} MB)`);
 else console.warn('สร้าง zip อัตโนมัติไม่ได้ (ไม่พบคำสั่ง zip) — บีบอัดโฟลเดอร์ site + ไฟล์ทั้งสองในโฟลเดอร์', out, 'เอง');

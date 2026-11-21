@@ -42,6 +42,9 @@ jobs:
           cp -r assets _site/assets
           rm -rf _site/assets/model/offline
           touch _site/.nojekyll
+          # สำเนาบน GitHub Pages เป็นฉบับสำรอง: canonical ชี้ไปที่ site.config.json (เว็บหลัก) จึงไม่ประกาศ sitemap ของตัวเอง (sitemap ต้องอยู่บนโดเมนเดียวกับ URL ที่ลิสต์)
+          rm -f _site/sitemap.xml
+          printf 'User-agent: *\nAllow: /\n' > _site/robots.txt
           echo "Site size:" && du -sh _site && find _site -type f | wc -l
 
       - uses: actions/configure-pages@v5

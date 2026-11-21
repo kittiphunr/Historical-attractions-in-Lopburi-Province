@@ -9,7 +9,9 @@ import { loadDict, makeTranslator } from './lib/i18n-node.mjs';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const SITE = 'https://kittiphunr.github.io/Historical-attractions-in-Lopburi-Province/';
+// ที่อยู่หลักของเว็บ (canonical/hreflang/og:url/JSON-LD/sitemap) และที่อยู่ของภาพแชร์ลิงก์ ตั้งใน site.config.json
+const cfg = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'site.config.json'), 'utf8'));
+const SITE = cfg.canonicalUrl, IMG = cfg.previewUrl;
 const read = (p) => readFileSync(join(root, p), 'utf8');
 
 /* ---------- หน้าแยกตามภาษา: th = ราก, en/zh/ja = โฟลเดอร์ en/ zh/ ja/ (สร้างจากหน้าไทยด้วยตัวแปลฝั่ง Node) ---------- */
@@ -136,7 +138,7 @@ function page(a, idx) {
   const c = loadContent(a.id);
   const prev = A[(idx + A.length - 1) % A.length], next = A[(idx + 1) % A.length];
   const url = `${SITE}places/${a.id}.html`;
-  const ogImg = existsSync(join(root, 'assets/og', a.id + '.jpg')) ? `${SITE}assets/og/${a.id}.jpg` : `${SITE}assets/img/og-cover.jpg`;
+  const ogImg = existsSync(join(root, 'assets/og', a.id + '.jpg')) ? `${IMG}assets/og/${a.id}.jpg` : `${IMG}assets/img/og-cover.jpg`;
   const title = `${a.name} — ลพบุรี เมืองสามยุค`;
   const ld = { '@context': 'https://schema.org', '@graph': [
     { '@type': 'TouristAttraction', '@id': url + '#place', name: a.name, alternateName: a.en, description: a.summary, url, image: ogImg, inLanguage: 'th', mainEntityOfPage: url,
@@ -220,6 +222,24 @@ function page(a, idx) {
         <section class="reveal">${h2('เตรียมตัวไป', '05')}<div class="mt-4 leading-relaxed text-ink-700">${bullets(a.visit, 'bg-amber-500')}</div></section>
         ${c.sections.map((s, i) => extraSection(a, s, String(extraStart + 1 + i).padStart(2, '0'))).join('\n        ')}
 
+        <!-- รีวิวจากผู้เข้าชม: ซ่อนไว้จนกว่า assets/js/reviews.js จะโหลดรีวิวได้ (ต้องตั้ง reviewsApi ใน assets/js/config.js) -->
+        <section id="reviews" class="card hidden p-6 sm:p-8" aria-label="รีวิวจากผู้เข้าชม">
+          ${h2('รีวิวจากผู้เข้าชม', String(extraStart + 1 + c.sections.length).padStart(2, '0'))}
+          <div id="rvSummary" class="mt-5 flex flex-wrap items-center gap-4" aria-live="polite"></div>
+          <ul id="rvList" class="mt-5 space-y-4"></ul>
+          <div class="mt-4 text-center"><button id="rvMore" type="button" class="btn-soft hidden !px-5 !py-2.5 text-sm">ดูรีวิวเพิ่มเติม</button></div>
+          <form id="rvForm" class="mt-8 space-y-4 border-t border-cream-200 pt-6" novalidate>
+            <h3 class="text-lg font-semibold text-ink-900">เขียนรีวิวสถานที่นี้</h3>
+            <div><label for="rvName" class="mb-1 block text-sm text-ink-700">ชื่อที่แสดง</label><input id="rvName" name="name" maxlength="40" autocomplete="nickname" class="field"></div>
+            <div><span id="rvStarsLabel" class="mb-1 block text-sm text-ink-700">ให้คะแนน</span><div id="rvStars" role="radiogroup" aria-labelledby="rvStarsLabel" class="flex gap-1 text-3xl"></div></div>
+            <div><label for="rvMsg" class="mb-1 block text-sm text-ink-700">รีวิวของคุณ</label><textarea id="rvMsg" name="message" rows="4" maxlength="500" class="field resize-y"></textarea></div>
+            <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true">
+            <button type="submit" class="btn-terra">ส่งรีวิว</button>
+            <p id="rvStatus" role="status" class="text-sm"></p>
+            <p class="text-xs leading-relaxed text-ink-400">ชื่อและข้อความที่ส่งจะแสดงให้ผู้เข้าชมทุกคนเห็นหลังผู้ดูแลตรวจสอบ กรุณาอย่าใส่ข้อมูลส่วนตัว เช่น เบอร์โทรหรืออีเมล <a href="privacy.html" class="underline hover:text-terra-600">นโยบายความเป็นส่วนตัว</a></p>
+          </form>
+        </section>
+
         <section class="reveal border-t border-cream-200 pt-6">
           <p class="mb-3 text-xs uppercase tracking-wider text-terra-500">แหล่งอ้างอิง</p>
           <div class="flex flex-wrap gap-2">${a.sources.map(id => `<a class="rounded-full bg-cream-100 px-3 py-1 text-xs text-ink-700 shadow-neu hover:text-terra-600" target="_blank" rel="noopener noreferrer" href="${esc(SRC[id].url)}" title="${esc(SRC[id].name)}">${esc(SRC[id].name.split(' — ')[0])} ↗</a>`).join('')}</div>
@@ -253,6 +273,7 @@ function page(a, idx) {
   <script src="assets/js/i18n.js"></script>
   <script src="assets/js/common.js"></script>
   <script src="assets/js/place.js"></script>
+  <script src="assets/js/reviews.js"></script>
 </body>
 </html>
 `;
@@ -283,7 +304,7 @@ function privacyPage() {
   <meta property="og:title" content="${esc(title)}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="${url}">
-  <meta property="og:image" content="${SITE}assets/img/og-cover.jpg">
+  <meta property="og:image" content="${IMG}assets/img/og-cover.jpg">
   <link rel="canonical" href="${url}">
   ${hreflangLinks('privacy.html')}
   <link rel="icon" type="image/png" href="assets/img/favicon-64.png">
@@ -392,7 +413,7 @@ function injectBlock(html, name, content) {
 function homeBlocks() {
   const ld = [
     { '@context': 'https://schema.org', '@type': 'WebSite', name: 'ลพบุรี เมืองสามยุค', url: SITE, inLanguage: ['th', 'en', 'zh-Hans', 'ja'] },
-    { '@context': 'https://schema.org', '@type': 'TouristDestination', name: 'จังหวัดลพบุรี', alternateName: 'Lopburi Province', description: 'สำรวจ 10 แหล่งประวัติศาสตร์เมืองสามยุคของลพบุรี: ทวารวดี ขอม อยุธยา', url: SITE, image: SITE + 'assets/img/og-cover.jpg', inLanguage: 'th',
+    { '@context': 'https://schema.org', '@type': 'TouristDestination', name: 'จังหวัดลพบุรี', alternateName: 'Lopburi Province', description: 'สำรวจ 10 แหล่งประวัติศาสตร์เมืองสามยุคของลพบุรี: ทวารวดี ขอม อยุธยา', url: SITE, image: IMG + 'assets/img/og-cover.jpg', inLanguage: 'th',
       containsPlace: A.map(a => ({ '@type': 'TouristAttraction', name: a.name, alternateName: a.en, url: `${SITE}places/${a.id}.html` })) }
   ];
   const nolist = `<noscript><nav aria-label="สถานที่ทั้ง 10 แห่ง" class="mt-6"><ul class="grid gap-2 sm:grid-cols-2">${A.map(a => `<li><a class="underline" href="places/${a.id}.html">${esc(a.no)} ${esc(a.name)} — ${esc(a.tagline)}</a></li>`).join('')}</ul></nav></noscript>`;
