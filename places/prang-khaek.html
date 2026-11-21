@@ -196,11 +196,16 @@
     <div class="flex max-h-[96vh] flex-col">
       <div class="flex items-center justify-between gap-3 px-4 py-3 sm:px-5">
         <p id="lbCount" class="text-sm text-snow-200" aria-live="polite"></p>
+        <div class="ml-auto flex items-center gap-2">
+          <button id="lbZoomOut" type="button" class="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-snow-50 transition hover:bg-white/20 disabled:opacity-40" aria-label="ซูมออก"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M8 11h6"/></svg></button>
+          <button id="lbZoomReset" type="button" class="h-10 min-w-[3.5rem] rounded-full bg-white/10 px-3 text-sm tabular-nums text-snow-50 transition hover:bg-white/20" aria-label="กลับขนาดเดิม">100%</button>
+          <button id="lbZoomIn" type="button" class="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-snow-50 transition hover:bg-white/20 disabled:opacity-40" aria-label="ซูมเข้า"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8v6M8 11h6"/></svg></button>
+        </div>
         <button id="lbClose" type="button" class="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-snow-50 transition hover:bg-white/20" aria-label="ปิดภาพ"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
       </div>
-      <div id="lbStage" class="relative flex min-h-0 flex-1 items-center justify-center px-2 sm:px-16" style="touch-action:pan-y">
+      <div id="lbStage" class="relative flex min-h-0 flex-1 items-center justify-center overflow-hidden px-2 sm:px-16" style="touch-action:none">
         <button id="lbPrev" type="button" class="absolute left-2 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-snow-50 transition hover:bg-white/25 sm:left-4" aria-label="ภาพก่อนหน้า"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
-        <img id="lbImg" alt="" draggable="false" class="max-h-[70vh] w-auto max-w-full select-none rounded-lg object-contain opacity-0 transition-opacity duration-200">
+        <img id="lbImg" alt="" draggable="false" class="max-h-[70vh] w-auto max-w-full cursor-zoom-in select-none rounded-lg object-contain opacity-0" style="transition:opacity .2s;will-change:transform">
         <button id="lbNext" type="button" class="absolute right-2 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-snow-50 transition hover:bg-white/25 sm:right-4" aria-label="ภาพถัดไป"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
       </div>
       <div id="lbCap" class="max-h-[22vh] overflow-y-auto px-5 pb-5 pt-3 text-center text-sm leading-relaxed text-snow-200 [&_a]:text-snow-50 [&_a]:underline [&_span]:text-snow-50"></div>

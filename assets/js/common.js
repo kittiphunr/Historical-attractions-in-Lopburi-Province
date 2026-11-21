@@ -190,17 +190,45 @@
     window.addEventListener('hashchange', () => { if (location.hash === '#credits') open(null); });
   }
 
-  /* ---------- ขยายรูป (lightbox): กดรูปที่มี [data-lb] เปิดภาพใหญ่ + เครดิต, เลื่อนซ้าย/ขวาด้วยปุ่ม ลูกศร หรือปัด ---------- */
+  /* ---------- ขยายรูป (lightbox): กดรูปที่มี [data-lb] เปิดภาพใหญ่ + เครดิต
+     เลื่อนภาพ: ปุ่ม/ลูกศร/ปัด ; ซูม: ปุ่ม +/−, ล้อเมาส์, บีบสองนิ้ว, ดับเบิลคลิก/แตะสองครั้ง, คีย์ + − 0 ; ลากเพื่อเลื่อนดูเมื่อซูมอยู่ ---------- */
   function initLightbox() {
     const dlg = $('#lightbox'); if (!dlg) return;
     const img = $('#lbImg'), cap = $('#lbCap'), cnt = $('#lbCount'), prev = $('#lbPrev'), next = $('#lbNext'), stage = $('#lbStage');
+    const zin = $('#lbZoomIn'), zout = $('#lbZoomOut'), zreset = $('#lbZoomReset');
     const items = () => $$('[data-lb]');
     let idx = 0, back = null;
+
+    /* ---- ซูม/เลื่อน ---- */
+    let s = 1, tx = 0, ty = 0;
+    const maxScale = () => Math.min(6, Math.max(2.5, ((img.naturalWidth || 0) / (img.clientWidth || 1)) * 2));
+    function clampPan() {
+      const w = img.clientWidth * s, h = img.clientHeight * s, sw = stage.clientWidth, sh = stage.clientHeight;
+      const mx = Math.max(0, (w - sw) / 2 + 8), my = Math.max(0, (h - sh) / 2 + 8);
+      tx = Math.min(mx, Math.max(-mx, tx)); ty = Math.min(my, Math.max(-my, ty));
+      if (w <= sw) tx = 0; if (h <= sh) ty = 0;
+    }
+    function paint(anim) {
+      clampPan();
+      img.style.transition = anim ? 'opacity .2s, transform .18s ease-out' : 'opacity .2s';
+      img.style.transform = s === 1 && !tx && !ty ? '' : `translate(${tx}px,${ty}px) scale(${s})`;
+      img.classList.toggle('cursor-zoom-in', s === 1); img.classList.toggle('cursor-grab', s > 1);
+      zreset.textContent = Math.round(s * 100) + '%'; zout.disabled = s <= 1.001; zin.disabled = s >= maxScale() - 0.001;
+    }
+    // ซูมรอบจุด (cx, cy) ที่วัดจากกึ่งกลางพื้นที่แสดงภาพ
+    function zoomTo(ns, cx = 0, cy = 0, anim = false) {
+      ns = Math.min(maxScale(), Math.max(1, ns)); const k = ns / s;
+      tx = cx - (cx - tx) * k; ty = cy - (cy - ty) * k; s = ns; if (s === 1) { tx = 0; ty = 0; } paint(anim);
+    }
+    const resetZoom = (anim) => { s = 1; tx = 0; ty = 0; paint(anim); };
+    const rel = (e) => { const r = stage.getBoundingClientRect(); return [e.clientX - (r.left + r.width / 2), e.clientY - (r.top + r.height / 2)]; };
+
     function show(i) {
       const list = items(); if (!list.length) return;
       idx = (i + list.length) % list.length;
       const t = list[idx], im = t.querySelector('img'), fc = t.closest('figure') && t.closest('figure').querySelector('figcaption');
-      img.classList.add('opacity-0'); img.onload = () => img.classList.remove('opacity-0'); img.onerror = img.onload;
+      resetZoom(false);
+      img.classList.add('opacity-0'); img.onload = () => { img.classList.remove('opacity-0'); paint(false); }; img.onerror = () => img.classList.remove('opacity-0');
       img.src = im.currentSrc || im.src; img.alt = im.alt;
       cap.innerHTML = fc ? fc.innerHTML : '';
       cnt.textContent = T('ภาพที่ {0} จาก {1}', idx + 1, list.length);
@@ -216,13 +244,59 @@
     });
     $('#lbClose').addEventListener('click', () => dlg.close());
     prev.addEventListener('click', () => step(-1)); next.addEventListener('click', () => step(1));
-    dlg.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); } else if (e.key === 'ArrowRight') { e.preventDefault(); step(1); } });
-    dlg.addEventListener('click', (e) => { if (e.target === dlg || e.target === stage) dlg.close(); });
-    let sx = null;
-    stage.addEventListener('pointerdown', (e) => { if (e.target.closest('button')) return; sx = e.clientX; });
-    stage.addEventListener('pointerup', (e) => { if (sx === null) return; const dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1); });
-    stage.addEventListener('pointercancel', () => { sx = null; });
-    dlg.addEventListener('close', () => { document.documentElement.style.overflow = ''; img.removeAttribute('src'); if (back && back.isConnected) back.focus(); });
+    zin.addEventListener('click', () => zoomTo(s * 1.5, 0, 0, true));
+    zout.addEventListener('click', () => zoomTo(s / 1.5, 0, 0, true));
+    zreset.addEventListener('click', () => resetZoom(true));
+    dlg.addEventListener('keydown', (e) => {
+      if (e.key === '+' || e.key === '=') { e.preventDefault(); zoomTo(s * 1.4, 0, 0, true); }
+      else if (e.key === '-' || e.key === '_') { e.preventDefault(); zoomTo(s / 1.4, 0, 0, true); }
+      else if (e.key === '0') { e.preventDefault(); resetZoom(true); }
+      else if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+        e.preventDefault(); const d = e.key === 'ArrowLeft' ? -1 : 1;
+        if (s > 1.001) { tx -= d * 60; paint(true); } else step(d);
+      } else if ((e.key === 'ArrowUp' || e.key === 'ArrowDown') && s > 1.001) { e.preventDefault(); ty += (e.key === 'ArrowUp' ? 1 : -1) * 60; paint(true); }
+    });
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); }); // คลิกนอกกรอบ (พื้นหลัง)
+    stage.addEventListener('wheel', (e) => { e.preventDefault(); const [cx, cy] = rel(e); zoomTo(s * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0016)), cx, cy); }, { passive: false });
+    stage.addEventListener('dblclick', (e) => { if (e.target.closest('button')) return; const [cx, cy] = rel(e); if (s > 1.001) resetZoom(true); else zoomTo(Math.min(2.5, maxScale()), cx, cy, true); });
+
+    /* ---- ท่าทางสัมผัส/เมาส์: ลากเลื่อน (ตอนซูม) หรือปัดเปลี่ยนภาพ (ตอนไม่ซูม) และบีบสองนิ้ว ---- */
+    const ptrs = new Map(); let pinch = null, drag = null, lastTap = 0;
+    stage.addEventListener('pointerdown', (e) => {
+      if (e.target.closest('button')) return;
+      stage.setPointerCapture(e.pointerId); ptrs.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (ptrs.size === 2) { const [a, b] = [...ptrs.values()]; pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), s }; drag = null; }
+      else if (ptrs.size === 1) drag = { x: e.clientX, y: e.clientY, sx: e.clientX, t: performance.now(), moved: 0, onStage: e.target === stage };
+    });
+    stage.addEventListener('pointermove', (e) => {
+      const p = ptrs.get(e.pointerId); if (!p) return;
+      const px = p.x, py = p.y; p.x = e.clientX; p.y = e.clientY;
+      if (ptrs.size === 2 && pinch) {
+        const [a, b] = [...ptrs.values()], d = Math.hypot(a.x - b.x, a.y - b.y); if (!pinch.d) return;
+        const r = stage.getBoundingClientRect(), mx = (a.x + b.x) / 2 - (r.left + r.width / 2), my = (a.y + b.y) / 2 - (r.top + r.height / 2);
+        zoomTo(pinch.s * (d / pinch.d), mx, my); return;
+      }
+      if (ptrs.size === 1 && drag) {
+        drag.moved += Math.abs(e.clientX - px) + Math.abs(e.clientY - py);
+        if (s > 1.001) { tx += e.clientX - px; ty += e.clientY - py; paint(false); }
+      }
+    });
+    const endPtr = (e) => {
+      if (!ptrs.has(e.pointerId)) return; ptrs.delete(e.pointerId);
+      if (pinch && ptrs.size < 2) { pinch = null; drag = null; return; }
+      if (drag && ptrs.size === 0) {
+        const dx = e.clientX - drag.sx, quick = performance.now() - drag.t < 600;
+        if (s <= 1.001 && Math.abs(dx) > 50 && e.type === 'pointerup') step(dx < 0 ? 1 : -1);
+        else if (e.type === 'pointerup' && drag.onStage && drag.moved < 8) dlg.close(); // แตะพื้นที่ว่างข้างภาพ = ปิด (ลาก/แตะบนภาพไม่ปิด)
+        else if (e.type === 'pointerup' && e.pointerType === 'touch' && drag.moved < 8 && quick) { // แตะสองครั้ง (บนจอสัมผัส)
+          const now = performance.now(); if (now - lastTap < 350) { const [cx, cy] = rel(e); if (s > 1.001) resetZoom(true); else zoomTo(Math.min(2.5, maxScale()), cx, cy, true); lastTap = 0; } else lastTap = now;
+        }
+        drag = null;
+      }
+    };
+    stage.addEventListener('pointerup', endPtr); stage.addEventListener('pointercancel', endPtr);
+    window.addEventListener('resize', () => { if (dlg.open) paint(false); });
+    dlg.addEventListener('close', () => { document.documentElement.style.overflow = ''; img.removeAttribute('src'); resetZoom(false); ptrs.clear(); pinch = drag = null; if (back && back.isConnected) back.focus(); });
   }
 
   window.LopburiUI = { $, $$, esc, svg, ICONS, initIcons, isDark, paintThemeLabel, applyTheme, initTheme, ensureGL, mountModel, mountLazy, initAR, initCredits, initLightbox, loadGLScript };
