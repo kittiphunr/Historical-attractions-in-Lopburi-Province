@@ -464,5 +464,5 @@
  "สื่อรายสถานที่": "Media by place",
  "แหล่งข้อมูลที่ใช้": "Sources used",
  "หัวข้อเครดิต": "Credit sections",
- "โมเดลสถานที่ 9 แห่ง (พระปรางค์สามยอด ศาลพระกาฬ ปรางค์แขก วัดเขาวงพระจันทร์ วัดเสาธงทอง บ้านวิชาเยนทร์ วัดไลย์ วัดพระศรีรัตนมหาธาตุ วัดนครโกษา) และโมเดลแผนที่ทั้งจังหวัด (ไฟล์ .glb) ปั้นโดยเจ้าของโปรเจกต์ ส่วนโมเดลพระนารายณ์ราชนิเวศน์สร้างขึ้นใหม่ด้วยโค้ดเป็นรูปทรงจำลองอย่างง่าย เรนเดอร์ด้วย": "The models of 9 sites (Phra Prang Sam Yot, San Phra Kan, Prang Khaek, Wat Khao Wong Phra Chan, Wat Sao Thong Thong, Baan Wichayen, Wat Lai, Wat Phra Si Rattana Mahathat, Wat Nakhon Kosa) and the whole-province map model (.glb files) were made by the project owner. The King Narai's Palace model is newly created in code as a simple stand-in shape, rendered with"
+ "โมเดลสถานที่ทั้ง 10 แห่งและโมเดลแผนที่ทั้งจังหวัด (ไฟล์ .glb) ปั้นโดยเจ้าของโปรเจกต์ เรนเดอร์ด้วย": "The models of all 10 sites and the whole-province map model (.glb files) were made by the project owner, rendered with"
 }
