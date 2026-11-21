@@ -29,6 +29,7 @@ try {
     lop_rate_check('guestbook', $place);
 
     $row = lop_insert('guestbook', $place, $name, $message, $rating, 'approved', (string)($b['lang'] ?? ''));
+    lop_notify_new('guestbook', $row['id'], $place, $name, $rating, $message);
     lop_json(['id' => $row['id'], 'name' => $name, 'message' => $message, 'rating' => $rating, 'place' => $place, 'at' => lop_iso($row['created'])], 201, lop_cors_headers());
 } catch (Throwable $e) {
     error_log('lopburi guestbook: ' . $e->getMessage());
