@@ -5,6 +5,13 @@
    - ชี้ลิงก์ไปหน้าสถานที่ค้างไว้จะ prefetch ล่วงหน้าให้เปิดเร็วขึ้น */
 (function () {
   var KEY = 'lopburi.nav', root = document.documentElement, SAFETY_MS = 12000;
+  // ผู้ใช้เคยเลือกภาษาอื่นไว้ (กดจากเมนูภาษา): เปิดหน้าไทยแล้วพาไปหน้าเดียวกันในภาษานั้น (ผู้ใช้ใหม่/บอตไม่มีค่าที่จำไว้ จึงไม่ถูกพาไปไหน)
+  try {
+    var d = root.dataset, pref = localStorage.getItem('lopburi.lang');
+    if (d.alts === '1' && !d.prefix && !d.langCode && /^(en|zh|ja)$/.test(pref || '') && !/[?&]lang=/.test(location.search)) {
+      location.replace(new URL(pref + '/' + (d.rel || '') + location.hash, document.baseURI).href);
+    }
+  } catch (e) { /* ไม่มี storage */ }
   var flagged = false;
   try { flagged = sessionStorage.getItem(KEY) === '1'; } catch (e) { /* ไม่มี storage */ }
 

@@ -17,6 +17,9 @@
   const packs = {}; const loading = {};
   const origText = new WeakMap(), origAttr = new WeakMap();
   let lang = 'th', dict = null, patterns = [], observer = null, initialized = false;
+  // หน้าแยกตามภาษา (en/ zh/ ja/) ถูกแปลมาแล้วตอน build: data-prerendered, data-lang-code, data-prefix บน <html>
+  // หน้าที่มีฉบับหลายภาษา (data-alts) เปลี่ยนภาษาด้วยการไปยัง URL ของภาษานั้น ไม่แปลในที่เดิม
+  const PAGE = document.documentElement.dataset, PRE = PAGE.prerendered === '1', pending = [];
 
   const norm = (s) => s.replace(/\s+/g, ' ').trim();
   const esc = (s) => s.replace(/[.*+?^$()|[\]\\]/g, '\\$&');
@@ -107,7 +110,11 @@
 
   function setupObserver() {
     if (observer) return;
-    observer = new MutationObserver((muts) => { if (lang === 'th') return; muts.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1 || n.nodeType === 3) apply(n); })); });
+    observer = new MutationObserver((muts) => {
+      if (!dict) { if (PRE) muts.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1 || n.nodeType === 3) pending.push(n); })); return; }
+      if (lang === 'th') return;
+      muts.forEach(m => m.addedNodes.forEach(n => { if (n.nodeType === 1 || n.nodeType === 3) apply(n); }));
+    });
     observer.observe(document.body, { childList: true, subtree: true });
   }
 
@@ -126,7 +133,8 @@
       lang = code; const info = LANGS.find(l => l.code === code);
       dict = code === 'th' ? null : packs[code].ui; patterns = dict ? buildPatterns(dict) : [];
       document.documentElement.lang = info.htmlLang;
-      applyAll(); paintMenu();
+      if (PRE && !initialized) { pending.splice(0).forEach(n => { if (n.isConnected) apply(n); }); } else applyAll();
+      paintMenu();
       if (opts.persist !== false) { try { localStorage.setItem(KEY, code); } catch (e) { /* โหมดส่วนตัว */ } }
       if (opts.persist !== false) { try { const u = new URL(location.href); if (u.searchParams.has('lang')) { u.searchParams.set('lang', code); history.replaceState(null, '', u); } } catch (e) { /* บางสภาพแวดล้อม (เช่น file://) ไม่อนุญาต */ } }
       window.dispatchEvent(new CustomEvent('langchange', { detail: { lang: code, locale: info.locale } }));
@@ -136,6 +144,8 @@
 
   function detect() {
     const q = new URLSearchParams(location.search).get('lang'); if (q && LANGS.some(l => l.code === q)) return q;
+    if (PAGE.langCode && LANGS.some(l => l.code === PAGE.langCode)) return PAGE.langCode; // หน้าแยกตามภาษา: ภาษาตาม URL
+    if (PAGE.alts === '1') return 'th';                                                   // หน้าไทยที่มีฉบับอื่น: ผู้ใช้เลือกภาษาแล้ว loader.js จะพาไป URL ของภาษานั้น
     let saved = null; try { saved = localStorage.getItem(KEY); } catch (e) { /* ไม่มี storage */ }
     if (saved && LANGS.some(l => l.code === saved)) return saved;
     for (const l of (navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || 'th'])) {
@@ -147,13 +157,22 @@
 
   function initMenu() {
     const btn = document.getElementById('langBtn'), menu = document.getElementById('langMenu'); if (!btn || !menu) return;
-    menu.innerHTML = LANGS.map(l => `<li role="presentation"><button type="button" role="option" data-lang="${l.code}" lang="${l.htmlLang}" class="flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2 text-left text-sm text-ink-700 transition hover:bg-cream-100"><span>${l.name}</span><svg data-check viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></button></li>`).join('');
+    const alts = PAGE.alts === '1';
+    // URL ของหน้าเดียวกันในภาษา code (สัมพัทธ์กับ <base> หรือโฟลเดอร์ราก): '' / 'en/' / 'zh/' / 'ja/' + เส้นทางหน้า
+    const altHref = (code) => (code === 'th' ? '' : code + '/') + (PAGE.rel || '') + location.hash;
+    const tag = (l) => alts ? `a href="${altHref(l.code)}" hreflang="${l.htmlLang}"` : 'button type="button"';
+    const endTag = alts ? 'a' : 'button';
+    menu.innerHTML = LANGS.map(l => `<li role="presentation"><${tag(l)} role="option" data-lang="${l.code}" lang="${l.htmlLang}" class="flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2 text-left text-sm text-ink-700 transition hover:bg-cream-100"><span>${l.name}</span><svg data-check viewBox="0 0 24 24" class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12l5 5 9-10"/></svg></${endTag}></li>`).join('');
     const close = (focus) => { menu.classList.add('hidden'); btn.setAttribute('aria-expanded', 'false'); if (focus) btn.focus(); };
-    const open = () => { menu.classList.remove('hidden'); btn.setAttribute('aria-expanded', 'true'); if (window.Motion) window.Motion.slideUp(menu); const cur = menu.querySelector('[aria-selected="true"]') || menu.querySelector('button'); cur && cur.focus(); };
+    const open = () => { menu.classList.remove('hidden'); btn.setAttribute('aria-expanded', 'true'); if (window.Motion) window.Motion.slideUp(menu); const cur = menu.querySelector('[aria-selected="true"]') || menu.querySelector('[data-lang]'); cur && cur.focus(); };
     btn.addEventListener('click', () => (menu.classList.contains('hidden') ? open() : close()));
-    menu.addEventListener('click', (e) => { const b = e.target.closest('[data-lang]'); if (!b) return; close(true); set(b.dataset.lang); });
+    menu.addEventListener('click', (e) => {
+      const b = e.target.closest('[data-lang]'); if (!b) return;
+      if (alts) { try { localStorage.setItem(KEY, b.dataset.lang); } catch (err) { /* โหมดส่วนตัว */ } return; } // ลิงก์ไป URL ของภาษานั้น (จำภาษาที่เลือกไว้)
+      close(true); set(b.dataset.lang);
+    });
     menu.addEventListener('keydown', (e) => {
-      const items = [...menu.querySelectorAll('button')]; const i = items.indexOf(document.activeElement);
+      const items = [...menu.querySelectorAll('[data-lang]')]; const i = items.indexOf(document.activeElement);
       if (e.key === 'ArrowDown') { e.preventDefault(); items[(i + 1) % items.length].focus(); }
       else if (e.key === 'ArrowUp') { e.preventDefault(); items[(i + items.length - 1) % items.length].focus(); }
       else if (e.key === 'Escape') { e.preventDefault(); close(true); }
@@ -162,6 +181,7 @@
     document.addEventListener('click', (e) => { if (!menu.classList.contains('hidden') && !e.target.closest('#langBtn,#langMenu')) close(false); });
   }
 
+  if (PRE) setupObserver(); // บันทึกเนื้อหาที่สคริปต์สร้างก่อนพจนานุกรมพร้อม
   async function init() {
     initMenu(); setupObserver();
     const want = detect();

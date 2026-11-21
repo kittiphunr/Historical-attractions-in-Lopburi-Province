@@ -39,9 +39,9 @@ http.createServer((req, res) => {
     return send(res, 405, { error: 'method not allowed' });
   }
   // static
-  let p = decodeURIComponent(url.pathname); if (p === '/') p = '/index.html';
+  let p = decodeURIComponent(url.pathname); if (p.endsWith('/')) p += 'index.html'; // '/' และ '/en/' -> index.html ของโฟลเดอร์นั้น (เหมือน GitHub Pages)
   const file = path.normalize(path.join(ROOT, p));
-  const allowed = ['index.html', 'privacy.html', '404.html', 'sitemap.xml', 'robots.txt', 'map-debug.html', 'places', 'assets'].some(a => file === path.join(ROOT, a) || file.startsWith(path.join(ROOT, a) + path.sep));
+  const allowed = ['index.html', 'privacy.html', '404.html', 'sitemap.xml', 'robots.txt', 'map-debug.html', 'places', 'assets', 'en', 'zh', 'ja'].some(a => file === path.join(ROOT, a) || file.startsWith(path.join(ROOT, a) + path.sep));
   // ไม่พบไฟล์: ถ้าเป็นการเปิดหน้าเว็บ แสดง 404.html (สถานะ 404) เหมือน GitHub Pages
   const notFound = () => fs.readFile(path.join(ROOT, '404.html'), (e, d) => (e || path.extname(p) && path.extname(p) !== '.html') ? send(res, 404, 'Not found', 'text/plain') : send(res, 404, d, 'text/html; charset=utf-8'));
   if (!file.startsWith(ROOT + path.sep) || !allowed) return notFound();

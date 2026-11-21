@@ -1,6 +1,7 @@
 (function () {
   const T = window.T || ((s, ...v) => v.reduce((r, x, i) => r.replace('{' + i + '}', x), s));
   const { $, $$, esc, svg } = window.LopburiUI;
+  const PFX = document.documentElement.dataset.prefix || ''; // 'en/' ฯลฯ บนหน้าแยกตามภาษา (ลิงก์ภายในต้องอยู่ในภาษาเดียวกัน)
   const A = window.ATTRACTIONS, S = window.SOURCES, SRC = Object.fromEntries(S.map(s => [s.id, s]));
   const ERA = { all: 'ทั้งหมด', dvaravati: 'ทวารวดี', khmer: 'ขอม', ayutthaya: 'อยุธยา–พระนารายณ์', faith: 'ภูเขา–ศรัทธา' };
   const ERA_COLOR = { dvaravati: 'bg-sky-500/15 text-sky-700', khmer: 'bg-terra-500/10 text-terra-600', ayutthaya: 'bg-amber-500/15 text-amber-700', faith: 'bg-emerald-600/15 text-emerald-700' };
@@ -122,7 +123,7 @@
       info.innerHTML = `<div class="flex items-start gap-3"><span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-white" style="background:linear-gradient(145deg,#dc6f45,#a8431f)">${h.a.no}</span>
         <div class="min-w-0 flex-1"><b class="block text-ink-900">${esc(h.a.name)}</b><span class="block text-xs text-terra-600">${esc(h.a.eraLabel)}</span><p class="mt-1 text-xs leading-relaxed text-ink-500">${esc(h.a.tagline)}</p></div>
         <button type="button" data-mv="close" class="text-ink-400 hover:text-ink-900" aria-label="ปิดการ์ด">✕</button></div>
-        <div class="mt-3 flex flex-wrap gap-2"><a href="places/${h.id}.html" class="btn-terra !px-4 !py-2 text-sm">อ่านรายละเอียด</a><button type="button" data-ar="${h.id}" class="btn-soft !px-4 !py-2 text-sm">${svg('cube', 'h-4 w-4 text-terra-500')}ดูโมเดลอาคาร AR</button></div>`;
+        <div class="mt-3 flex flex-wrap gap-2"><a href="${PFX}places/${h.id}.html" class="btn-terra !px-4 !py-2 text-sm">อ่านรายละเอียด</a><button type="button" data-ar="${h.id}" class="btn-soft !px-4 !py-2 text-sm">${svg('cube', 'h-4 w-4 text-terra-500')}ดูโมเดลอาคาร AR</button></div>`;
       info.classList.remove('hidden'); if (window.Motion) window.Motion.slideUp(info);
     }
     host.addEventListener('click', (e) => {
@@ -164,7 +165,7 @@
 
   /* ---------- Top list ---------- */
   $('#topList').innerHTML = ['sam-yot', 'narai-palace', 'khao-wong'].map(id => A.find(a => a.id === id)).map(a => `
-    <li><a href="places/${a.id}.html" class="neu flex items-center gap-4 p-3 hover:-translate-y-0.5">
+    <li><a href="${PFX}places/${a.id}.html" class="neu flex items-center gap-4 p-3 hover:-translate-y-0.5">
       <span class="grid h-14 w-14 shrink-0 place-items-center rounded-xl text-lg font-semibold text-white" style="background:linear-gradient(145deg,#dc6f45,#a8431f)">${a.no}</span>
       <span class="min-w-0 flex-1"><b class="block truncate font-medium text-ink-900">${esc(a.name)}</b><span class="block truncate text-xs text-ink-500">${esc(a.eraLabel)}</span></span>
       ${svg('arrow', 'h-5 w-5 text-terra-500')}</a></li>`).join('');
@@ -173,7 +174,7 @@
   const mapWrap = $('#mapWrap');
   A.filter(a => a.map).forEach(a => {
     const b = document.createElement('a');
-    b.href = 'places/' + a.id + '.html'; b.className = 'group absolute -translate-y-1/2 -translate-x-[calc(100%+6px)]';
+    b.href = PFX + 'places/' + a.id + '.html'; b.className = 'group absolute -translate-y-1/2 -translate-x-[calc(100%+6px)]';
     b.style.left = a.map[0] + '%'; b.style.top = a.map[1] + '%';
     b.setAttribute('aria-label', `${a.name} — ดูรายละเอียด`);
     b.innerHTML = `<span class="absolute inset-0 -m-1 animate-ping rounded-full bg-terra-400/40 sm:-m-2"></span>
@@ -193,7 +194,7 @@
       const el = document.createElement('article');
       el.id = a.id; el.className = 'reveal card group flex scroll-mt-6 flex-col overflow-hidden p-0 transition hover:-translate-y-1';
       el.innerHTML = `
-        <a href="places/${a.id}.html" class="flex flex-1 flex-col outline-offset-[-4px]">
+        <a href="${PFX}places/${a.id}.html" class="flex flex-1 flex-col outline-offset-[-4px]">
           <div class="stage-bg relative aspect-[4/3] overflow-hidden">
             <span class="absolute left-5 top-3 z-10 text-6xl font-semibold text-terra-500/25">${a.no}</span>
             ${POSTER(a.id, 'day')}${POSTER(a.id, 'night')}
@@ -220,7 +221,7 @@
 
   /* ---------- route ---------- */
   $('#routeList').innerHTML = window.ROUTE.map(([n, id, note], i) => `
-    <li class="reveal" style="transition-delay:${i * 50}ms"><a href="places/${id}.html" class="card flex items-center gap-4 p-4 transition hover:-translate-y-0.5">
+    <li class="reveal" style="transition-delay:${i * 50}ms"><a href="${PFX}places/${id}.html" class="card flex items-center gap-4 p-4 transition hover:-translate-y-0.5">
       <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full text-lg font-semibold text-white" style="background:linear-gradient(145deg,#dc6f45,#a8431f)">${i + 1}</span>
       <span class="min-w-0"><b class="block font-medium text-ink-900">${esc(n)}</b><span class="block text-sm text-ink-500">${esc(note)}</span></span></a></li>`).join('');
 
@@ -233,7 +234,7 @@
   }
   render(); observeReveal();
   const oldId = location.hash.slice(1);
-  if (oldId && A.some(x => x.id === oldId)) location.replace('places/' + oldId + '.html'); // ลิงก์เก่า #id -> หน้าแยก
+  if (oldId && A.some(x => x.id === oldId)) location.replace(PFX + 'places/' + oldId + '.html'); // ลิงก์เก่า #id -> หน้าแยก
   else if (location.hash && $(location.hash)) setTimeout(() => $(location.hash).scrollIntoView(), 50);
   $$('a[href^="#"]').forEach(a => a.addEventListener('click', () => { const t = $(a.getAttribute('href')); if (t) t.classList.add('in'); }));
 

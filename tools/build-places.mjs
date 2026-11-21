@@ -5,11 +5,24 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from 'node:fs';
 import { runInNewContext } from 'node:vm';
 import { join, dirname, resolve } from 'node:path';
+import { loadDict, makeTranslator } from './lib/i18n-node.mjs';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://kittiphunr.github.io/Historical-attractions-in-Lopburi-Province/';
 const read = (p) => readFileSync(join(root, p), 'utf8');
+
+/* ---------- หน้าแยกตามภาษา: th = ราก, en/zh/ja = โฟลเดอร์ en/ zh/ ja/ (สร้างจากหน้าไทยด้วยตัวแปลฝั่ง Node) ---------- */
+const LANG = {
+  th: { html: 'th', hreflang: 'th', og: 'th_TH', prefix: '' },
+  en: { html: 'en', hreflang: 'en', og: 'en_US', prefix: 'en/' },
+  zh: { html: 'zh-Hans', hreflang: 'zh-Hans', og: 'zh_CN', prefix: 'zh/' },
+  ja: { html: 'ja', hreflang: 'ja', og: 'ja_JP', prefix: 'ja/' }
+};
+const OTHER = Object.keys(LANG).filter(c => c !== 'th');
+/** ลิงก์ hreflang ของหน้าหนึ่ง (rel = เส้นทางสัมพัทธ์ เช่น 'places/sam-yot.html', หน้าแรก = '') */
+const hreflangLinks = (rel) => Object.entries(LANG).map(([c, l]) => `<link rel="alternate" hreflang="${l.hreflang}" href="${SITE}${l.prefix}${rel}">`)
+  .concat(`<link rel="alternate" hreflang="x-default" href="${SITE}${rel}">`).join('\n  ');
 
 /* ---------- โหลดข้อมูลจาก data.js ---------- */
 const ctx = { window: {} };
@@ -136,7 +149,7 @@ function page(a, idx) {
   const factsAll = [...a.facts, ...(c.facts || [])];
   const hasGlb = !!a.glb;
   return `<!doctype html>
-<html lang="th">
+<html lang="th" data-alts="1" data-rel="places/${a.id}.html" data-prefix="">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -157,6 +170,7 @@ function page(a, idx) {
   <meta name="robots" content="index,follow,max-image-preview:large">
   ${ogExtra}
   <link rel="canonical" href="${url}">
+  ${hreflangLinks(`places/${a.id}.html`)}
   <link rel="icon" type="image/png" href="assets/img/favicon-64.png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   ${headFonts}<link rel="stylesheet" href="assets/tailwind.css">
@@ -257,7 +271,7 @@ function privacyPage() {
   const extra = [P.contact && P.contact.email ? `<li><b class="text-ink-900">${esc(C.emailLabel.th)}:</b> <a class="text-terra-600 underline" href="mailto:${esc(P.contact.email)}">${esc(P.contact.email)}</a></li>` : '',
     P.contact && P.contact.other ? `<li><b class="text-ink-900">${esc(C.otherLabel.th)}:</b> ${esc(P.contact.other)}</li>` : ''].filter(Boolean).join('');
   return `<!doctype html>
-<html lang="th">
+<html lang="th" data-alts="1" data-rel="privacy.html" data-prefix="">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -271,6 +285,7 @@ function privacyPage() {
   <meta property="og:url" content="${url}">
   <meta property="og:image" content="${SITE}assets/img/og-cover.jpg">
   <link rel="canonical" href="${url}">
+  ${hreflangLinks('privacy.html')}
   <link rel="icon" type="image/png" href="assets/img/favicon-64.png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   ${headFonts}<link rel="stylesheet" href="assets/tailwind.css">
@@ -368,7 +383,7 @@ function notFoundPage() {
 `;
 }
 
-/* ---------- ส่วนที่สร้างลงใน index.html: ข้อมูลโครงสร้าง (JSON-LD) และรายการสถานที่สำหรับผู้ที่ปิด JavaScript ---------- */
+/* ---------- ส่วนที่สร้างลงใน index.html: ข้อมูลโครงสร้าง (JSON-LD), hreflang และรายการสถานที่สำหรับผู้ที่ปิด JavaScript ---------- */
 function injectBlock(html, name, content) {
   const a = `<!--${name}:start-->`, z = `<!--${name}:end-->`, i = html.indexOf(a), j = html.indexOf(z);
   if (i < 0 || j < 0) throw new Error(`index.html ไม่มีเครื่องหมาย ${a} ... ${z}`);
@@ -381,22 +396,74 @@ function homeBlocks() {
       containsPlace: A.map(a => ({ '@type': 'TouristAttraction', name: a.name, alternateName: a.en, url: `${SITE}places/${a.id}.html` })) }
   ];
   const nolist = `<noscript><nav aria-label="สถานที่ทั้ง 10 แห่ง" class="mt-6"><ul class="grid gap-2 sm:grid-cols-2">${A.map(a => `<li><a class="underline" href="places/${a.id}.html">${esc(a.no)} ${esc(a.name)} — ${esc(a.tagline)}</a></li>`).join('')}</ul></nav></noscript>`;
-  return { jsonld: `\n  <script type="application/ld+json">${JSON.stringify(ld)}</script>\n  `, nolist };
+  return { jsonld: `\n  <script type="application/ld+json">${JSON.stringify(ld)}</script>\n  `, nolist, hreflang: '\n  ' + hreflangLinks('') + '\n  ' };
 }
+let homeThai;
 {
   const f = join(root, 'index.html'), cur = readFileSync(f, 'utf8'), hb = homeBlocks();
-  const next = injectBlock(injectBlock(cur, 'jsonld', hb.jsonld), 'nolist', hb.nolist);
-  if (next !== cur) writeFileSync(f, next);
+  homeThai = injectBlock(injectBlock(injectBlock(cur, 'jsonld', hb.jsonld), 'nolist', hb.nolist), 'hreflang', hb.hreflang);
+  if (homeThai !== cur) writeFileSync(f, homeThai);
 }
 
-mkdirSync(join(root, 'places'), { recursive: true });
-A.forEach((a, i) => { writeFileSync(join(root, 'places', a.id + '.html'), page(a, i)); });
-// ลบหน้าที่ไม่มีสถานที่แล้ว (เช่น เปลี่ยน id)
-for (const f of readdirSync(join(root, 'places'))) if (f.endsWith('.html') && !A.some(a => a.id + '.html' === f)) console.warn('หมายเหตุ: places/' + f + ' ไม่มีใน data.js แล้ว (ลบเองได้)');
+/* ---------- สร้างหน้าภาษาอื่นจากหน้าไทย ---------- */
+const translators = Object.fromEntries(OTHER.map(c => [c, makeTranslator(loadDict(root, c))]));
+function mapHref(h, prefix, isHome) {
+  if (/^(https?:|mailto:|tel:|javascript:|data:)/i.test(h)) return h;
+  if (h.startsWith('#')) return isHome ? prefix + h : h;                       // ลิงก์ในหน้าแรก: ชี้กลับหน้าแรกของภาษานั้น (base อยู่ที่ราก)
+  if (h === 'index.html') return prefix;
+  if (h.startsWith('index.html#')) return prefix + h.slice('index.html'.length);
+  if (h.startsWith('places/') || h.startsWith('privacy.html')) return prefix + h;
+  return h;                                                                    // assets/, 404.html, sitemap ฯลฯ อยู่ที่รากร่วมกัน
+}
+function localizeLd(json, code, prefix, relInSite) {
+  const tr = translators[code];
+  const urlKeys = new Set(['@id', 'url', 'item', 'mainEntityOfPage']);
+  const walk = (o, key) => {
+    if (Array.isArray(o)) return o.map(x => walk(x, key));
+    if (o && typeof o === 'object') return Object.fromEntries(Object.entries(o).map(([k, v]) => [k, walk(v, k)]));
+    if (typeof o !== 'string') return o;
+    if (urlKeys.has(key) && o.startsWith(SITE) && !o.startsWith(SITE + 'assets/')) return SITE + prefix + o.slice(SITE.length);
+    if (key === 'name' || key === 'description') { const t = tr.lookupTitle(o); return t != null ? t : o; }
+    if (key === 'inLanguage' && o === 'th') return LANG[code].html;
+    return o;
+  };
+  return JSON.stringify(walk(json, ''));
+}
+function localize(html, code, relFile, rel) {
+  const l = LANG[code], prefix = l.prefix, isHome = relFile === 'index.html';
+  const depth = relFile.split('/').length - 1, baseHref = '../'.repeat(depth + 1);
+  let out = translators[code].translateHtml(html);
+  out = out.replace(/<html lang="th"[^>]*>/, `<html lang="${l.html}" data-alts="1" data-rel="${rel}" data-prefix="${prefix}" data-lang-code="${code}" data-prerendered="1">`);
+  out = /<base href="[^"]*">/.test(out) ? out.replace(/<base href="[^"]*">/, `<base href="${baseHref}">`) : out.replace(/(<meta name="viewport"[^>]*>)/, `$1\n  <base href="${baseHref}">`);
+  out = out.replace(/(\shref=")([^"]*)(")/g, (m, a, h, z) => a + mapHref(h, prefix, isHome) + z);
+  const siteRe = SITE.replace(/[.*+?^${}()|[\]\\\/]/g, '\\$&');
+  out = out.replace(new RegExp(`(<link rel="canonical" href=")${siteRe}([^"]*)(")`), `$1${SITE}${prefix}$2$3`);
+  out = out.replace(new RegExp(`(<meta property="og:url" content=")${siteRe}([^"]*)(")`), `$1${SITE}${prefix}$2$3`);
+  out = out.replace(/<meta property="og:locale" content="[^"]*">\n?\s*/, '').replace(/<meta property="og:locale:alternate" content="[^"]*">\n?\s*/g, '');
+  const locales = `<meta property="og:locale" content="${l.og}">\n  ` + Object.entries(LANG).filter(([c]) => c !== code).map(([, x]) => `<meta property="og:locale:alternate" content="${x.og}">`).join('\n  ') + '\n  ';
+  out = out.replace(/(<meta property="og:site_name"[^>]*>\n\s*)?(?=<link rel="canonical")/, (m) => (m || '') + locales);
+  out = out.replace(/(<script type="application\/ld\+json">)([\s\S]*?)(<\/script>)/g, (m, a, j, z) => a + localizeLd(JSON.parse(j), code, prefix) + z);
+  return out;
+}
+function emit(relFile, rel, thai) {
+  const f = join(root, relFile); mkdirSync(dirname(f), { recursive: true }); writeFileSync(f, thai);
+  for (const c of OTHER) { const g = join(root, LANG[c].prefix, relFile); mkdirSync(dirname(g), { recursive: true }); writeFileSync(g, localize(thai, c, relFile, rel)); }
+}
 
-writeFileSync(join(root, 'privacy.html'), privacyPage());
+emit('index.html', '', homeThai);
+A.forEach((a, i) => emit(`places/${a.id}.html`, `places/${a.id}.html`, page(a, i)));
+emit('privacy.html', 'privacy.html', privacyPage());
+// หน้า 404 มีภาษาเดียว (เสิร์ฟที่ที่อยู่ใดก็ได้) และใช้ตัวแปลในเบราว์เซอร์
 writeFileSync(join(root, '404.html'), notFoundPage());
-const urls = [SITE, ...A.map(a => `${SITE}places/${a.id}.html`), SITE + 'privacy.html'];
-writeFileSync(join(root, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url><loc>${u}</loc></url>`).join('\n')}\n</urlset>\n`);
+// เตือนถ้ามีหน้าสถานที่ที่ไม่มีใน data.js แล้ว (เช่น เปลี่ยน id)
+for (const dir of ['places', ...OTHER.map(c => c + '/places')]) { if (!existsSync(join(root, dir))) continue; for (const f of readdirSync(join(root, dir))) if (f.endsWith('.html') && !A.some(a => a.id + '.html' === f)) console.warn(`หมายเหตุ: ${dir}/${f} ไม่มีใน data.js แล้ว (ลบเองได้)`); }
+
+/* sitemap: ทุกหน้าในทุกภาษา พร้อมลิงก์ภาษาอื่น (xhtml:link) */
+const pages = [['', ''], ...A.map(a => [`places/${a.id}.html`, `places/${a.id}.html`]), ['privacy.html', 'privacy.html']];
+const sitemapUrl = (rel) => Object.values(LANG).map(l => {
+  const loc = SITE + l.prefix + rel;
+  return `  <url>\n    <loc>${loc}</loc>\n${Object.values(LANG).map(x => `    <xhtml:link rel="alternate" hreflang="${x.hreflang}" href="${SITE}${x.prefix}${rel}"/>`).join('\n')}\n    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE}${rel}"/>\n  </url>`;
+}).join('\n');
+writeFileSync(join(root, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">\n${pages.map(([rel]) => sitemapUrl(rel)).join('\n')}\n</urlset>\n`);
 writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE}sitemap.xml\n`);
-console.log(`places: ${A.length} หน้า + privacy.html + 404.html -> places/*.html, sitemap.xml, robots.txt`);
+console.log(`หน้า: ${A.length} สถานที่ + หน้าแรก + นโยบายความเป็นส่วนตัว × 4 ภาษา (th, ${OTHER.join(', ')}) + 404.html, sitemap.xml, robots.txt`);
