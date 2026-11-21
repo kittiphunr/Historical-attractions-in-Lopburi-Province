@@ -39,7 +39,7 @@ for (const mode of ['day', 'night']) {
   page.on('pageerror', (e) => console.warn('  page error:', e.message));
   await page.goto(base, { waitUntil: 'load' });
   await page.addStyleTag({ content: 'html{scroll-behavior:auto!important}' });
-  const ids = await page.evaluate(() => window.ATTRACTIONS.map(a => a.id));
+  const ids = await page.evaluate(() => window.ATTRACTIONS.filter(a => a.glb).map(a => a.id));
   // หน้าแรก: ไดโอรามา (hero) และแผนที่จังหวัด ; แต่ละสถานที่: จากหน้า places/<id>.html (ช่อง #placeModel)
   const targets = [{ key: 'hero', url: '', sel: '#heroModel' }, { key: 'map', url: '', sel: '#mapViewer' }, ...ids.map(id => ({ key: id, url: `places/${id}.html`, sel: '#placeModel' }))];
   for (const t of targets) {

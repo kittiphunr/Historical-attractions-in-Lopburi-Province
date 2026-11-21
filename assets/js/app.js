@@ -197,8 +197,8 @@
         <a href="${PFX}places/${a.id}.html" class="flex flex-1 flex-col outline-offset-[-4px]">
           <div class="stage-bg relative aspect-[4/3] overflow-hidden">
             <span class="absolute left-5 top-3 z-10 text-6xl font-semibold text-terra-500/25">${a.no}</span>
-            ${POSTER(a.id, 'day')}${POSTER(a.id, 'night')}
-            <span class="absolute right-3 top-3 z-10 inline-flex items-center gap-1 rounded-full bg-cream-50/90 px-2.5 py-1 text-[11px] text-ink-700 shadow-neu">${svg('cube', 'h-3.5 w-3.5 text-terra-500')}3D</span>
+            ${a.glb ? `${POSTER(a.id, 'day')}${POSTER(a.id, 'night')}
+            <span class="absolute right-3 top-3 z-10 inline-flex items-center gap-1 rounded-full bg-cream-50/90 px-2.5 py-1 text-[11px] text-ink-700 shadow-neu">${svg('cube', 'h-3.5 w-3.5 text-terra-500')}3D</span>` : `<span class="absolute inset-0 grid place-items-center text-center" role="img" aria-label="โมเดล 3 มิติกำลังจัดทำ">${svg('cube', 'mx-auto h-12 w-12 text-terra-500/40')}<span class="mt-2 block text-xs text-ink-500">โมเดล 3 มิติกำลังจัดทำ</span></span>`}
           </div>
           <div class="flex flex-1 flex-col p-5">
             <span class="inline-block w-fit rounded-full px-3 py-1 text-xs font-medium ${ERA_COLOR[a.era]}">${esc(a.eraLabel)}</span>
