@@ -427,6 +427,83 @@ let homeThai;
   if (homeThai !== cur) writeFileSync(f, homeThai);
 }
 
+/* ---------- หน้าคำถามที่พบบ่อย (faq.html) จาก content/faq.json ---------- */
+function faqPage() {
+  const F = JSON.parse(read('content/faq.json'));
+  const url = SITE + 'faq.html', title = `${F.title.th} — ลพบุรี เมืองสามยุค`;
+  const intro = F.intro.map(x => `<p class="text-lg leading-relaxed text-ink-700">${esc(x.th)}</p>`).join('');
+  let n = 0;
+  const groups = F.groups.map(g => `<section aria-labelledby="faq-g${++n}">
+        <h2 id="faq-g${n}" class="text-2xl font-semibold text-ink-900 sm:text-3xl">${esc(g.h.th)}</h2>
+        <div class="mt-4 space-y-3">${g.items.map(it => `
+          <details class="card faq-item group p-0">
+            <summary class="flex cursor-pointer items-start justify-between gap-4 px-5 py-4 text-left text-lg font-medium text-ink-900 outline-offset-[-4px] sm:px-6"><span>${esc(it.q.th)}</span><svg viewBox="0 0 24 24" class="faq-chev mt-1 h-5 w-5 shrink-0 text-terra-500 transition-transform" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+            <div class="space-y-3 px-5 pb-5 leading-relaxed text-ink-700 sm:px-6">${it.a.map(x => `<p>${esc(x.th)}</p>`).join('')}${it.link ? `<a class="btn-soft !px-5 !py-2.5 text-sm" href="${esc(it.link.href)}"${it.link.external ? ' target="_blank" rel="noopener noreferrer"' : ''}>${esc(it.link.label.th)}</a>` : ''}</div>
+          </details>`).join('')}
+        </div>
+      </section>`).join('\n      ');
+  const ld = { '@context': 'https://schema.org', '@graph': [
+    { '@type': 'FAQPage', '@id': url + '#faq', url, inLanguage: 'th', name: F.title.th,
+      mainEntity: F.groups.flatMap(g => g.items).map(it => ({ '@type': 'Question', name: it.q.th, acceptedAnswer: { '@type': 'Answer', text: it.a.map(x => x.th).join(' ') } })) },
+    { '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'หน้าแรก', item: SITE },
+      { '@type': 'ListItem', position: 2, name: F.title.th, item: url }] }] };
+  return `<!doctype html>
+<html lang="th" data-alts="1" data-rel="faq.html" data-prefix="">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>${esc(title)}</title>
+  <meta name="description" content="${esc(F.intro[0].th)}">
+  <meta name="theme-color" content="#f4ece2">
+  <meta name="robots" content="index,follow">
+  ${ogExtra}
+  <meta property="og:title" content="${esc(title)}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="${url}">
+  <meta property="og:image" content="${IMG}assets/img/og-cover.jpg">
+  <link rel="canonical" href="${url}">
+  ${hreflangLinks('faq.html')}
+  <link rel="icon" type="image/png" href="assets/img/favicon-64.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  ${headFonts}<link rel="stylesheet" href="assets/tailwind.css">
+  ${themeScript}
+  <script type="application/ld+json">${JSON.stringify(ld)}</script>
+</head>
+<body class="relative overflow-x-hidden pb-28 lg:pb-10" data-page="faq">
+  <a href="faq.html#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-terra-500 focus:px-4 focus:py-2 focus:text-white">ข้ามไปยังเนื้อหา</a>
+
+  ${chrome}<main id="main" class="mx-auto max-w-3xl px-4 pt-20 lg:pl-[112px] lg:pr-6">
+    <a href="index.html" class="inline-flex items-center gap-1 text-sm text-ink-500 hover:text-terra-600">${esc(F.back.th)}</a>
+    <header class="mt-6">
+      <p class="eyebrow">FAQ</p>
+      <h1 class="mt-2 text-4xl font-semibold sm:text-5xl">${esc(F.title.th)}</h1>
+      <p class="mt-2 text-sm text-ink-400">${esc(F.updated.th)}</p>
+      <div class="mt-6 space-y-3">${intro}</div>
+    </header>
+    <div class="mt-10 space-y-10">
+      ${groups}
+    </div>
+  </main>
+
+  ${footer}
+
+  ${creditsDialog}
+
+  ${arDialog}
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+
+  <script src="assets/js/motion.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/place.js"></script>
+</body>
+</html>
+`;
+}
+
 /* ---------- สร้างหน้าภาษาอื่นจากหน้าไทย ---------- */
 const translators = Object.fromEntries(OTHER.map(c => [c, makeTranslator(loadDict(root, c))]));
 function mapHref(h, prefix, isHome) {
@@ -434,7 +511,7 @@ function mapHref(h, prefix, isHome) {
   if (h.startsWith('#')) return isHome ? prefix + h : h;                       // ลิงก์ในหน้าแรก: ชี้กลับหน้าแรกของภาษานั้น (base อยู่ที่ราก)
   if (h === 'index.html') return prefix;
   if (h.startsWith('index.html#')) return prefix + h.slice('index.html'.length);
-  if (h.startsWith('places/') || h.startsWith('privacy.html')) return prefix + h;
+  if (h.startsWith('places/') || h.startsWith('privacy.html') || h.startsWith('faq.html')) return prefix + h;
   return h;                                                                    // assets/, 404.html, sitemap ฯลฯ อยู่ที่รากร่วมกัน
 }
 function localizeLd(json, code, prefix, relInSite) {
@@ -445,7 +522,7 @@ function localizeLd(json, code, prefix, relInSite) {
     if (o && typeof o === 'object') return Object.fromEntries(Object.entries(o).map(([k, v]) => [k, walk(v, k)]));
     if (typeof o !== 'string') return o;
     if (urlKeys.has(key) && o.startsWith(SITE) && !o.startsWith(SITE + 'assets/')) return SITE + prefix + o.slice(SITE.length);
-    if (key === 'name' || key === 'description') { const t = tr.lookupTitle(o); return t != null ? t : o; }
+    if (key === 'name' || key === 'description' || key === 'text') { const t = tr.lookupTitle(o); return t != null ? t : o; }
     if (key === 'inLanguage' && o === 'th') return LANG[code].html;
     return o;
   };
@@ -475,13 +552,14 @@ function emit(relFile, rel, thai) {
 emit('index.html', '', homeThai);
 A.forEach((a, i) => emit(`places/${a.id}.html`, `places/${a.id}.html`, page(a, i)));
 emit('privacy.html', 'privacy.html', privacyPage());
+emit('faq.html', 'faq.html', faqPage());
 // หน้า 404 มีภาษาเดียว (เสิร์ฟที่ที่อยู่ใดก็ได้) และใช้ตัวแปลในเบราว์เซอร์
 writeFileSync(join(root, '404.html'), notFoundPage());
 // เตือนถ้ามีหน้าสถานที่ที่ไม่มีใน data.js แล้ว (เช่น เปลี่ยน id)
 for (const dir of ['places', ...OTHER.map(c => c + '/places')]) { if (!existsSync(join(root, dir))) continue; for (const f of readdirSync(join(root, dir))) if (f.endsWith('.html') && !A.some(a => a.id + '.html' === f)) console.warn(`หมายเหตุ: ${dir}/${f} ไม่มีใน data.js แล้ว (ลบเองได้)`); }
 
 /* sitemap: ทุกหน้าในทุกภาษา พร้อมลิงก์ภาษาอื่น (xhtml:link) */
-const pages = [['', ''], ...A.map(a => [`places/${a.id}.html`, `places/${a.id}.html`]), ['privacy.html', 'privacy.html']];
+const pages = [['', ''], ...A.map(a => [`places/${a.id}.html`, `places/${a.id}.html`]), ['privacy.html', 'privacy.html'], ['faq.html', 'faq.html']];
 const sitemapUrl = (rel) => Object.values(LANG).map(l => {
   const loc = SITE + l.prefix + rel;
   return `  <url>\n    <loc>${loc}</loc>\n${Object.values(LANG).map(x => `    <xhtml:link rel="alternate" hreflang="${x.hreflang}" href="${SITE}${x.prefix}${rel}"/>`).join('\n')}\n    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE}${rel}"/>\n  </url>`;

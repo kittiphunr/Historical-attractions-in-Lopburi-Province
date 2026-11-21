@@ -126,3 +126,10 @@ html.pl-boot.pl-done::before, html.pl-boot.pl-done::after { animation: pl-out .4
 @keyframes pl-out { from { opacity: 1; } to { opacity: 0; } }
 @keyframes pl-pulse { 0%, 100% { transform: scale(.94); } 50% { transform: scale(1.07); } }
 @media (prefers-reduced-motion: reduce) { html.pl-boot::after { animation: pl-in .18s ease-out both; } }
+
+/* หน้า FAQ: ใช้ <details> ของเบราว์เซอร์ (เปิด/ปิดด้วยคีย์บอร์ดได้) ซ่อนสามเหลี่ยมเดิมและหมุนลูกศรเมื่อเปิด */
+.faq-item > summary { list-style: none; }
+.faq-item > summary::-webkit-details-marker { display: none; }
+.faq-item[open] > summary .faq-chev { transform: rotate(180deg); }
+.faq-item > summary:focus-visible { outline: 2px solid #c4552f; }
+@media (prefers-reduced-motion: reduce) { .faq-chev { transition: none; } }

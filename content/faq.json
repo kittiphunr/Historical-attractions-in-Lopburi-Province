@@ -1,0 +1,375 @@
+{
+  "_help": "คำถามที่พบบ่อย (faq.html) — แก้ข้อความที่นี่แล้วรัน npm run build ทุกคำถาม/คำตอบต้องมีคำแปล en/zh/ja ตรงกับข้อมูลจริงของเว็บ (เช่น จำนวนสถานที่) ห้ามใส่เวลาเปิด ค่าเข้าชม หรือข้อมูลเดินทางที่ยังไม่มีแหล่งอ้างอิงทางการ",
+  "title": {
+    "th": "คำถามที่พบบ่อย (FAQ)",
+    "en": "Frequently asked questions",
+    "zh": "常见问题",
+    "ja": "よくある質問"
+  },
+  "updated": {
+    "th": "ปรับปรุงล่าสุด: 21 พฤศจิกายน 2569",
+    "en": "Last updated: 21 November 2026 (B.E. 2569)",
+    "zh": "最后更新：2026 年 11 月 21 日（佛历 2569）",
+    "ja": "最終更新：2026年11月21日（仏暦2569年）"
+  },
+  "intro": [
+    {
+      "th": "คำตอบสำหรับคำถามที่ผู้เข้าชมมักถามเกี่ยวกับเว็บไซต์นี้ การเที่ยวชมเมืองเก่าลพบุรี โมเดล 3 มิติ และสมุดเยี่ยม ข้อมูลที่เว็บยังตรวจสอบไม่ได้ เราจะบอกตรง ๆ แทนการเดา",
+      "en": "Answers to what visitors most often ask about this site, visiting Lopburi’s old town, the 3D models and the guestbook. Where the site cannot verify something, we say so rather than guess.",
+      "zh": "解答访客最常询问的问题，涉及本网站、游览华富里老城、3D 模型和留言簿。对于网站无法核实的内容，我们会直接说明，而不是猜测。",
+      "ja": "このサイトやロッブリー旧市街の見学、3Dモデル、ゲストブックについて、よく寄せられる質問にお答えします。確認できていないことは、推測せずにそう書いています。"
+    }
+  ],
+  "groups": [
+    {
+      "h": {
+        "th": "เกี่ยวกับเว็บไซต์",
+        "en": "About this website",
+        "zh": "关于本网站",
+        "ja": "このサイトについて"
+      },
+      "items": [
+        {
+          "q": {
+            "th": "เว็บนี้เป็นเว็บทางการของจังหวัดลพบุรีหรือไม่",
+            "en": "Is this the official website of Lopburi province?",
+            "zh": "这是华富里府的官方网站吗？",
+            "ja": "これはロッブリー県の公式サイトですか？"
+          },
+          "a": [
+            {
+              "th": "ไม่ใช่ เว็บนี้รวบรวมโดยเจ้าของโปรเจกต์เพื่อการศึกษาและการท่องเที่ยว ข้อมูลอาจคลาดเคลื่อนหรือเปลี่ยนแปลงได้ จึงควรตรวจสอบเวลาเปิดและเงื่อนไขการเข้าชมกับหน่วยงานที่ดูแลสถานที่ก่อนเดินทางเสมอ",
+              "en": "No. This site was compiled by the project owner for education and tourism. Information may be inaccurate or change, so always check opening times and visiting conditions with the body that looks after each place before you travel.",
+              "zh": "不是。本网站由项目所有者为教育和旅游目的整理。信息可能有误或发生变化，出发前请务必向负责管理各景点的机构确认开放时间和参观条件。",
+              "ja": "いいえ。このサイトはプロジェクトの運営者が教育と観光のためにまとめたものです。情報には誤りや変更がある場合があるため、出発前に各場所の管理団体で開館時間や見学条件を必ずご確認ください。"
+            }
+          ]
+        },
+        {
+          "q": {
+            "th": "เว็บนี้มีสถานที่อะไรบ้าง",
+            "en": "Which places are on this site?",
+            "zh": "本网站收录了哪些景点？",
+            "ja": "このサイトにはどんな場所がありますか？"
+          },
+          "a": [
+            {
+              "th": "ตอนนี้มี 11 แห่งในจังหวัดลพบุรี ตั้งแต่ร่องรอยทวารวดี (วัดนครโกษา) ศิลปะขอม (ปรางค์แขก พระปรางค์สามยอด ศาลพระกาฬ วัดพระศรีรัตนมหาธาตุ) ยุคอยุธยาและสมัยสมเด็จพระนารายณ์ (พระนารายณ์ราชนิเวศน์ วัดไลย์ วัดเสาธงทอง บ้านวิชาเยนทร์ วัดกวิศรารามราชวรวิหาร) ไปจนถึงเขาวงพระจันทร์ เลือกดูตามยุคได้ที่หน้าแรก",
+              "en": "There are currently 11 places in Lopburi province, from Dvaravati traces (Wat Nakhon Kosa) and Khmer art (Prang Khaek, Phra Prang Sam Yot, San Phra Kan, Wat Phra Si Rattana Mahathat) to the Ayutthaya and King Narai period (King Narai’s Palace, Wat Lai, Wat Sao Thong Thong, Baan Wichayen, Wat Kawisararam Ratchaworawihan) and Khao Wong Phra Chan. You can filter by era on the home page.",
+              "zh": "目前收录华富里府的 11 处地点：从堕罗钵底遗迹（那空科萨寺）、高棉艺术（康塔庙、三塔庙、卡拉神庙、帕西拉达那玛哈泰寺），到阿瑜陀耶与那莱王时期（那莱王宫、莱寺、柱旗金寺、法尔康宅邸、卡维萨拉兰皇家寺院），再到月亮山。可在首页按时代筛选。",
+              "ja": "現在、ロッブリー県の11か所を掲載しています。ドヴァーラヴァティーの遺構（ワット・ナコーンコーサー）、クメール美術（プラーン・ケーク、プラ・プラーン・サームヨート、サーン・プラ・カーン、ワット・プラ・シー・ラッタナ・マハータート）、アユタヤー期とナーライ王の時代（ナーライ王宮、ワット・ライ、ワット・サオトーントーン、ウィチャイエン邸、ワット・カウィサララーム）、そしてカオウォンプラチャンまで。ホームページで時代別に絞り込めます。"
+            }
+          ]
+        },
+        {
+          "q": {
+            "th": "ข้อมูลในเว็บมาจากไหน เชื่อถือได้แค่ไหน",
+            "en": "Where does the information come from, and how reliable is it?",
+            "zh": "网站信息来自哪里，可靠吗？",
+            "ja": "情報の出典は何で、どのくらい信頼できますか？"
+          },
+          "a": [
+            {
+              "th": "แต่ละหน้าสถานที่มีรายการแหล่งอ้างอิงท้ายหน้า และเมนู “เครดิตและแหล่งอ้างอิง” รวมแหล่งทั้งหมดไว้ เนื้อหาเรียบเรียงจากบทความ เว็บท่องเที่ยว และงานวิจัยที่เผยแพร่ ไม่ใช่ข้อมูลทางราชการ",
+              "en": "Each place page lists its sources at the bottom, and the “Credits & policy” menu gathers all of them. The text is compiled from published articles, travel sites and research; it is not official government information.",
+              "zh": "每个景点页面底部都列出了参考来源，“致谢与参考来源”菜单汇总了全部来源。内容整理自已发表的文章、旅游网站和研究，并非官方政府信息。",
+              "ja": "各場所のページの下部に出典を掲載し、「クレジットと参考文献」メニューにすべてをまとめています。内容は公開された記事、旅行サイト、研究をもとにまとめたもので、公的機関の情報ではありません。"
+            },
+            {
+              "th": "เมื่อแหล่งข้อมูลขัดแย้งกันหรือยืนยันไม่ได้ เว็บจะเขียนว่า “ตามตำนาน” หรือ “มีข้อมูลว่า” และไม่เติมรายละเอียดที่ตรวจสอบไม่ได้ หากพบข้อมูลผิด ขอให้แจ้งเรา",
+              "en": "When sources disagree or cannot be confirmed, the site says “according to tradition” or “it is reported that”, and does not add details that cannot be checked. If you find a mistake, please tell us.",
+              "zh": "当资料相互矛盾或无法证实时，网站会写“据传说”或“有资料称”，不会补充无法核实的细节。如发现错误，请告知我们。",
+              "ja": "出典同士が食い違う場合や確認できない場合は、「伝承によれば」「…という記録がある」と書き、確認できない詳細は加えません。誤りを見つけたらお知らせください。"
+            }
+          ],
+          "link": {
+            "href": "https://github.com/kittiphunr/Historical-attractions-in-Lopburi-Province/issues",
+            "external": true,
+            "label": {
+              "th": "แจ้งข้อมูลผิดหรือเสนอแก้ไข",
+              "en": "Report a mistake or suggest a fix",
+              "zh": "报告错误或建议修改",
+              "ja": "誤りの報告・修正の提案"
+            }
+          }
+        },
+        {
+          "q": {
+            "th": "เปลี่ยนภาษาอย่างไร",
+            "en": "How do I change the language?",
+            "zh": "如何切换语言？",
+            "ja": "言語を切り替えるには？"
+          },
+          "a": [
+            {
+              "th": "กดปุ่มภาษาที่มุมขวาบนแล้วเลือกไทย อังกฤษ จีน หรือญี่ปุ่น แต่ละภาษามีที่อยู่ของตัวเอง และเว็บจำภาษาที่เลือกไว้ คำแปลจีนและญี่ปุ่นยังเป็นฉบับร่างที่รอเจ้าของภาษาตรวจ ส่วนข้อความที่ผู้เข้าชมเขียนเองจะไม่ถูกแปล",
+              "en": "Press the language button at the top right and choose Thai, English, Chinese or Japanese. Each language has its own address and the site remembers your choice. The Chinese and Japanese translations are still drafts awaiting a native-speaker check, and text that visitors write themselves is not translated.",
+              "zh": "点击右上角的语言按钮，选择泰语、英语、中文或日语。每种语言都有各自的网址，网站会记住您的选择。中文和日语译文仍是草稿，有待母语者审校；访客自己撰写的内容不会被翻译。",
+              "ja": "右上の言語ボタンを押して、タイ語・英語・中国語・日本語から選びます。言語ごとに専用のアドレスがあり、選んだ言語は記憶されます。中国語と日本語の翻訳はまだ草稿で、ネイティブによる確認待ちです。訪問者が書いた文章は翻訳されません。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "h": {
+        "th": "การเดินทางและการเที่ยวชม",
+        "en": "Getting around and visiting",
+        "zh": "出行与参观",
+        "ja": "移動と見学"
+      },
+      "items": [
+        {
+          "q": {
+            "th": "เปิดกี่โมง ค่าเข้าชมเท่าไร",
+            "en": "What are the opening hours and entrance fees?",
+            "zh": "开放时间和门票是多少？",
+            "ja": "開館時間と入場料は？"
+          },
+          "a": [
+            {
+              "th": "เว็บยังไม่ลงเวลาเปิด-ปิดและค่าเข้าชม เพราะยังไม่มีแหล่งข้อมูลทางการที่ตรวจสอบได้ และข้อมูลเหล่านี้เปลี่ยนได้ ควรตรวจกับกรมศิลปากร หน่วยงานท้องถิ่น หรือผู้ดูแลสถานที่นั้นก่อนไป วัดและศาลยังเป็นศาสนสถานที่ใช้งานอยู่ เวลาอาจต่างจากโบราณสถานทั่วไป",
+              "en": "The site does not list opening hours or fees yet, because there is no verifiable official source and these details change. Check with the Fine Arts Department, local authorities or the caretaker of each place before you go. Temples and shrines are still active places of worship, so their hours can differ from other historic sites.",
+              "zh": "网站暂未列出开放时间和门票，因为目前没有可核实的官方来源，且这些信息会变动。出发前请向泰国艺术厅、当地机构或各景点的管理方确认。寺庙和神庙仍是正在使用的宗教场所，时间可能与一般古迹不同。",
+              "ja": "公的に確認できる情報源がなく、内容も変わるため、開館時間と入場料はまだ掲載していません。出発前に芸術局、地元の機関、または各場所の管理者にご確認ください。寺院や祠は現在も信仰の場として使われているため、他の史跡と時間が異なることがあります。"
+            }
+          ]
+        },
+        {
+          "q": {
+            "th": "ไปลพบุรีอย่างไร",
+            "en": "How do I get to Lopburi?",
+            "zh": "如何前往华富里？",
+            "ja": "ロッブリーへの行き方は？"
+          },
+          "a": [
+            {
+              "th": "เว็บยังไม่มีข้อมูลการเดินทางไปลพบุรีที่ตรวจสอบได้ จึงไม่ระบุตารางรถหรือค่าโดยสาร ใช้ปุ่ม “นำทางด้วย Google Maps” ในหน้าสถานที่เพื่อวางเส้นทางจากตำแหน่งของคุณ ปุ่มนี้ค้นจากชื่อสถานที่ ควรตรวจตำแหน่งบนแผนที่ก่อนออกเดินทาง",
+              "en": "The site has no verified travel information for getting to Lopburi, so it gives no timetables or fares. Use the “Navigate with Google Maps” button on each place page to plan a route from your location. The button searches by place name, so check the position on the map before you set out.",
+              "zh": "网站暂无可核实的前往华富里的交通信息，因此不提供班次和票价。请使用各景点页面上的“用 Google 地图导航”按钮，从您所在位置规划路线。该按钮按地名搜索，出发前请核对地图上的位置。",
+              "ja": "ロッブリーまでの交通について確認できる情報がないため、時刻表や運賃は掲載していません。各場所のページの「Googleマップで案内」ボタンで現在地からのルートを調べてください。ボタンは場所の名前で検索するので、出発前に地図上の位置をご確認ください。"
+            }
+          ]
+        },
+        {
+          "q": {
+            "th": "เดินเที่ยวทั้งหมดใช้เวลาเท่าไร",
+            "en": "How long does it take to see everything?",
+            "zh": "全部游览需要多长时间？",
+            "ja": "すべて回るのにどのくらいかかりますか？"
+          },
+          "a": [
+            {
+              "th": "เส้นทางเดินเมืองเก่าในหน้าแรกจัดให้เที่ยวได้ภายใน 1 วัน เริ่มที่ปรางค์แขกและจบที่บ้านวิชาเยนทร์ วัดไลย์และเขาวงพระจันทร์ไม่อยู่ในเส้นทางนี้ ควรวางเวลาแยกต่างหาก",
+              "en": "The old-town walking route on the home page is planned to fit in one day, starting at Prang Khaek and ending at Baan Wichayen. Wat Lai and Khao Wong Phra Chan are not part of this route, so plan separate time for them.",
+              "zh": "首页的老城步行路线按一天行程设计，从康塔庙开始，到法尔康宅邸结束。莱寺和月亮山不在这条路线上，请另外安排时间。",
+              "ja": "ホームページの旧市街の散策ルートは1日で回れるように組まれており、プラーン・ケークから始まりウィチャイエン邸で終わります。ワット・ライとカオウォンプラチャンはこのルートに含まれないため、別に時間を取ってください。"
+            }
+          ]
+        },
+        {
+          "q": {
+            "th": "ควรแต่งกายอย่างไร",
+            "en": "What should I wear?",
+            "zh": "应该穿什么？",
+            "ja": "服装はどうすればいいですか？"
+          },
+          "a": [
+            {
+              "th": "แต่งกายสุภาพ โดยเฉพาะที่วัด ศาลพระกาฬ และสถานที่ที่ยังใช้ประกอบพิธี เช่น สวมเสื้อมีแขน กางเกงหรือกระโปรงคลุมเข่า และทำตามป้ายหรือคำแนะนำของเจ้าหน้าที่ เช่น การถอดรองเท้าก่อนเข้าอาคาร",
+              "en": "Dress modestly, especially at temples, San Phra Kan and places still used for ceremonies: for example, a top with sleeves, trousers or a skirt that covers the knees, and follow signs or staff instructions, such as taking off shoes before entering a building.",
+              "zh": "请着装得体，尤其是在寺庙、卡拉神庙和仍用于仪式的场所：例如穿有袖上衣，裤子或裙子要过膝，并遵守标识和工作人员的指引，如进入建筑前脱鞋。",
+              "ja": "特に寺院、サーン・プラ・カーン、今も儀式に使われている場所では、控えめな服装でお願いします。たとえば袖のある上着、膝が隠れるズボンやスカートが目安です。建物に入る前に靴を脱ぐなど、案内表示や係員の指示に従ってください。"
+            }
+          ]
+        },
+        {
+          "q": {
+            "th": "ควรระวังลิงอย่างไร",
+            "en": "How should I deal with the monkeys?",
+            "zh": "遇到猴子该怎么办？",
+            "ja": "サルにはどう気をつければいいですか？"
+          },
+          "a": [
+            {
+              "th": "ลิงในลพบุรีอาศัยอยู่ใกล้ศาลพระกาฬและพระปรางค์สามยอด เมนูเครดิตมีบทความและข่าวเกี่ยวกับลิงลพบุรีให้อ่านเพิ่ม",
+              "en": "The monkeys in Lopburi live around San Phra Kan and Phra Prang Sam Yot. The credits menu lists articles and news about them if you want to read more.",
+              "zh": "华富里的猴子生活在卡拉神庙和三塔庙一带。致谢菜单中列有关于华富里猴子的文章和新闻，可供延伸阅读。",
+              "ja": "ロッブリーのサルはサーン・プラ・カーンとプラ・プラーン・サームヨートの周辺に住んでいます。クレジットのメニューに、サルに関する記事やニュースを掲載しています。"
+            },
+            {
+              "th": "คำแนะนำทั่วไป: เก็บของมีค่า แว่นตา โทรศัพท์ และถุงอาหารให้มิดชิด ไม่ถืออาหารเปิดเผย ไม่แหย่ ไม่จ้องตา ไม่ยื่นมือเข้าใกล้ และทำตามป้ายและคำแนะนำของเจ้าหน้าที่ในพื้นที่",
+              "en": "General advice: keep valuables, glasses, phones and food bags out of sight, do not carry food openly, do not tease or stare at them, do not reach toward them, and follow local signs and staff advice.",
+              "zh": "一般建议：把贵重物品、眼镜、手机和食物袋收好，不要拿着露出的食物，不要逗弄或直视猴子，不要伸手靠近，并遵守当地标识和工作人员的建议。",
+              "ja": "一般的な注意：貴重品、眼鏡、スマートフォン、食べ物の袋はしまい、食べ物をむき出しで持たない、からかったり目を見つめたりしない、手を伸ばさない、現地の表示や係員の指示に従う。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "h": {
+        "th": "โมเดล 3 มิติและ AR",
+        "en": "3D models and AR",
+        "zh": "3D 模型与 AR",
+        "ja": "3DモデルとAR"
+      },
+      "items": [
+        {
+          "q": {
+            "th": "ดูโมเดล 3 มิติอย่างไร",
+            "en": "How do I view the 3D models?",
+            "zh": "如何查看 3D 模型？",
+            "ja": "3Dモデルの見方は？"
+          },
+          "a": [
+            {
+              "th": "กดที่ภาพปกของสถานที่ (ในหน้าแรกหรือหน้าสถานที่) เว็บจึงโหลดโมเดลขึ้นมา จากนั้นลากเพื่อหมุน ดับเบิลคลิกเพื่อรีเซ็ต หรือใช้ปุ่มลูกศรบนแป้นพิมพ์ ไฟล์โมเดลจะโหลดเมื่อกดเท่านั้น หน้าเว็บจึงเปิดได้เร็ว",
+              "en": "Press the cover image of a place (on the home page or the place page) to load its model, then drag to rotate, double-click to reset, or use the arrow keys. Model files only load when you press, which keeps pages quick to open.",
+              "zh": "点击景点的封面图（在首页或景点页面）即可加载模型，然后拖动旋转、双击重置，或使用键盘方向键。模型文件只在点击后才加载，因此页面打开很快。",
+              "ja": "場所のカバー画像（ホームまたは各ページ）を押すとモデルが読み込まれます。ドラッグで回転、ダブルクリックでリセット、矢印キーでも操作できます。モデルのファイルは押したときだけ読み込まれるので、ページは素早く開きます。"
+            }
+          ]
+        },
+        {
+          "q": {
+            "th": "ปุ่ม “ดูแบบ AR” ใช้ได้กับอุปกรณ์อะไร",
+            "en": "Which devices support the “View in AR” button?",
+            "zh": "“AR 查看”按钮支持哪些设备？",
+            "ja": "「ARで見る」ボタンはどの端末で使えますか？"
+          },
+          "a": [
+            {
+              "th": "ต้องเปิดเว็บผ่าน https:// ด้วยมือถือหรือแท็บเล็ตที่รองรับ AR ได้แก่ Android ที่ใช้ Chrome และมี Google Play Services for AR หรือ iPhone/iPad ที่ใช้ Safari ถ้าอุปกรณ์ไม่รองรับ ยังดูโมเดลเต็มจอและหมุนดูได้",
+              "en": "Open the site over https:// on a phone or tablet that supports AR: Android with Chrome and Google Play Services for AR, or an iPhone/iPad with Safari. If your device does not support AR you can still view the model full screen and rotate it.",
+              "zh": "需通过 https:// 打开网站，并使用支持 AR 的手机或平板：使用 Chrome 且安装了 Google Play Services for AR 的 Android 设备，或使用 Safari 的 iPhone/iPad。如果设备不支持 AR，仍可全屏查看并旋转模型。",
+              "ja": "https:// でサイトを開き、AR対応のスマートフォンまたはタブレットをお使いください。ChromeとGoogle Play Services for ARが入ったAndroid、またはSafariを使うiPhone/iPadが対象です。非対応の端末でも、モデルを全画面で回して見られます。"
+            }
+          ]
+        },
+        {
+          "q": {
+            "th": "โมเดลตรงกับของจริงแค่ไหน",
+            "en": "How closely do the models match the real places?",
+            "zh": "模型与实物有多接近？",
+            "ja": "モデルは実物にどのくらい近いですか？"
+          },
+          "a": [
+            {
+              "th": "โมเดลเป็นงานที่เจ้าของโปรเจกต์ทำขึ้น (ระบุเครดิตไว้ใต้โมเดลทุกชิ้น) เพื่อประกอบการเรียนรู้ ไม่ใช่แบบสำรวจหรือแบบบูรณะทางโบราณคดี รายละเอียดและสัดส่วนอาจต่างจากของจริง",
+              "en": "The models were made by the project owner (credited under each model) as a learning aid. They are not surveys or archaeological reconstructions, so details and proportions may differ from the real places.",
+              "zh": "模型由项目所有者制作（每个模型下方均注明），用于辅助学习，并非测绘图或考古复原，细节和比例可能与实物不同。",
+              "ja": "モデルはプロジェクトの運営者が学習の助けとして制作したものです（各モデルの下にクレジットを表示）。測量図や考古学的復元ではないため、細部や縮尺が実物と異なる場合があります。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "h": {
+        "th": "สมุดเยี่ยม รีวิว และความเป็นส่วนตัว",
+        "en": "Guestbook, reviews and privacy",
+        "zh": "留言簿、评价与隐私",
+        "ja": "ゲストブック、レビュー、プライバシー"
+      },
+      "items": [
+        {
+          "q": {
+            "th": "ข้อความที่เขียนในสมุดเยี่ยมใครเห็นบ้าง",
+            "en": "Who can see what I write in the guestbook?",
+            "zh": "我在留言簿写的内容谁能看到？",
+            "ja": "ゲストブックに書いた内容は誰が見られますか？"
+          },
+          "a": [
+            {
+              "th": "ดูข้อความสถานะใต้ฟอร์ม ถ้าเขียนว่า “บันทึกร่วมกันทุกคน (เซิร์ฟเวอร์)” ข้อความจะแสดงให้ผู้เข้าชมทุกคนเห็น ถ้าเขียนว่า “โหมดออฟไลน์” ข้อความจะเก็บเฉพาะในเบราว์เซอร์ของคุณ ห้ามใส่ลิงก์หรือข้อมูลส่วนตัว เช่น เบอร์โทรและอีเมล ผู้ดูแลอาจซ่อนหรือลบข้อความที่ไม่เหมาะสม",
+              "en": "Check the status line under the form. If it says “Shared with everyone (server)”, your message is shown to all visitors. If it says “Offline mode”, it is kept only in your own browser. Do not include links or personal details such as phone numbers or email addresses. Moderators may hide or delete inappropriate messages.",
+              "zh": "请查看表单下方的状态提示。如果显示“所有人共享（服务器）”，您的留言会向所有访客显示；如果显示“离线模式”，则只保存在您自己的浏览器中。请勿填写链接或电话、邮箱等个人信息。管理员可能会隐藏或删除不当留言。",
+              "ja": "フォームの下の状態表示をご確認ください。「全員で共有（サーバー）」と表示されていれば、書いた内容はすべての訪問者に表示されます。「オフラインモード」と表示されていれば、お使いのブラウザにだけ保存されます。リンクや電話番号・メールアドレスなどの個人情報は書かないでください。不適切なメッセージは管理者が非表示または削除することがあります。"
+            }
+          ]
+        },
+        {
+          "q": {
+            "th": "รีวิวสถานที่ต่างจากสมุดเยี่ยมอย่างไร",
+            "en": "How are place reviews different from the guestbook?",
+            "zh": "景点评价与留言簿有何不同？",
+            "ja": "場所のレビューはゲストブックとどう違いますか？"
+          },
+          "a": [
+            {
+              "th": "เฉพาะเว็บที่เปิดระบบรีวิว จะมีส่วน “รีวิวจากผู้เข้าชม” ท้ายหน้าสถานที่ ต้องให้คะแนน 1–5 ดาว และรีวิวจะแสดงหลังผู้ดูแลตรวจอนุมัติ ส่วนสมุดเยี่ยมในหน้าแรกแสดงทันที ระบบมีการป้องกันสแปม เช่น ตรวจการส่งอัตโนมัติและจำกัดความถี่ จึงอาจขึ้นข้อความว่าส่งถี่เกินไปถ้าส่งซ้ำเร็ว",
+              "en": "Only where the review feature is enabled, place pages have a “Visitor reviews” section at the bottom. You must give 1–5 stars, and a review appears after a moderator approves it, while guestbook entries on the home page appear straight away. There is spam protection, such as an automated-submission check and rate limits, so you may see a “sending too fast” message if you send repeatedly.",
+              "zh": "只有启用了评价功能的网站，景点页面底部才会有“访客评价”部分。需要给出 1–5 星评分，评价经管理员审核通过后才会显示；首页的留言簿则立即显示。系统设有防垃圾信息措施，如自动提交检测和频率限制，如果短时间内重复发送，可能会看到“发送过于频繁”的提示。",
+              "ja": "レビュー機能が有効なサイトでは、各場所のページの下部に「訪問者のレビュー」欄があります。星1〜5の評価が必要で、レビューは管理者の承認後に表示されます。ホームのゲストブックはすぐに表示されます。自動投稿の検出や回数制限などのスパム対策があるため、続けて送ると「送信が多すぎます」と表示されることがあります。"
+            }
+          ]
+        },
+        {
+          "q": {
+            "th": "ข้อมูลของฉันถูกเก็บอย่างไร ขอลบได้ไหม",
+            "en": "How is my data stored, and can I ask for it to be deleted?",
+            "zh": "我的数据如何存储？可以要求删除吗？",
+            "ja": "自分のデータはどう保存されますか？削除を依頼できますか？"
+          },
+          "a": [
+            {
+              "th": "รายละเอียดอยู่ในนโยบายความเป็นส่วนตัว ซึ่งอธิบายว่าเก็บข้อมูลอะไร ใช้เพื่ออะไร และติดต่อเราอย่างไรเพื่อขอลบ",
+              "en": "The privacy policy explains what is stored, what it is used for, and how to contact us to ask for deletion.",
+              "zh": "隐私政策说明了会存储哪些数据、用途是什么，以及如何联系我们要求删除。",
+              "ja": "プライバシーポリシーに、保存する情報、利用目的、削除を依頼する際の連絡方法を記載しています。"
+            }
+          ],
+          "link": {
+            "href": "privacy.html",
+            "external": false,
+            "label": {
+              "th": "อ่านนโยบายความเป็นส่วนตัว",
+              "en": "Read the privacy policy",
+              "zh": "阅读隐私政策",
+              "ja": "プライバシーポリシーを読む"
+            }
+          }
+        },
+        {
+          "q": {
+            "th": "นำภาพหรือโมเดลไปใช้ต่อได้ไหม",
+            "en": "Can I reuse the images or models?",
+            "zh": "可以转用图片或模型吗？",
+            "ja": "画像やモデルを再利用できますか？"
+          },
+          "a": [
+            {
+              "th": "ยังไม่ได้ระบุสัญญาอนุญาตสำหรับการนำโมเดลและเนื้อหาของเว็บไปใช้ซ้ำ หากต้องการนำไปใช้ ให้ติดต่อขออนุญาตก่อน ส่วนภาพถ่ายของผู้อื่นจะแสดงชื่อผู้ถ่ายและสัญญาอนุญาตใต้ภาพ และตราประจำจังหวัดเป็นสิทธิ์ของหน่วยงานเจ้าของตรา",
+              "en": "No licence has been stated yet for reusing the site’s models and content, so please ask for permission first. Photos by other people show the photographer and licence under the image, and the provincial seal belongs to the body that owns it.",
+              "zh": "目前尚未就本站模型和内容的再利用注明许可协议，如需使用请先征得许可。他人拍摄的照片会在图片下方标明摄影者和许可协议，府徽的权利归属其所属机构。",
+              "ja": "サイトのモデルや内容の再利用についてのライセンスはまだ定めていません。利用したい場合は、先に許可をお求めください。他の方が撮影した写真には、画像の下に撮影者とライセンスを表示します。県章の権利は、その所有機関に帰属します。"
+            }
+          ],
+          "link": {
+            "href": "https://github.com/kittiphunr/Historical-attractions-in-Lopburi-Province/issues",
+            "external": true,
+            "label": {
+              "th": "ติดต่อผ่านหน้า Issues",
+              "en": "Contact us via Issues",
+              "zh": "通过 Issues 页面联系我们",
+              "ja": "Issuesページから連絡する"
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "back": {
+    "th": "← กลับหน้าแรก",
+    "en": "← Back to home",
+    "zh": "← 返回首页",
+    "ja": "← ホームに戻る"
+  },
+  "footerLink": {
+    "th": "คำถามที่พบบ่อย",
+    "en": "FAQ",
+    "zh": "常见问题",
+    "ja": "よくある質問"
+  }
+}
