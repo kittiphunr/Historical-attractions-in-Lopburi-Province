@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="utf-8"><title>map-debug: ตรวจตำแหน่งหมุดแผนที่ 3 มิติ</title><style>canvas{position:absolute;left:0;top:0;width:100%;height:100%}
+html,body{margin:0;background:#e9dccb;font-family:sans-serif}
+#host{position:relative;width:1600px;height:1200px;overflow:hidden}
+.g{position:absolute;left:0;top:0;width:3px;height:3px;margin:-1.5px;background:rgba(0,0,255,.55);border-radius:50%;font-size:0;will-change:transform}
+.gl{position:absolute;left:4px;top:-5px;font-size:9px;color:#003;white-space:nowrap;background:rgba(255,255,255,.55);padding:0 1px}
+.h{position:absolute;left:0;top:0;will-change:transform}
+.h b{display:block;margin:-6px 0 0 -6px;width:12px;height:12px;border-radius:50%;background:#d00;border:2px solid #fff}
+.h i{position:absolute;left:8px;top:-8px;font-style:normal;font-size:12px;font-weight:700;color:#900;background:rgba(255,255,255,.8);padding:0 2px;white-space:nowrap}
+</style></head><body><div id="host"></div>
+<script src="assets/js/config.js"></script><script src="assets/js/data.js"></script><script src="assets/js/models.js"></script><script src="assets/js/three-scenes.js"></script>
+<script>
+const host=document.getElementById('host'); const hs=[];
+// เปิดผ่าน npm start แล้วไปที่ /map-debug.html  (?step=0.2 = ระยะตาราง, ?step=5 = ไม่แสดงตาราง) ตารางคือพิกัด x,z ของ hotspots ใน assets/js/data.js
+const step=+new URLSearchParams(location.search).get('step')||0.1;
+for(let x=-1;x<=1.0001;x+=step)for(let z=-1;z<=1.0001;z+=step){const d=document.createElement('div');d.className='g';const l=document.createElement('span');l.className='gl';l.textContent=x.toFixed(1)+','+z.toFixed(1);d.appendChild(l);host.appendChild(d);hs.push({id:'g',x:+x.toFixed(3),z:+z.toFixed(3),el:d});}
+window.PROVINCE_MODEL.hotspots.forEach(h=>{const d=document.createElement('div');d.className='h';d.innerHTML='<b></b><i>'+h.id+'</i>';host.appendChild(d);hs.push({id:h.id,x:h.x,z:h.z,el:d});});
+const v=LopburiGL.createMapViewer(host,{url:window.PROVINCE_MODEL.url,hotspots:hs});
+v.ready.then(()=>{v.rotate(0.55,0.62);window.__ready=1;});
+</script></body></html>
