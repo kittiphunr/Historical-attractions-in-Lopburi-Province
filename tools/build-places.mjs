@@ -109,7 +109,8 @@ function page(a, idx) {
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   ${headFonts}<link rel="stylesheet" href="assets/tailwind.css">
   <script type="application/ld+json">${JSON.stringify(ld)}</script>
-  ${themeScript}</head>
+  ${themeScript}<script src="assets/js/loader.js"></script>
+</head>
 <body class="relative overflow-x-hidden pb-28 lg:pb-10" data-place="${a.id}">
   <a href="places/${a.id}.html#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-terra-500 focus:px-4 focus:py-2 focus:text-white">ข้ามไปยังเนื้อหา</a>
 
