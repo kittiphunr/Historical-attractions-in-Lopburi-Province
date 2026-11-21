@@ -117,3 +117,12 @@
 .poster[data-busy] { cursor: progress; }
 .poster[data-busy] [data-pl]::before { content: ''; display: inline-block; width: .9em; height: .9em; margin-right: .5em; vertical-align: -.1em; border: 2px solid currentColor; border-right-color: transparent; border-radius: 9999px; animation: spin .8s linear infinite; }
 [data-state='poster'] [data-mv] { display: none; }
+
+/* ฉากโหลดตอนเข้า/ออกหน้าย่อย (ควบคุมโดย assets/js/loader.js) */
+html.pl-boot::before { content: ''; position: fixed; inset: 0; z-index: 9998; background: rgb(var(--cream-100)); animation: pl-in .18s ease-out both; }
+html.pl-boot::after { content: ''; position: fixed; left: 50%; top: 50%; z-index: 9999; width: 88px; height: 86px; margin: -43px 0 0 -44px; background: url(img/seal-192.png) center / contain no-repeat; filter: drop-shadow(0 6px 14px rgb(0 0 0 / .22)); animation: pl-in .18s ease-out both, pl-pulse 1.3s ease-in-out .18s infinite; }
+html.pl-boot.pl-done::before, html.pl-boot.pl-done::after { animation: pl-out .4s ease forwards; pointer-events: none; }
+@keyframes pl-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pl-out { from { opacity: 1; } to { opacity: 0; } }
+@keyframes pl-pulse { 0%, 100% { transform: scale(.94); } 50% { transform: scale(1.07); } }
+@media (prefers-reduced-motion: reduce) { html.pl-boot::after { animation: pl-in .18s ease-out both; } }
