@@ -114,6 +114,7 @@
   function paintMenu() {
     const cur = LANGS.find(l => l.code === lang);
     const label = document.getElementById('langCur'); if (label) label.textContent = cur.short;
+    const lb = document.getElementById('langBtn'); if (lb) lb.setAttribute('aria-label', cur.short + ' — ' + t('เลือกภาษา')); // ชื่อที่อ่านออกเสียงต้องมีข้อความที่เห็นอยู่ด้วย
     document.querySelectorAll('#langMenu [data-lang]').forEach(b => { const on = b.dataset.lang === lang; b.setAttribute('aria-selected', on); b.classList.toggle('text-terra-600', on); b.querySelector('[data-check]').style.visibility = on ? 'visible' : 'hidden'; });
   }
 
