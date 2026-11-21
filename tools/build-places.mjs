@@ -108,8 +108,8 @@ function travelBlock(a) {
 
 function miniMap(a) {
   if (!a.map) return '';
-  return `<section class="reveal"><h2 class="eyebrow">ตำแหน่งในเมืองเก่า</h2>
-    <div class="relative mt-3 overflow-hidden rounded-2xl shadow-neu"><img src="assets/img/lopburi-map-768.webp" alt="แผนที่ภาพเมืองเก่าลพบุรี" width="768" height="512" loading="lazy" class="map-img w-full">
+  return `<section class="reveal"><h2 class="eyebrow">ตำแหน่งบนแผนที่</h2>
+    <div class="relative mt-3 overflow-hidden rounded-2xl shadow-neu"><img src="assets/img/lopburi-map-768.webp" alt="แผนที่ท่องเที่ยวลพบุรีแบบภาพ (แผนผัง ไม่ตรงมาตราส่วนจริง)" width="768" height="512" loading="lazy" class="map-img w-full">
       <span class="absolute -translate-x-1/2 -translate-y-1/2" style="left:${a.map[0]}%;top:${a.map[1]}%"><span class="absolute inset-0 -m-2 animate-ping rounded-full bg-terra-400/40"></span><span class="relative grid h-9 w-9 place-items-center rounded-full border-2 border-white bg-terra-500 text-sm font-semibold text-white shadow-dark">${a.no}</span></span></div>
     <a href="index.html#map" class="mt-3 inline-flex items-center gap-1 text-sm text-terra-600 underline-offset-4 hover:underline">ดูแผนที่ทั้งจังหวัด ${icon('arrow', 'h-4 w-4')}</a></section>`;
 }
