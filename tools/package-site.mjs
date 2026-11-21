@@ -27,7 +27,7 @@ const slug = HOST.replace(/[^a-z0-9.-]/gi, '-');
 for (const f of ['index.html', 'en/index.html', 'places/sam-yot.html', 'sitemap.xml']) if (!existsSync(join(root, f))) { console.error(`ยังไม่ได้ build (ไม่พบ ${f}) — รัน npm run build ก่อน`); process.exit(1); }
 
 rmSync(out, { recursive: true, force: true }); mkdirSync(dir, { recursive: true });
-for (const f of ['index.html', 'privacy.html', '404.html', 'sitemap.xml', 'robots.txt']) cpSync(join(root, f), join(dir, f));
+for (const f of ['index.html', 'privacy.html', 'faq.html', '404.html', 'sitemap.xml', 'robots.txt']) cpSync(join(root, f), join(dir, f));
 for (const d of ['places', 'en', 'zh', 'ja']) cpSync(join(root, d), join(dir, d), { recursive: true });
 cpSync(join(root, 'assets'), join(dir, 'assets'), { recursive: true, filter: (src) => !/[\\/]assets[\\/]model[\\/]offline$/.test(src) && !src.endsWith('.gitkeep') });
 

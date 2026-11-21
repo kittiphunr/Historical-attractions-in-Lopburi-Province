@@ -9,7 +9,7 @@ const walkLeaves = (v, out) => { if (v && typeof v === 'object') { if (typeof v.
 /** พจนานุกรมของภาษา code: i18n/<code>.json รวมกับคำแปลในไฟล์เนื้อหา */
 export function loadDict(root, code) {
   const ui = JSON.parse(readFileSync(join(root, 'i18n', code + '.json'), 'utf8'));
-  for (const f of ['content/privacy.json', 'content/404.json']) {
+  for (const f of ['content/privacy.json', 'content/404.json', 'content/faq.json']) {
     for (const l of walkLeaves(JSON.parse(readFileSync(join(root, f), 'utf8')), [])) if (typeof l[code] === 'string') ui[l.th] = l[code];
   }
   return ui;
