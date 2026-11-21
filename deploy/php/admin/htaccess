@@ -1,0 +1,7 @@
+# หน้าผู้ดูแล: ไม่ให้เสิร์ชเอนจินจัดทำดัชนี และไม่แคช (ชื่อไฟล์ตอนวางบนโฮสต์ต้องเป็น .htaccess)
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, nofollow"
+  Header set Cache-Control "no-store"
+</IfModule>
+Options -Indexes
+DirectoryIndex index.php

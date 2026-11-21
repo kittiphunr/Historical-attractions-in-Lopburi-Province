@@ -4,3 +4,5 @@ data/guestbook.json
 backend/cloudflare/.wrangler/
 backend/cloudflare/.dev.vars
 dist/
+deploy/php/api/config.php
+lopburi-config.php

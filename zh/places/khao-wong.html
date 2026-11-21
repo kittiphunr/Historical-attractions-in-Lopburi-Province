@@ -136,6 +136,24 @@
         <section class="reveal"><h2 class="flex items-center gap-3 text-2xl font-semibold text-ink-900 sm:text-3xl"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-sm text-white" style="background:linear-gradient(145deg,#dc6f45,#a8431f)">05</span>出行准备</h2><div class="mt-4 leading-relaxed text-ink-700"><ul class="space-y-3"><li class="flex gap-3"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500"></span><span>上下山需要几个小时，请备足饮水、穿舒适的鞋，并避开正午的烈日</span></li><li class="flex gap-3"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500"></span><span>位于老城之外，建议安排半天或一整天的行程</span></li><li class="flex gap-3"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500"></span><span>可致电寺院 08 7564 3225 或泰国旅游局华富里办事处 0 3677 0096-7（来自 Sanook 网站，可能变动）</span></li></ul></div></section>
         
 
+        <!-- รีวิวจากผู้เข้าชม: ซ่อนไว้จนกว่า assets/js/reviews.js จะโหลดรีวิวได้ (ต้องตั้ง reviewsApi ใน assets/js/config.js) -->
+        <section id="reviews" class="card hidden p-6 sm:p-8" aria-label="游客评价">
+          <h2 class="flex items-center gap-3 text-2xl font-semibold text-ink-900 sm:text-3xl"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-sm text-white" style="background:linear-gradient(145deg,#dc6f45,#a8431f)">06</span>游客评价</h2>
+          <div id="rvSummary" class="mt-5 flex flex-wrap items-center gap-4" aria-live="polite"></div>
+          <ul id="rvList" class="mt-5 space-y-4"></ul>
+          <div class="mt-4 text-center"><button id="rvMore" type="button" class="btn-soft hidden !px-5 !py-2.5 text-sm">查看更多评价</button></div>
+          <form id="rvForm" class="mt-8 space-y-4 border-t border-cream-200 pt-6" novalidate>
+            <h3 class="text-lg font-semibold text-ink-900">为这个景点写评价</h3>
+            <div><label for="rvName" class="mb-1 block text-sm text-ink-700">显示名称</label><input id="rvName" name="name" maxlength="40" autocomplete="nickname" class="field"></div>
+            <div><span id="rvStarsLabel" class="mb-1 block text-sm text-ink-700">评分</span><div id="rvStars" role="radiogroup" aria-labelledby="rvStarsLabel" class="flex gap-1 text-3xl"></div></div>
+            <div><label for="rvMsg" class="mb-1 block text-sm text-ink-700">您的评价</label><textarea id="rvMsg" name="message" rows="4" maxlength="500" class="field resize-y"></textarea></div>
+            <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true">
+            <button type="submit" class="btn-terra">提交评价</button>
+            <p id="rvStatus" role="status" class="text-sm"></p>
+            <p class="text-xs leading-relaxed text-ink-400">您提交的姓名和评价将在管理员审核后向所有访客显示。请勿填写电话或邮箱等个人信息。 <a href="zh/privacy.html" class="underline hover:text-terra-600">隐私政策</a></p>
+          </form>
+        </section>
+
         <section class="reveal border-t border-cream-200 pt-6">
           <p class="mb-3 text-xs uppercase tracking-wider text-terra-500">个参考来源</p>
           <div class="flex flex-wrap gap-2"><a class="rounded-full bg-cream-100 px-3 py-1 text-xs text-ink-700 shadow-neu hover:text-terra-600" target="_blank" rel="noopener noreferrer" href="https://www.wongnai.com/trips/attraction-khao-wongphrachan-lopburi" title="Wongnai Trips — พิชิตเขาวงพระจันทร์ 3,790 ขั้น">Wongnai Trips ↗</a><a class="rounded-full bg-cream-100 px-3 py-1 text-xs text-ink-700 shadow-neu hover:text-terra-600" target="_blank" rel="noopener noreferrer" href="https://www.sanook.com/horoscope/112705/" title="Sanook — เขาวงพระจันทร์">Sanook ↗</a><a class="rounded-full bg-cream-100 px-3 py-1 text-xs text-ink-700 shadow-neu hover:text-terra-600" target="_blank" rel="noopener noreferrer" href="https://travel.trueid.net/detail/xl5NXgmAMYaw" title="TrueID Travel — 11 วัดสวย ลพบุรี">TrueID Travel ↗</a><a class="rounded-full bg-cream-100 px-3 py-1 text-xs text-ink-700 shadow-neu hover:text-terra-600" target="_blank" rel="noopener noreferrer" href="https://travel.trueid.net/detail/PobBKjLzmeJo" title="TrueID Travel — 23 ที่เที่ยวลพบุรี">TrueID Travel ↗</a></div>
@@ -239,5 +257,6 @@
   <script src="assets/js/i18n.js"></script>
   <script src="assets/js/common.js"></script>
   <script src="assets/js/place.js"></script>
+  <script src="assets/js/reviews.js"></script>
 </body>
 </html>

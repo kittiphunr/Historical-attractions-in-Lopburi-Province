@@ -136,6 +136,24 @@
         <section class="reveal"><h2 class="flex items-center gap-3 text-2xl font-semibold text-ink-900 sm:text-3xl"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-sm text-white" style="background:linear-gradient(145deg,#dc6f45,#a8431f)">05</span>Before you go</h2><div class="mt-4 leading-relaxed text-ink-700"><ul class="space-y-3"><li class="flex gap-3"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500"></span><span>The temple is still a place of worship; dress modestly</span></li><li class="flex gap-3"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-500"></span><span>Check opening times and directions with local authorities before you go</span></li></ul></div></section>
         
 
+        <!-- รีวิวจากผู้เข้าชม: ซ่อนไว้จนกว่า assets/js/reviews.js จะโหลดรีวิวได้ (ต้องตั้ง reviewsApi ใน assets/js/config.js) -->
+        <section id="reviews" class="card hidden p-6 sm:p-8" aria-label="Visitor reviews">
+          <h2 class="flex items-center gap-3 text-2xl font-semibold text-ink-900 sm:text-3xl"><span class="grid h-9 w-9 shrink-0 place-items-center rounded-xl text-sm text-white" style="background:linear-gradient(145deg,#dc6f45,#a8431f)">06</span>Visitor reviews</h2>
+          <div id="rvSummary" class="mt-5 flex flex-wrap items-center gap-4" aria-live="polite"></div>
+          <ul id="rvList" class="mt-5 space-y-4"></ul>
+          <div class="mt-4 text-center"><button id="rvMore" type="button" class="btn-soft hidden !px-5 !py-2.5 text-sm">Show more reviews</button></div>
+          <form id="rvForm" class="mt-8 space-y-4 border-t border-cream-200 pt-6" novalidate>
+            <h3 class="text-lg font-semibold text-ink-900">Write a review of this place</h3>
+            <div><label for="rvName" class="mb-1 block text-sm text-ink-700">Display name</label><input id="rvName" name="name" maxlength="40" autocomplete="nickname" class="field"></div>
+            <div><span id="rvStarsLabel" class="mb-1 block text-sm text-ink-700">Your rating</span><div id="rvStars" role="radiogroup" aria-labelledby="rvStarsLabel" class="flex gap-1 text-3xl"></div></div>
+            <div><label for="rvMsg" class="mb-1 block text-sm text-ink-700">Your review</label><textarea id="rvMsg" name="message" rows="4" maxlength="500" class="field resize-y"></textarea></div>
+            <input type="text" name="website" tabindex="-1" autocomplete="off" class="hidden" aria-hidden="true">
+            <button type="submit" class="btn-terra">Submit review</button>
+            <p id="rvStatus" role="status" class="text-sm"></p>
+            <p class="text-xs leading-relaxed text-ink-400">Your name and review will be shown to all visitors after a moderator checks it. Please do not include personal details such as a phone number or email. <a href="en/privacy.html" class="underline hover:text-terra-600">Privacy Policy</a></p>
+          </form>
+        </section>
+
         <section class="reveal border-t border-cream-200 pt-6">
           <p class="mb-3 text-xs uppercase tracking-wider text-terra-500">sources</p>
           <div class="flex flex-wrap gap-2"><a class="rounded-full bg-cream-100 px-3 py-1 text-xs text-ink-700 shadow-neu hover:text-terra-600" target="_blank" rel="noopener noreferrer" href="https://www.silpa-mag.com/?p=22625" title="ศิลปวัฒนธรรม — อุโบสถสีทองวัดไลย์">Silpa-Mag (Art &amp; Culture) ↗</a><a class="rounded-full bg-cream-100 px-3 py-1 text-xs text-ink-700 shadow-neu hover:text-terra-600" target="_blank" rel="noopener noreferrer" href="https://www.lovethailand.org/travel/t/20-ลพบุรี/1647-วัดไลย์.html" title="LoveThailand.org — วัดไลย์">LoveThailand.org ↗</a><a class="rounded-full bg-cream-100 px-3 py-1 text-xs text-ink-700 shadow-neu hover:text-terra-600" target="_blank" rel="noopener noreferrer" href="https://www.khaosod.co.th/amulets/news_1780024" title="ข่าวสด — พระศรีอริยเมตไตรย วัดไลย์">Khaosod ↗</a><a class="rounded-full bg-cream-100 px-3 py-1 text-xs text-ink-700 shadow-neu hover:text-terra-600" target="_blank" rel="noopener noreferrer" href="https://travel.trueid.net/detail/xl5NXgmAMYaw" title="TrueID Travel — 11 วัดสวย ลพบุรี">TrueID Travel ↗</a></div>
@@ -239,5 +257,6 @@
   <script src="assets/js/i18n.js"></script>
   <script src="assets/js/common.js"></script>
   <script src="assets/js/place.js"></script>
+  <script src="assets/js/reviews.js"></script>
 </body>
 </html>
