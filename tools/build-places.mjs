@@ -33,7 +33,7 @@ const A = ctx.window.ATTRACTIONS, S = ctx.window.SOURCES, SRC = Object.fromEntri
 
 const ogExtra = ['<meta property="og:site_name" content="ลพบุรี เมืองสามยุค">', '<meta property="og:locale" content="th_TH">', '<meta property="og:locale:alternate" content="en_US">', '<meta property="og:locale:alternate" content="zh_CN">', '<meta property="og:locale:alternate" content="ja_JP">'].join('\n  ');
 const esc = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const ERA_COLOR = { dvaravati: 'bg-sky-500/15 text-sky-700', khmer: 'bg-terra-500/10 text-terra-600', ayutthaya: 'bg-amber-500/15 text-amber-700', faith: 'bg-emerald-600/15 text-emerald-700' };
+const ERA_COLOR = { dvaravati: 'bg-sky-500/15 text-sky-700', khmer: 'bg-terra-500/10 text-terra-600', ayutthaya: 'bg-amber-500/15 text-amber-700', faith: 'bg-emerald-600/15 text-emerald-700', nature: 'bg-teal-600/15 text-teal-700' };
 const GRAD = 'background:linear-gradient(145deg,#dc6f45,#a8431f)';
 const icon = (name, cls = '') => `<i data-i="${name}" class="${cls}"></i>`;
 
@@ -145,7 +145,7 @@ function page(a, idx) {
       isPartOf: { '@type': 'TouristDestination', name: 'จังหวัดลพบุรี', url: SITE }, address: { '@type': 'PostalAddress', addressRegion: 'ลพบุรี', addressCountry: 'TH' } },
     { '@type': 'BreadcrumbList', itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'หน้าแรก', item: SITE },
-      { '@type': 'ListItem', position: 2, name: '11 แห่ง', item: SITE + '#places' },
+      { '@type': 'ListItem', position: 2, name: '12 แห่ง', item: SITE + '#places' },
       { '@type': 'ListItem', position: 3, name: a.name, item: url }] }] };
   const extraStart = 5;
   const factsAll = [...a.facts, ...(c.facts || [])];
@@ -185,7 +185,7 @@ function page(a, idx) {
   ${chrome}<main id="main" class="mx-auto max-w-6xl px-4 pt-20 lg:pl-[112px] lg:pr-6">
     <nav aria-label="ตำแหน่งหน้า" class="text-sm text-ink-500"><ol class="flex flex-wrap items-center gap-2">
       <li><a class="hover:text-terra-600" href="index.html">หน้าแรก</a></li><li aria-hidden="true">/</li>
-      <li><a class="hover:text-terra-600" href="index.html#places">11 แห่ง</a></li><li aria-hidden="true">/</li>
+      <li><a class="hover:text-terra-600" href="index.html#places">12 แห่ง</a></li><li aria-hidden="true">/</li>
       <li aria-current="page" class="text-ink-900">${esc(a.name)}</li></ol></nav>
 
     <div class="mt-6 grid items-start gap-8 lg:grid-cols-12 lg:gap-10">
@@ -217,7 +217,7 @@ function page(a, idx) {
 
         <section class="reveal">${h2('ภาพถ่าย', '01')}<div class="mt-4">${gallery(a, c)}</div></section>
         <section class="reveal">${h2('ประวัติศาสตร์', '02')}<div class="mt-4 space-y-4 leading-relaxed text-ink-700">${paras(a.history)}</div></section>
-        <section class="reveal">${h2('สถาปัตยกรรม', '03')}<div class="mt-4 space-y-4 leading-relaxed text-ink-700">${paras(a.architecture)}</div></section>
+        <section class="reveal">${h2(a.archTitle || 'สถาปัตยกรรม', '03')}<div class="mt-4 space-y-4 leading-relaxed text-ink-700">${paras(a.architecture)}</div></section>
         <section class="reveal">${h2('ไฮไลต์', '04')}<div class="mt-4 leading-relaxed text-ink-700">${bullets(a.highlights)}</div></section>
         <section class="reveal">${h2('เตรียมตัวไป', '05')}<div class="mt-4 leading-relaxed text-ink-700">${bullets(a.visit, 'bg-amber-500')}</div></section>
         ${c.sections.map((s, i) => extraSection(a, s, String(extraStart + 1 + i).padStart(2, '0'))).join('\n        ')}
@@ -417,7 +417,7 @@ function homeBlocks() {
     { '@context': 'https://schema.org', '@type': 'TouristDestination', name: 'จังหวัดลพบุรี', alternateName: 'Lopburi Province', description: 'สำรวจ 10 แหล่งประวัติศาสตร์เมืองสามยุคของลพบุรี: ทวารวดี ขอม อยุธยา', url: SITE, image: IMG + 'assets/img/og-cover.jpg', inLanguage: 'th',
       containsPlace: A.map(a => ({ '@type': 'TouristAttraction', name: a.name, alternateName: a.en, url: `${SITE}places/${a.id}.html` })) }
   ];
-  const nolist = `<noscript><nav aria-label="สถานที่ทั้ง 11 แห่ง" class="mt-6"><ul class="grid gap-2 sm:grid-cols-2">${A.map(a => `<li><a class="underline" href="places/${a.id}.html">${esc(a.no)} ${esc(a.name)} — ${esc(a.tagline)}</a></li>`).join('')}</ul></nav></noscript>`;
+  const nolist = `<noscript><nav aria-label="สถานที่ทั้ง 12 แห่ง" class="mt-6"><ul class="grid gap-2 sm:grid-cols-2">${A.map(a => `<li><a class="underline" href="places/${a.id}.html">${esc(a.no)} ${esc(a.name)} — ${esc(a.tagline)}</a></li>`).join('')}</ul></nav></noscript>`;
   return { jsonld: `\n  <script type="application/ld+json">${JSON.stringify(ld)}</script>\n  `, nolist, hreflang: '\n  ' + hreflangLinks('') + '\n  ' };
 }
 let homeThai;
