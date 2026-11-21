@@ -39,7 +39,8 @@ try {
     if (lop_has_link($name) || lop_has_link($message)) lop_fail('links');
     lop_rate_check('review', $place);
 
-    lop_insert('review', $place, $name, $message, $rating, 'pending', (string)($b['lang'] ?? ''));
+    $row = lop_insert('review', $place, $name, $message, $rating, 'pending', (string)($b['lang'] ?? ''));
+    lop_notify_new('review', $row['id'], $place, $name, $rating, $message);
     lop_json(['ok' => true, 'status' => 'pending'], 202, lop_cors_headers());
 } catch (Throwable $e) {
     error_log('lopburi reviews: ' . $e->getMessage());

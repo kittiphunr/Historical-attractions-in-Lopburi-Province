@@ -209,6 +209,63 @@ function lop_captcha_verify(array $b): void {
     if (lop_zero_bits(hash('sha256', $salt . $n, true)) < lop_pow_bits()) lop_fail('captcha');
 }
 
+/* ---------- อีเมลแจ้งเตือนผู้ดูแลเมื่อมีรีวิวใหม่ ----------
+ * ตั้ง notify_email ใน config (อีเมลเดียว) เพื่อเปิด · ส่งด้วย mail() ของโฮสต์ (ไม่ต้องตั้ง SMTP) · ไม่ส่งซ้ำถี่: ถ้าภายใน notify_min_interval วินาที
+ * (ค่าเริ่มต้น 300) มีข้อความชนิดเดียวกันเข้ามาก่อนหน้านี้แล้ว จะไม่ส่งฉบับใหม่ (ฉบับแรกของช่วงบอกจำนวนที่รอตรวจ) · ส่งไม่สำเร็จไม่กระทบการบันทึกข้อความ */
+function lop_notify_email(): string {
+    $e = trim((string)(lop_config()['notify_email'] ?? ''));
+    return ($e !== '' && !preg_match('/[\r\n,;<>]/', $e) && filter_var($e, FILTER_VALIDATE_EMAIL)) ? $e : '';
+}
+function lop_site_host(): string {
+    $u = (string)(lop_config()['site_url'] ?? '');
+    if ($u !== '' && ($h = parse_url($u, PHP_URL_HOST))) return strtolower((string)$h);
+    $h = strtolower((string)($_SERVER['HTTP_HOST'] ?? ($_SERVER['SERVER_NAME'] ?? '')));
+    return preg_match('/^[a-z0-9.\-]+(:\d+)?$/', $h) ? preg_replace('/:\d+$/', '', $h) : 'localhost';
+}
+function lop_admin_url(): string {
+    $u = rtrim((string)(lop_config()['site_url'] ?? ''), '/');
+    if ($u !== '' && preg_match('#^https?://[A-Za-z0-9.\-]+(:\d+)?(/[A-Za-z0-9._~/\-]*)?$#', $u)) return $u . '/admin/';
+    $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+    $host = strtolower((string)($_SERVER['HTTP_HOST'] ?? ''));
+    if (!preg_match('/^[a-z0-9.\-]+(:\d+)?$/', $host)) return '';
+    $base = rtrim(str_replace('\\', '/', dirname(dirname((string)($_SERVER['SCRIPT_NAME'] ?? '/api/x.php')))), '/');
+    return ($https ? 'https://' : 'http://') . $host . (preg_match('#^/[A-Za-z0-9._~/\-]*$#', $base) ? $base : '') . '/admin/';
+}
+/** ส่งอีเมลข้อความล้วน UTF-8 ถึงผู้ดูแล (คืน true เมื่อ mail() รับเข้าคิว) — ไม่ใส่พารามิเตอร์พิเศษให้ mail() เพื่อให้เข้ากับโฮสต์ส่วนใหญ่ */
+function lop_mail(string $to, string $subject, string $body): bool {
+    if ($to === '' || preg_match('/[\r\n]/', $to)) return false;
+    $from = trim((string)(lop_config()['notify_from'] ?? ''));
+    if ($from === '' || preg_match('/[\r\n,;<>]/', $from) || !filter_var($from, FILTER_VALIDATE_EMAIL)) $from = 'no-reply@' . preg_replace('/^www\./', '', lop_site_host());
+    $subject = mb_encode_mimeheader(str_replace(["\r", "\n"], ' ', $subject), 'UTF-8', 'B', "\r\n");
+    $headers = "From: $from\r\nMIME-Version: 1.0\r\nContent-Type: text/plain; charset=UTF-8\r\nContent-Transfer-Encoding: 8bit\r\nX-Mailer: lopburi-guestbook";
+    return @mail($to, $subject, str_replace(["\r\n", "\r"], "\n", $body), $headers);
+}
+function lop_notify_new(string $kind, string $id, string $place, string $name, int $rating, string $message): void {
+    try {
+        $to = lop_notify_email();
+        if ($to === '') return;
+        if ($kind === 'guestbook' && empty(lop_config()['notify_guestbook'])) return;
+        $interval = max(0, (int)(lop_config()['notify_min_interval'] ?? 300));
+        if ($interval > 0 && lop_count_since('kind = ? AND id <> ?', [$kind, $id], $interval) > 0) return;
+        $places = lop_places();
+        $pl = $place !== '' ? ($places[$place] ?? $place) : '-';
+        $pending = (int)lop_db()->query('SELECT COUNT(*) FROM ' . lop_table() . " WHERE status = 'pending'")->fetchColumn();
+        $url = lop_admin_url();
+        if ($kind === 'review') {
+            $subject = '[รีวิวใหม่รอตรวจ] ' . $pl;
+            $head = "มีรีวิวใหม่รอการอนุมัติ\n\nสถานที่: $pl\nคะแนน: " . str_repeat('★', $rating) . str_repeat('☆', 5 - $rating) . " ($rating/5)\n";
+        } else {
+            $subject = '[สมุดเยี่ยมใหม่] ' . lop_substr($name, 30);
+            $head = "มีข้อความใหม่ในสมุดเยี่ยม (แสดงบนเว็บแล้ว)\n\nสถานที่: $pl\n";
+        }
+        $body = $head . "ชื่อที่แสดง: $name\n\nข้อความ:\n$message\n\n---\nรอตรวจทั้งหมด: $pending รายการ\n" . ($url !== '' ? "จัดการ (อนุมัติ/ซ่อน/ลบ): $url\n" : '')
+            . "(อีเมลนี้ส่งอัตโนมัติ ถ้ามีข้อความเข้ามาถี่ จะส่งฉบับใหม่หลังผ่านไป " . (int)($interval / 60) . " นาที — ตรวจที่หน้าผู้ดูแลได้เสมอ)\n";
+        if (!lop_mail($to, $subject, $body)) error_log('lopburi: ส่งอีเมลแจ้งเตือนไม่สำเร็จ (ตรวจว่าโฮสต์เปิดฟังก์ชัน mail() และ notify_email ถูกต้อง)');
+    } catch (Throwable $e) {
+        error_log('lopburi notify: ' . $e->getMessage());
+    }
+}
+
 function lop_new_id(): string { return bin2hex(random_bytes(6)); }
 function lop_iso(string $dt): string { return gmdate('Y-m-d\TH:i:s\Z', (int)strtotime($dt . ' UTC')); }
 

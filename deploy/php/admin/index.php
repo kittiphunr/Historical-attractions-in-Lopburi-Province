@@ -84,7 +84,12 @@ try {
         if (!hash_equals(csrf(), (string)($_POST['csrf'] ?? ''))) { $notice = 'หมดเวลาหรือคำขอไม่ถูกต้อง ลองใหม่อีกครั้ง'; }
         else {
             $id = (string)($_POST['id'] ?? ''); $act = (string)$_POST['act'];
-            if (!preg_match('/^[0-9a-f]{12}$/', $id)) $notice = 'รหัสรายการไม่ถูกต้อง';
+            if ($act === 'testmail') {
+                $to = lop_notify_email();
+                $notice = $to === '' ? 'ยังไม่ได้ตั้ง notify_email ใน config (หรืออีเมลไม่ถูกต้อง)'
+                    : (lop_mail($to, '[ทดสอบ] อีเมลแจ้งเตือนสมุดเยี่ยมและรีวิว', "ถ้าคุณได้รับอีเมลนี้ แสดงว่าการแจ้งเตือนรีวิวใหม่ใช้งานได้\n\nหน้าผู้ดูแล: " . lop_admin_url() . "\n") ? 'ส่งอีเมลทดสอบแล้ว (ตรวจกล่องจดหมายและโฟลเดอร์สแปมภายใน 1-2 นาที)' : 'ส่งอีเมลไม่สำเร็จ — โฮสต์อาจปิดฟังก์ชัน mail() ดู error log');
+            }
+            elseif (!preg_match('/^[0-9a-f]{12}$/', $id)) $notice = 'รหัสรายการไม่ถูกต้อง';
             elseif ($act === 'delete') { $db->prepare("DELETE FROM $t WHERE id = ?")->execute([$id]); $notice = 'ลบแล้ว'; }
             elseif ($act === 'approve' || $act === 'hide') { $db->prepare("UPDATE $t SET status = ? WHERE id = ?")->execute([$act === 'approve' ? 'approved' : 'hidden', $id]); $notice = $act === 'approve' ? 'อนุมัติแล้ว (แสดงบนเว็บ)' : 'ซ่อนแล้ว'; }
             header('Location: ' . $self . '?' . http_build_query(['status' => $status, 'kind' => $kind, 'p' => $pageNo, 'n' => $notice])); exit;
@@ -112,6 +117,9 @@ foreach (STATUS_TH as $k => $lbl) $body .= '<a class="tab' . ($k === $status ? '
 $body .= '<span class="meta" style="margin-left:12px">ชนิด:</span><a class="tab' . ($kind === '' ? ' on' : '') . '" href="' . $h($q(['kind' => '', 'p' => 1])) . '">ทั้งหมด</a>';
 foreach (KIND_TH as $k => $lbl) $body .= '<a class="tab' . ($kind === $k ? ' on' : '') . '" href="' . $h($q(['kind' => $k, 'p' => 1])) . '">' . $h($lbl) . '</a>';
 $body .= '</div>';
+$ne = lop_notify_email();
+$body .= '<div class="card row meta"><span style="margin-right:auto">อีเมลแจ้งเตือนรีวิวใหม่: ' . ($ne !== '' ? '<b>เปิด</b> (ส่งถึง ' . $h(preg_replace('/^(.).*(@.*)$/u', '$1***$2', $ne)) . ')' : '<b>ปิด</b> — ตั้ง <code>notify_email</code> ใน config เพื่อเปิด') . '</span>'
+    . ($ne !== '' ? '<form method="post"><input type="hidden" name="csrf" value="' . $h(csrf()) . '"><input type="hidden" name="act" value="testmail"><input type="hidden" name="status" value="' . $h($status) . '"><input type="submit" class="mid" value="ส่งอีเมลทดสอบ"></form>' : '') . '</div>';
 if (!$rows) $body .= '<div class="card meta">ไม่มีรายการในหมวดนี้</div>';
 foreach ($rows as $r) {
     $pl = $r['place'] !== '' ? ($places[$r['place']] ?? $r['place']) : '—';
