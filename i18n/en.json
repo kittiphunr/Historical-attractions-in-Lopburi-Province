@@ -303,7 +303,6 @@
  "นโยบายภาพและวิดีโอ:": "Photo and video policy:",
  "เว็บนี้ไม่คัดลอกภาพถ่ายหรือวิดีโอของบุคคลอื่นมาฝังโดยไม่ระบุที่มา ภาพถ่ายจริงแต่ละที่จะแสดงชื่อผู้ถ่าย สัญญาอนุญาต และลิงก์ต้นทางใต้ภาพทุกครั้ง วิดีโอแสดงชื่อช่องและลิงก์ไปยัง YouTube ซึ่งเป็นผู้ถือสิทธิ์": "This site does not embed other people's photos or videos without stating the source. Each real photo shows the photographer, licence and source link under the image, and videos show the channel name and a link to YouTube, the rights holder.",
  "โมเดล 3 มิติ:": "3D models:",
- "โมเดลพระปรางค์สามยอดและโมเดลแผนที่ทั้งจังหวัด (ไฟล์ .glb) ปั้นโดยเจ้าของโปรเจกต์ ส่วนโมเดลสถานที่อื่นสร้างขึ้นใหม่ด้วยโค้ดเป็นรูปทรงจำลองอย่างง่าย เรนเดอร์ด้วย": "The Phra Prang Sam Yot model and the whole-province map model (.glb files) were made by the project owner. The other site models are newly created in code as simple stand-in shapes, rendered with",
  "(MIT) มีตัวสำรองเป็น CSS 3D ไม่ได้ดัดแปลงจากภาพถ่ายหรือโมเดลของผู้อื่น": "(MIT), with a CSS 3D fallback; they are not adapted from other people's photos or models.",
  "ตราประจำจังหวัดลพบุรี:": "Lopburi provincial seal:",
  "ภาพที่เจ้าของโปรเจกต์จัดเตรียมให้ ใช้เพื่อประกอบเนื้อหาและการระบุตัวตนของเว็บนี้ สิทธิ์ในตราเป็นของหน่วยงานเจ้าของตรา เว็บนี้ไม่ใช่เว็บไซต์ทางการของจังหวัดลพบุรี": "An image provided by the project owner, used to illustrate the content and identity of this site. Rights in the seal belong to the issuing authority. This is not the official website of Lopburi Province.",
@@ -460,5 +459,10 @@
  "ข่าวสด ↗": "Khaosod ↗",
  "แนวหน้า ↗": "Naewna ↗",
  "ศิลปวัฒนธรรม ↗": "Silpa-Mag (Art & Culture) ↗",
- "วารสาร AJNU (ThaiJO) ↗": "AJNU journal (ThaiJO) ↗"
+ "วารสาร AJNU (ThaiJO) ↗": "AJNU journal (ThaiJO) ↗",
+ "เครดิตและนโยบาย": "Credits & policy",
+ "สื่อรายสถานที่": "Media by place",
+ "แหล่งข้อมูลที่ใช้": "Sources used",
+ "หัวข้อเครดิต": "Credit sections",
+ "โมเดลสถานที่ 9 แห่ง (พระปรางค์สามยอด ศาลพระกาฬ ปรางค์แขก วัดเขาวงพระจันทร์ วัดเสาธงทอง บ้านวิชาเยนทร์ วัดไลย์ วัดพระศรีรัตนมหาธาตุ วัดนครโกษา) และโมเดลแผนที่ทั้งจังหวัด (ไฟล์ .glb) ปั้นโดยเจ้าของโปรเจกต์ ส่วนโมเดลพระนารายณ์ราชนิเวศน์สร้างขึ้นใหม่ด้วยโค้ดเป็นรูปทรงจำลองอย่างง่าย เรนเดอร์ด้วย": "The models of 9 sites (Phra Prang Sam Yot, San Phra Kan, Prang Khaek, Wat Khao Wong Phra Chan, Wat Sao Thong Thong, Baan Wichayen, Wat Lai, Wat Phra Si Rattana Mahathat, Wat Nakhon Kosa) and the whole-province map model (.glb files) were made by the project owner. The King Narai's Palace model is newly created in code as a simple stand-in shape, rendered with"
 }

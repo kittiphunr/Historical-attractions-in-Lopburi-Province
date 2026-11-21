@@ -28,6 +28,8 @@
       if (m !== 'dark' && m !== 'light') m = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
       if (m === 'dark') document.documentElement.classList.add('dark'); })();
   </script>
+  <script src="assets/js/loader.js"></script>
+<script src="assets/js/loader.js"></script>
 </head>
 <body class="relative overflow-x-hidden pb-28 lg:pb-10" data-place="wat-lai">
   <a href="places/wat-lai.html#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-terra-500 focus:px-4 focus:py-2 focus:text-white">ข้ามไปยังเนื้อหา</a>
@@ -42,7 +44,7 @@
       <a class="rail-btn" href="index.html#route" data-sec="route"><i data-i="route" class="h-6 w-6"></i>เส้นทาง</a>
       <a class="rail-btn" href="index.html#guestbook" data-sec="guestbook"><i data-i="book" class="h-6 w-6"></i>สมุดเยี่ยม</a>
     </nav>
-    <a class="rail-btn mt-auto" href="index.html#credits" data-sec="credits"><i data-i="info" class="h-6 w-6"></i>เครดิต</a>
+    <a class="rail-btn mt-auto" href="index.html#credits" data-credits data-sec="credits"><i data-i="info" class="h-6 w-6"></i>เครดิต</a>
   </aside>
 
   <!-- ===== แถบเมนูล่าง (มือถือ) ===== -->
@@ -136,8 +138,47 @@
   <footer class="mx-auto mt-24 max-w-6xl px-4 pb-6 text-center text-sm text-ink-400 lg:pl-[112px]">
     <img src="assets/img/seal-192.png" alt="ตราประจำจังหวัดลพบุรี" width="48" height="47" class="mx-auto mb-2 h-12 w-auto opacity-90">
     <p class="font-medium text-ink-700">ลพบุรี · เมืองสามยุค</p>
+    <p class="mt-2"><a href="index.html#credits" data-credits class="inline-flex items-center gap-1.5 underline-offset-4 hover:text-terra-600 hover:underline"><i data-i="info" class="h-4 w-4"></i>เครดิตและแหล่งอ้างอิง</a></p>
     <p class="mt-1">รวบรวมเพื่อการศึกษาและการท่องเที่ยว ไม่ใช่เว็บไซต์ทางการของจังหวัด ข้อมูลอาจคลาดเคลื่อน โปรดอ้างอิงกรมศิลปากรเป็นหลัก</p>
   </footer>
+
+  <dialog id="creditsDialog" class="m-auto w-[min(94vw,900px)] max-h-[90vh] overflow-hidden rounded-[1.75rem] border-0 bg-cream-50 p-0 text-ink-700 shadow-dark backdrop:bg-char-900/60 backdrop:backdrop-blur-sm" aria-labelledby="creditsTitle">
+    <div class="flex max-h-[90vh] flex-col">
+      <div class="flex items-center justify-between gap-3 px-5 pb-3 pt-4 sm:px-7">
+        <div><p class="eyebrow">Credits &amp; Sources</p><h2 id="creditsTitle" class="text-xl font-semibold text-ink-900 sm:text-2xl">เครดิตและแหล่งอ้างอิง</h2></div>
+        <button id="creditsClose" type="button" class="neu grid h-10 w-10 shrink-0 place-items-center text-ink-700" aria-label="ปิดหน้าต่าง"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div role="tablist" aria-label="หัวข้อเครดิต" class="flex flex-wrap gap-2 px-5 pb-3 sm:px-7">
+        <button role="tab" id="ctab-notes" aria-controls="cpanel-notes" aria-selected="true" class="chip aria-selected:bg-terra-500 aria-selected:text-white aria-selected:shadow-press">เครดิตและนโยบาย</button>
+        <button role="tab" id="ctab-media" aria-controls="cpanel-media" aria-selected="false" tabindex="-1" class="chip aria-selected:bg-terra-500 aria-selected:text-white aria-selected:shadow-press">สื่อรายสถานที่</button>
+        <button role="tab" id="ctab-sources" aria-controls="cpanel-sources" aria-selected="false" tabindex="-1" class="chip aria-selected:bg-terra-500 aria-selected:text-white aria-selected:shadow-press">แหล่งข้อมูลที่ใช้</button>
+      </div>
+      <div class="min-h-0 flex-1 overflow-y-auto px-5 pb-6 sm:px-7">
+        <div role="tabpanel" id="cpanel-notes" aria-labelledby="ctab-notes" class="space-y-3 text-sm leading-relaxed text-ink-500">
+          <p><b class="text-ink-900">นโยบายภาพและวิดีโอ:</b> เว็บนี้ไม่คัดลอกภาพถ่ายหรือวิดีโอของบุคคลอื่นมาฝังโดยไม่ระบุที่มา ภาพถ่ายจริงแต่ละที่จะแสดงชื่อผู้ถ่าย สัญญาอนุญาต และลิงก์ต้นทางใต้ภาพทุกครั้ง วิดีโอแสดงชื่อช่องและลิงก์ไปยัง YouTube ซึ่งเป็นผู้ถือสิทธิ์</p>
+          <p><b class="text-ink-900">โมเดล 3 มิติ:</b> โมเดลสถานที่ 9 แห่ง (พระปรางค์สามยอด ศาลพระกาฬ ปรางค์แขก วัดเขาวงพระจันทร์ วัดเสาธงทอง บ้านวิชาเยนทร์ วัดไลย์ วัดพระศรีรัตนมหาธาตุ วัดนครโกษา) และโมเดลแผนที่ทั้งจังหวัด (ไฟล์ .glb) ปั้นโดยเจ้าของโปรเจกต์ ส่วนโมเดลพระนารายณ์ราชนิเวศน์สร้างขึ้นใหม่ด้วยโค้ดเป็นรูปทรงจำลองอย่างง่าย เรนเดอร์ด้วย <a class="text-terra-600 underline" href="https://threejs.org/" target="_blank" rel="noopener noreferrer">Three.js</a> (MIT) มีตัวสำรองเป็น CSS 3D ไม่ได้ดัดแปลงจากภาพถ่ายหรือโมเดลของผู้อื่น</p>
+          <p><b class="text-ink-900">ตราประจำจังหวัดลพบุรี:</b> ภาพที่เจ้าของโปรเจกต์จัดเตรียมให้ ใช้เพื่อประกอบเนื้อหาและการระบุตัวตนของเว็บนี้ สิทธิ์ในตราเป็นของหน่วยงานเจ้าของตรา เว็บนี้ไม่ใช่เว็บไซต์ทางการของจังหวัดลพบุรี</p>
+          <p><b class="text-ink-900">ภาพปกหน้าแรก:</b> ภาพตัดต่อพาโนรามา (พระปรางค์สามยอด ทางรถไฟเขื่อนป่าสักชลสิทธิ์ วัดพระศรีรัตนมหาธาตุ) ที่เจ้าของโปรเจกต์จัดเตรียมให้ ภาพนี้ประกอบจากภาพถ่ายหลายภาพ ยังไม่ทราบชื่อผู้ถ่ายและสัญญาอนุญาตของแต่ละภาพ จึงระบุเพียงว่าจัดเตรียมโดยเจ้าของโปรเจกต์ หากทราบที่มาจะเพิ่มเครดิตผู้ถ่ายที่นี่</p>
+          <p><b class="text-ink-900">AR:</b> ใช้ <a class="text-terra-600 underline" href="https://modelviewer.dev/" target="_blank" rel="noopener noreferrer">&lt;model-viewer&gt;</a> ของ Google (Apache-2.0) รองรับ WebXR บน Android Chrome, Scene Viewer และ Quick Look บน iPhone/iPad ต้องเปิดผ่าน HTTPS และอุปกรณ์ที่รองรับ AR</p>
+          <p><b class="text-ink-900">สภาพอากาศ:</b> ข้อมูลจาก <a class="text-terra-600 underline" href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo.com</a> (CC BY 4.0) ดึงในเบราว์เซอร์ของผู้ชม โดยส่งเฉพาะพิกัดตัวเมืองลพบุรี</p>
+          <p><b class="text-ink-900">ข้อควรระวัง:</b> เวลาเปิด ค่าเข้าชม และการเดินทางเปลี่ยนแปลงได้ โปรดตรวจสอบกับกรมศิลปากรหรือสำนักศิลปากรที่ 4 ลพบุรีก่อนเดินทาง</p>
+        </div>
+        <div role="tabpanel" id="cpanel-media" aria-labelledby="ctab-media" class="hidden">
+          <h3 class="mb-3 text-lg font-semibold text-ink-900">สถานะสื่อประกอบรายสถานที่</h3>
+          <div class="card overflow-x-auto p-1">
+            <table class="w-full min-w-[420px] text-left text-sm">
+              <thead class="text-terra-600"><tr><th class="px-4 py-3 font-medium">สถานที่</th><th class="px-4 py-3 font-medium">ภาพถ่ายจริง</th><th class="px-4 py-3 font-medium">วิดีโอ</th></tr></thead>
+              <tbody id="mediaTable" class="divide-y divide-cream-200 text-ink-500"></tbody>
+            </table>
+          </div>
+        </div>
+        <div role="tabpanel" id="cpanel-sources" aria-labelledby="ctab-sources" class="hidden">
+          <h3 class="mb-3 text-lg font-semibold text-ink-900">แหล่งข้อมูลที่ใช้ (<span id="srcTotal"></span> แหล่ง)</h3>
+          <ul id="srcList" class="space-y-2 text-sm"></ul>
+        </div>
+      </div>
+    </div>
+  </dialog>
 
   <dialog id="arDialog" class="m-auto w-[min(94vw,760px)] max-h-[94vh] overflow-hidden rounded-[1.75rem] border-0 bg-cream-50 p-0 text-ink-700 shadow-dark backdrop:bg-char-900/60 backdrop:backdrop-blur-sm" aria-labelledby="arTitle">
     <div class="flex items-center justify-between gap-3 px-5 py-4">

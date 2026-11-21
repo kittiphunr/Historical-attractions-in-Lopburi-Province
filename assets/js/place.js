@@ -2,7 +2,7 @@
 (function () {
   const U = window.LopburiUI, { $, $$, mountLazy, isDark, paintThemeLabel } = U;
   const A = window.ATTRACTIONS, id = document.body.dataset.place, a = A.find(x => x.id === id);
-  U.initIcons(); U.initTheme(); U.initAR();
+  U.initIcons(); U.initTheme(); U.initAR(); U.initCredits();
 
   // เมนูข้าง/ล่าง: ไฮไลต์ "10 แห่ง" เพราะอยู่ในหมวดสถานที่
   $$('[data-sec="places"]').forEach(el => { el.setAttribute('aria-current', 'true'); if (el.closest('nav[aria-label*=มือถือ]')) el.classList.add('text-terra-600'); });
