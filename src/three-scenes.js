@@ -240,8 +240,8 @@ function buildParts(type, opts, shared, custom) {
   };
 }
 
-function makeView(host, type, opts, shared) {
-  const v = { host, az: opts.az ?? 0.62, el: opts.el ?? 0.34, speed: opts.speed ?? 0.0035, mx: 0, hover: false, dragging: false, ...buildParts(type, opts, shared, null) };
+function makeView(host, type, opts, shared, custom = null) {
+  const v = { host, az: opts.az ?? 0.62, el: opts.el ?? 0.34, speed: opts.speed ?? 0.0035, mx: 0, hover: false, dragging: false, ...buildParts(type, opts, shared, custom) };
   bindInput(v, opts);
   return v;
 }
@@ -509,17 +509,16 @@ const GL = (() => {
     createMapViewer,
     addView(host, type, opts = {}) {
       if (!renderer || dead) return false;
-      let v;
-      try { v = makeView(host, type, opts, shared); views.push(v); } catch (e) { console.warn('สร้างฉาก Three.js ไม่สำเร็จ', e); return false; }
+      const add = (custom) => { const v = makeView(host, type, opts, shared, custom); views.push(v); if (!running) { running = true; requestAnimationFrame(frame); } return v; };
       if (opts.glb) {
-        // แสดงโมเดลจำลองไปก่อน แล้วสลับเป็นไฟล์ .glb เมื่อโหลดเสร็จ (ล้มเหลว = ใช้โมเดลจำลองต่อ)
+        // ไม่แสดงโมเดลจำลองระหว่างรอ: ภาพปกยังคงอยู่จนไฟล์ .glb พร้อม แล้วค่อยแสดงโมเดลจริงทีเดียว
+        // (ถ้าโหลดไม่สำเร็จ ค่อยใช้โมเดลจำลองแทนเป็นทางสำรอง)
         host.dataset.glb = 'loading';
-        loadGlb(opts.glb).then(obj => {
-          const parts = buildParts(type, opts, shared, obj.clone(true));
-          v.dispose(); Object.assign(v, parts); host.dataset.glb = 'ready';
-        }).catch(e => { host.dataset.glb = 'failed'; console.warn('โหลด .glb ไม่สำเร็จ ใช้โมเดลจำลองแทน', e); host.dispatchEvent(new CustomEvent('glbfail')); });
+        const fail = (e) => { host.dataset.glb = 'failed'; console.warn('โหลด .glb ไม่สำเร็จ ใช้โมเดลจำลองแทน', e); host.dispatchEvent(new CustomEvent('glbfail')); try { add(null); } catch (err) { console.warn('สร้างฉาก Three.js ไม่สำเร็จ', err); } };
+        loadGlb(opts.glb).then(obj => { add(obj.clone(true)); host.dataset.glb = 'ready'; }).catch(fail);
+        return true;
       }
-      if (!running) { running = true; requestAnimationFrame(frame); }
+      try { add(null); } catch (e) { console.warn('สร้างฉาก Three.js ไม่สำเร็จ', e); return false; }
       return true;
     }
   };
