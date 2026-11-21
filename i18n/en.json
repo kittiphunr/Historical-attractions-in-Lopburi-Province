@@ -307,7 +307,6 @@
  "ตราประจำจังหวัดลพบุรี:": "Lopburi provincial seal:",
  "ภาพที่เจ้าของโปรเจกต์จัดเตรียมให้ ใช้เพื่อประกอบเนื้อหาและการระบุตัวตนของเว็บนี้ สิทธิ์ในตราเป็นของหน่วยงานเจ้าของตรา เว็บนี้ไม่ใช่เว็บไซต์ทางการของจังหวัดลพบุรี": "An image provided by the project owner, used to illustrate the content and identity of this site. Rights in the seal belong to the issuing authority. This is not the official website of Lopburi Province.",
  "ภาพปกหน้าแรก:": "Home-page cover image:",
- "ภาพตัดต่อพาโนรามา (พระปรางค์สามยอด ทางรถไฟเขื่อนป่าสักชลสิทธิ์ วัดพระศรีรัตนมหาธาตุ) ที่เจ้าของโปรเจกต์จัดเตรียมให้ ภาพนี้ประกอบจากภาพถ่ายหลายภาพ ยังไม่ทราบชื่อผู้ถ่ายและสัญญาอนุญาตของแต่ละภาพ จึงระบุเพียงว่าจัดเตรียมโดยเจ้าของโปรเจกต์ หากทราบที่มาจะเพิ่มเครดิตผู้ถ่ายที่นี่": "A panoramic composite (Phra Prang Sam Yot, the Pa Sak Jolasid Dam railway, Wat Phra Si Rattana Mahathat) provided by the project owner. It is composed of several photographs whose photographers and licences are not yet known, so it is credited only as provided by the project owner. If the sources become known, photographer credits will be added here.",
  "ใช้": "Uses",
  "ของ Google (Apache-2.0) รองรับ WebXR บน Android Chrome, Scene Viewer และ Quick Look บน iPhone/iPad ต้องเปิดผ่าน HTTPS และอุปกรณ์ที่รองรับ AR": "by Google (Apache-2.0), supporting WebXR on Android Chrome, Scene Viewer, and Quick Look on iPhone/iPad. Requires HTTPS and an AR-capable device.",
  "สภาพอากาศ:": "Weather:",
@@ -336,7 +335,6 @@
  "สลับเป็นโหมดกลางคืน": "Switch to night mode",
  "โหมดกลางวัน / กลางคืน": "Day / night mode",
  "ภาพปกจังหวัดลพบุรี": "Lopburi province cover image",
- "ภาพตัดต่อแหล่งท่องเที่ยวลพบุรี: พระปรางค์สามยอด ทางรถไฟลอยน้ำเขื่อนป่าสักชลสิทธิ์ และวัดพระศรีรัตนมหาธาตุ": "Composite of Lopburi attractions: Phra Prang Sam Yot, the floating railway of Pa Sak Jolasid Dam and Wat Phra Si Rattana Mahathat",
  "Heritage Pass ลพบุรี": "Lopburi Heritage Pass",
  "บาร์โค้ด Code 128 รหัสจังหวัดลพบุรี TH-16": "Code 128 barcode for Lopburi's province code TH-16",
  "พยากรณ์รายชั่วโมง": "Hourly forecast",
@@ -475,5 +473,7 @@
  "ภาพถัดไป": "Next photo",
  "ภาพขยาย": "Enlarged photo",
  "ภาพที่ {0} จาก {1}": "Photo {0} of {1}",
- "ภาพ: {0}": "Photo: {0}"
+ "ภาพ: {0}": "Photo: {0}",
+ "ภาพตัดต่อแหล่งท่องเที่ยวลพบุรี: พระปรางค์สามยอด ทางรถไฟริมน้ำ และอาคารสีขาวหลังคาแดง": "Composite of Lopburi attractions: Phra Prang Sam Yot, a railway beside the water, and a white building with a red roof",
+ "ภาพตัดต่อพาโนรามา (พระปรางค์สามยอด ทางรถไฟริมน้ำ อาคารสีขาวหลังคาแดง) ที่เจ้าของโปรเจกต์จัดเตรียมให้ ภาพนี้ประกอบจากหลายส่วน ยังไม่ทราบชื่อผู้ถ่ายหรือผู้สร้างภาพและสัญญาอนุญาตของแต่ละส่วน จึงระบุเพียงว่าจัดเตรียมโดยเจ้าของโปรเจกต์ หากทราบที่มาจะเพิ่มเครดิตที่นี่": "A panoramic composite (Phra Prang Sam Yot, a railway beside the water, a white building with a red roof) provided by the project owner. It is assembled from several parts whose photographers or creators and licences are not yet known, so it is credited only as provided by the project owner. If the sources become known, credits will be added here."
 }
