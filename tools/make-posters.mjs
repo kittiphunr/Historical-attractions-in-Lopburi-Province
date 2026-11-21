@@ -39,15 +39,18 @@ for (const mode of ['day', 'night']) {
   page.on('pageerror', (e) => console.warn('  page error:', e.message));
   await page.goto(base, { waitUntil: 'load' });
   await page.addStyleTag({ content: 'html{scroll-behavior:auto!important}' });
-  const targets = await page.evaluate(() => [{ key: 'hero', sel: '#heroModel' }, { key: 'map', sel: '#mapViewer' },
-    ...[...document.querySelectorAll('#list article[id], article.card[id]')].filter(a => a.querySelector('.model')).map(a => ({ key: a.id, sel: `#${a.id} .model` }))]);
+  const ids = await page.evaluate(() => window.ATTRACTIONS.map(a => a.id));
+  // หน้าแรก: ไดโอรามา (hero) และแผนที่จังหวัด ; แต่ละสถานที่: จากหน้า places/<id>.html (ช่อง #placeModel)
+  const targets = [{ key: 'hero', url: '', sel: '#heroModel' }, { key: 'map', url: '', sel: '#mapViewer' }, ...ids.map(id => ({ key: id, url: `places/${id}.html`, sel: '#placeModel' }))];
   for (const t of targets) {
     if (only.length && !only.includes(t.key)) continue;
     try {
+      if (t.url) { await page.goto(base + t.url, { waitUntil: 'load' }); await page.addStyleTag({ content: 'html{scroll-behavior:auto!important}' }); }
+      else if (!page.url().replace(base, '').startsWith('index') && page.url() !== base) { await page.goto(base, { waitUntil: 'load' }); await page.addStyleTag({ content: 'html{scroll-behavior:auto!important}' }); }
       const host = page.locator(t.sel).first();
       await host.scrollIntoViewIfNeeded();
-      await page.waitForTimeout(900); // รอแอนิเมชัน reveal ของการ์ดให้เสร็จก่อนวัดตำแหน่ง
-      await host.locator('.poster, #mvPoster').first().click({ timeout: 5000 }).catch(async () => { await page.locator('#mvPoster').click({ timeout: 5000 }); });
+      await page.waitForTimeout(900); // รอแอนิเมชัน reveal ให้เสร็จก่อนวัดตำแหน่ง
+      await page.locator(`${t.sel} .poster, #mvPoster`).first().click({ timeout: 5000 });
       await page.waitForFunction((s) => { const h = document.querySelector(s); return h && !h.querySelector('.poster, #mvPoster') && h.dataset.glb !== 'loading' && (h.id !== 'mapViewer' || h.dataset.ready === '1'); }, t.sel, { timeout: 90000 });
       await page.waitForTimeout(1500);
       const box = await host.boundingBox();
