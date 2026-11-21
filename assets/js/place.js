@@ -5,7 +5,7 @@
   U.initIcons(); U.initTheme(); U.initAR(); U.initCredits();
 
   // เมนูข้าง/ล่าง: ไฮไลต์ "10 แห่ง" เพราะอยู่ในหมวดสถานที่
-  $$('[data-sec="places"]').forEach(el => { el.setAttribute('aria-current', 'true'); if (el.closest('nav[aria-label*=มือถือ]')) el.classList.add('text-terra-600'); });
+  if (a) $$('[data-sec="places"]').forEach(el => { el.setAttribute('aria-current', 'true'); if (el.closest('nav[aria-label*=มือถือ]')) el.classList.add('text-terra-600'); });
 
   // ภาพปก -> กดเพื่อโหลดโมเดล 3 มิติ (ไม่โหลดไฟล์ .glb จนกว่าจะกด)
   if (a) mountLazy($('#placeModel'), a.id, a.name, a.model, 420, { az: 0.62, glb: a.glb && a.glb.url, tight: !!(a.glb && a.glb.base) });

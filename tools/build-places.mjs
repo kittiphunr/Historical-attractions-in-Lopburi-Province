@@ -207,12 +207,85 @@ function page(a, idx) {
 `;
 }
 
+/* ---------- หน้านโยบายความเป็นส่วนตัว (privacy.html) จาก content/privacy.json ---------- */
+function privacyPage() {
+  const P = JSON.parse(read('content/privacy.json'));
+  const url = SITE + 'privacy.html', title = `${P.title.th} — ลพบุรี เมืองสามยุค`;
+  const intro = P.intro.map(x => `<p class="text-lg leading-relaxed text-ink-700">${esc(x.th)}</p>`).join('');
+  const sec = P.sections.map((s, i) => `<section class="card p-6 sm:p-8">
+        ${h2(s.h.th, String(i + 1).padStart(2, '0'))}
+        <div class="mt-4 space-y-4 leading-relaxed text-ink-700">${(s.p || []).map(x => `<p>${esc(x.th)}</p>`).join('')}${s.ul ? bullets(s.ul.map(x => x.th)) : ''}</div>
+      </section>`).join('\n      ');
+  const C = P.contactBlock;
+  const extra = [P.contact && P.contact.email ? `<li><b class="text-ink-900">${esc(C.emailLabel.th)}:</b> <a class="text-terra-600 underline" href="mailto:${esc(P.contact.email)}">${esc(P.contact.email)}</a></li>` : '',
+    P.contact && P.contact.other ? `<li><b class="text-ink-900">${esc(C.otherLabel.th)}:</b> ${esc(P.contact.other)}</li>` : ''].filter(Boolean).join('');
+  return `<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>${esc(title)}</title>
+  <meta name="description" content="${esc(P.intro[0].th)}">
+  <meta name="theme-color" content="#f4ece2">
+  <meta name="robots" content="index,follow">
+  <meta property="og:title" content="${esc(title)}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="${url}">
+  <meta property="og:image" content="${SITE}assets/img/og-cover.jpg">
+  <link rel="canonical" href="${url}">
+  <link rel="icon" type="image/png" href="assets/img/favicon-64.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  ${headFonts}<link rel="stylesheet" href="assets/tailwind.css">
+  ${themeScript}<script src="assets/js/loader.js"></script>
+</head>
+<body class="relative overflow-x-hidden pb-28 lg:pb-10" data-page="privacy">
+  <a href="privacy.html#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-terra-500 focus:px-4 focus:py-2 focus:text-white">ข้ามไปยังเนื้อหา</a>
+
+  ${chrome}<main id="main" class="mx-auto max-w-3xl px-4 pt-20 lg:pl-[112px] lg:pr-6">
+    <a href="index.html" class="inline-flex items-center gap-1 text-sm text-ink-500 hover:text-terra-600">${esc(P.back.th)}</a>
+    <header class="mt-6">
+      <p class="eyebrow">Privacy</p>
+      <h1 class="mt-2 text-4xl font-semibold sm:text-5xl">${esc(P.title.th)}</h1>
+      <p class="mt-2 text-sm text-ink-400">${esc(P.updated.th)}</p>
+      <div class="mt-6 space-y-3">${intro}</div>
+    </header>
+    <div class="mt-10 space-y-6">
+      ${sec}
+      <section class="card p-6 sm:p-8">
+        <h2 class="text-2xl font-semibold text-ink-900 sm:text-3xl">${esc(C.h.th)}</h2>
+        <p class="mt-4 leading-relaxed text-ink-700">${esc(C.p.th)}</p>
+        <ul class="mt-4 space-y-2 text-ink-700">${extra}</ul>
+        <a class="btn-soft mt-5 !px-5 !py-2.5 text-sm" target="_blank" rel="noopener noreferrer" href="${esc(C.url)}">${esc(C.link.th)}</a>
+      </section>
+    </div>
+  </main>
+
+  ${footer}
+
+  ${creditsDialog}
+
+  ${arDialog}
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/models.js"></script>
+  <script src="assets/js/three-scenes.js"></script>
+  <script src="assets/js/motion.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/place.js"></script>
+</body>
+</html>
+`;
+}
+
 mkdirSync(join(root, 'places'), { recursive: true });
 A.forEach((a, i) => { writeFileSync(join(root, 'places', a.id + '.html'), page(a, i)); });
 // ลบหน้าที่ไม่มีสถานที่แล้ว (เช่น เปลี่ยน id)
 for (const f of readdirSync(join(root, 'places'))) if (f.endsWith('.html') && !A.some(a => a.id + '.html' === f)) console.warn('หมายเหตุ: places/' + f + ' ไม่มีใน data.js แล้ว (ลบเองได้)');
 
-const urls = [SITE, ...A.map(a => `${SITE}places/${a.id}.html`)];
+writeFileSync(join(root, 'privacy.html'), privacyPage());
+const urls = [SITE, ...A.map(a => `${SITE}places/${a.id}.html`), SITE + 'privacy.html'];
 writeFileSync(join(root, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url><loc>${u}</loc></url>`).join('\n')}\n</urlset>\n`);
 writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE}sitemap.xml\n`);
-console.log(`places: ${A.length} หน้า -> places/*.html, sitemap.xml, robots.txt`);
+console.log(`places: ${A.length} หน้า + privacy.html -> places/*.html, sitemap.xml, robots.txt`);

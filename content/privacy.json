@@ -1,0 +1,163 @@
+{
+  "_help": "เนื้อหาหน้านโยบายความเป็นส่วนตัว (privacy.html) แก้ข้อความไทยที่ค่า th ได้โดยตรง แล้วรัน npm run build ; คำแปล en/zh/ja อยู่ในไฟล์นี้เช่นกัน (ถ้าแก้ th ต้องแก้คำแปลให้ตรงกัน) ใส่อีเมลหรือช่องทางติดต่อที่ contact.email / contact.line เพื่อแสดงในหน้า",
+  "contact": { "email": "", "other": "" },
+  "title": { "th": "นโยบายความเป็นส่วนตัว", "en": "Privacy Policy", "zh": "隐私政策", "ja": "プライバシーポリシー" },
+  "updated": { "th": "ปรับปรุงล่าสุด: 21 พฤศจิกายน 2569", "en": "Last updated: 21 November 2026 (B.E. 2569)", "zh": "最后更新：2026 年 11 月 21 日（佛历 2569）", "ja": "最終更新：2026年11月21日（仏暦2569年）" },
+  "intro": [
+    {
+      "th": "เว็บไซต์นี้รวบรวมข้อมูลแหล่งท่องเที่ยวประวัติศาสตร์จังหวัดลพบุรีเพื่อการศึกษาและการท่องเที่ยว ไม่ใช่เว็บไซต์ทางการของจังหวัด เราเก็บข้อมูลส่วนบุคคลให้น้อยที่สุด ไม่มีระบบสมัครสมาชิก ไม่มีโฆษณา และไม่ใช้เครื่องมือวิเคราะห์หรือติดตามพฤติกรรมผู้เข้าชม",
+      "en": "This website compiles information on the historic sites of Lopburi Province for education and tourism. It is not the province's official website. We collect as little personal data as possible: there is no sign-up, no advertising, and no analytics or tracking tools.",
+      "zh": "本网站汇集华富里府历史景点的信息，用于教育和旅游，并非该府官方网站。我们尽量少收集个人数据：没有注册系统，没有广告，也不使用分析或跟踪工具。",
+      "ja": "このウェブサイトは、教育と観光のためにロッブリー県の歴史的名所の情報をまとめたもので、県の公式サイトではありません。個人データはできる限り収集しません。会員登録、広告、アクセス解析や行動追跡のツールはありません。"
+    }
+  ],
+  "sections": [
+    {
+      "h": { "th": "ผู้ดูแลเว็บไซต์", "en": "Who runs this site", "zh": "网站运营者", "ja": "運営者" },
+      "p": [
+        {
+          "th": "เว็บไซต์นี้ดูแลโดยเจ้าของโปรเจกต์ (Kittiphun Ruttanakorn) ซึ่งเป็นผู้ควบคุมข้อมูลส่วนบุคคลตามพระราชบัญญัติคุ้มครองข้อมูลส่วนบุคคล พ.ศ. 2562 (PDPA) สำหรับข้อมูลที่เก็บผ่านสมุดเยี่ยมของเว็บนี้",
+          "en": "This site is run by the project owner (Kittiphun Ruttanakorn), who is the data controller under Thailand's Personal Data Protection Act B.E. 2562 (PDPA) for the data collected through this site's guestbook.",
+          "zh": "本网站由项目所有者（Kittiphun Ruttanakorn）运营。对于通过本站留言簿收集的数据，其为泰国《个人数据保护法》（佛历 2562，PDPA）下的数据控制者。",
+          "ja": "このサイトはプロジェクトの所有者（Kittiphun Ruttanakorn）が運営しています。ゲストブックで収集するデータについて、タイの個人情報保護法（仏暦2562年、PDPA）上の管理者にあたります。"
+        }
+      ]
+    },
+    {
+      "h": { "th": "ข้อมูลที่เราเก็บและวัตถุประสงค์", "en": "What we collect and why", "zh": "我们收集的数据及目的", "ja": "収集する情報と目的" },
+      "p": [
+        {
+          "th": "สมุดเยี่ยม: เมื่อคุณเขียนข้อความ เราเก็บชื่อที่คุณกรอก ข้อความ คะแนนดาวและสถานที่ที่เลือก (ถ้ามี) และเวลาที่ส่ง เพื่อแสดงในสมุดเยี่ยมให้ผู้เข้าชมทุกคนเห็น ข้อมูลเหล่านี้เป็นข้อมูลสาธารณะ กรุณาอย่าใส่ข้อมูลส่วนตัว เช่น เบอร์โทรหรืออีเมล",
+          "en": "Guestbook: when you write a message we store the name you enter, your message, the star rating and place you choose (if any) and the time it was sent, in order to show it in the guestbook to all visitors. This information is public, so please do not include personal details such as a phone number or email.",
+          "zh": "留言簿：当您留言时，我们会保存您填写的姓名、留言内容、所选的星级和景点（如有）以及提交时间，并向所有访客展示。这些信息是公开的，请不要填写电话或邮箱等个人信息。",
+          "ja": "ゲストブック：メッセージを書くと、入力した名前、メッセージ、選んだ星評価と場所（任意）、送信時刻を保存し、すべての訪問者に表示します。これらは公開情報ですので、電話番号やメールアドレスなどの個人情報は書かないでください。"
+        },
+        {
+          "th": "การป้องกันสแปม: เมื่อเปิดใช้สมุดเยี่ยมแบบแชร์ร่วมกัน ระบบจะเก็บค่าแฮชของที่อยู่ IP (ผ่านการเข้ารหัสทางเดียวแบบ SHA-256 ผสมรหัสลับ และตัดให้สั้น) ไว้กับข้อความ เพื่อจำกัดจำนวนข้อความต่อคนเท่านั้น เราไม่เก็บที่อยู่ IP จริง และไม่สามารถย้อนกลับจากค่าแฮชไปเป็นที่อยู่ IP ได้",
+          "en": "Spam protection: when the shared guestbook is enabled, the system stores a hash of your IP address (one-way SHA-256 with a secret salt, truncated) alongside the message, only to limit how many messages one person can send. We do not store your actual IP address, and the hash cannot be reversed into one.",
+          "zh": "垃圾信息防护：启用共享留言簿时，系统会将您 IP 地址的哈希值（使用加密盐的单向 SHA-256 并截短）与留言一起保存，仅用于限制每人发送的留言数量。我们不保存真实 IP 地址，且无法从哈希值还原出 IP 地址。",
+          "ja": "スパム対策：共有ゲストブックを有効にしている場合、IPアドレスのハッシュ値（秘密のソルト付き一方向SHA-256を短縮したもの）をメッセージと一緒に保存します。目的は1人あたりの投稿数の制限だけです。実際のIPアドレスは保存せず、ハッシュ値から元に戻すこともできません。"
+        },
+        {
+          "th": "ข้อมูลในเบราว์เซอร์ของคุณ: เว็บเก็บค่าที่คุณเลือกไว้ในเบราว์เซอร์ของคุณเอง (localStorage/sessionStorage) ได้แก่ โหมดกลางวัน/กลางคืน ภาษา และตัวบอกสถานะระหว่างเปลี่ยนหน้า รวมถึงข้อความสมุดเยี่ยมของคุณเมื่อยังไม่ได้เปิดสมุดเยี่ยมแบบแชร์ร่วมกัน ข้อมูลเหล่านี้อยู่ในอุปกรณ์ของคุณและไม่ถูกส่งให้เรา คุณลบได้โดยล้างข้อมูลเว็บไซต์ในเบราว์เซอร์ เว็บนี้ไม่ตั้งคุกกี้เอง",
+          "en": "Data in your browser: the site keeps your choices in your own browser (localStorage/sessionStorage): day/night mode, language, a page-transition flag, and your guestbook messages when the shared guestbook is not enabled. This stays on your device and is not sent to us. You can remove it by clearing the site's data in your browser. The site sets no cookies of its own.",
+          "zh": "浏览器中的数据：本站将您的选择保存在您自己的浏览器中（localStorage/sessionStorage），包括日/夜模式、语言、页面切换标记，以及在未启用共享留言簿时您的留言。这些数据保留在您的设备上，不会发送给我们。您可以通过清除浏览器中的网站数据来删除。本站自身不设置 Cookie。",
+          "ja": "ブラウザ内のデータ：サイトは選択内容を、お使いのブラウザ内（localStorage/sessionStorage）に保存します。昼/夜モード、言語、ページ遷移の状態、共有ゲストブックが無効のときのメッセージです。これらは端末内にあり、当方には送信されません。ブラウザでサイトデータを消去すれば削除できます。サイト自身はCookieを設定しません。"
+        }
+      ]
+    },
+    {
+      "h": { "th": "บริการของบุคคลที่สาม", "en": "Third-party services", "zh": "第三方服务", "ja": "第三者サービス" },
+      "p": [
+        {
+          "th": "เมื่อคุณเปิดเว็บนี้ เบราว์เซอร์ของคุณเชื่อมต่อกับบริการภายนอกตามด้านล่าง ซึ่งอาจเห็นที่อยู่ IP และข้อมูลเบราว์เซอร์ของคุณตามนโยบายของผู้ให้บริการนั้น เราไม่ได้ควบคุมข้อมูลที่บริการเหล่านั้นเก็บ",
+          "en": "When you open this site, your browser connects to the external services below, which may see your IP address and browser details under their own policies. We do not control what they collect.",
+          "zh": "打开本站时，您的浏览器会连接下列外部服务，这些服务可能按各自的政策看到您的 IP 地址和浏览器信息。我们无法控制它们收集的数据。",
+          "ja": "このサイトを開くと、ブラウザは下記の外部サービスに接続します。各社の方針に従い、IPアドレスやブラウザ情報が確認される場合があります。各サービスが収集する情報は当方では管理できません。"
+        }
+      ],
+      "ul": [
+        {
+          "th": "GitHub Pages — ผู้ให้บริการโฮสต์เว็บไซต์ (GitHub, Inc.)",
+          "en": "GitHub Pages — hosts the website (GitHub, Inc.)",
+          "zh": "GitHub Pages — 网站托管服务（GitHub, Inc.）",
+          "ja": "GitHub Pages — サイトのホスティング（GitHub, Inc.）"
+        },
+        {
+          "th": "Google Fonts — ฟอนต์ Prompt (Google LLC)",
+          "en": "Google Fonts — the Prompt typeface (Google LLC)",
+          "zh": "Google Fonts — Prompt 字体（Google LLC）",
+          "ja": "Google Fonts — Prompt フォント（Google LLC）"
+        },
+        {
+          "th": "Open-Meteo.com — ข้อมูลสภาพอากาศ เบราว์เซอร์ของคุณส่งเฉพาะพิกัดตัวเมืองลพบุรี ไม่ส่งตำแหน่งของคุณ",
+          "en": "Open-Meteo.com — weather data. Your browser sends only the coordinates of Lopburi town, not your own location.",
+          "zh": "Open-Meteo.com — 天气数据。您的浏览器仅发送华富里市区的坐标，不发送您自己的位置。",
+          "ja": "Open-Meteo.com — 天気データ。ブラウザが送るのはロッブリー市街の座標だけで、あなたの位置情報は送りません。"
+        },
+        {
+          "th": "Cloudflare Workers/D1 — ใช้เก็บและแสดงข้อความสมุดเยี่ยมแบบแชร์ร่วมกัน เฉพาะเมื่อเจ้าของเว็บเปิดใช้งาน (Cloudflare, Inc.)",
+          "en": "Cloudflare Workers/D1 — stores and serves the shared guestbook, only when the site owner has enabled it (Cloudflare, Inc.)",
+          "zh": "Cloudflare Workers/D1 — 用于保存和显示共享留言簿，仅在网站所有者启用时使用（Cloudflare, Inc.）",
+          "ja": "Cloudflare Workers/D1 — 共有ゲストブックの保存と表示に使用（運営者が有効にした場合のみ）（Cloudflare, Inc.）"
+        },
+        {
+          "th": "YouTube และ Google Maps — มีเฉพาะลิงก์ที่เปิดในแท็บใหม่เมื่อคุณกดเท่านั้น ถ้าอนาคตมีการฝังวิดีโอ จะใช้โดเมน youtube-nocookie.com",
+          "en": "YouTube and Google Maps — only links that open in a new tab when you click them. If videos are embedded in future, the youtube-nocookie.com domain is used.",
+          "zh": "YouTube 和 Google 地图 — 仅为您点击后在新标签页打开的链接。若将来嵌入视频，将使用 youtube-nocookie.com 域名。",
+          "ja": "YouTube と Google マップ — クリックしたときに新しいタブで開くリンクのみです。将来動画を埋め込む場合は youtube-nocookie.com ドメインを使用します。"
+        }
+      ]
+    },
+    {
+      "h": { "th": "โมเดล 3 มิติและ AR", "en": "3D models and AR", "zh": "3D 模型与 AR", "ja": "3DモデルとAR" },
+      "p": [
+        {
+          "th": "โมเดล 3 มิติแสดงผลในเบราว์เซอร์ของคุณ ไม่มีการส่งข้อมูลส่วนตัวออกไป เมื่อกด “ดูแบบ AR” อุปกรณ์ของคุณจะเปิดตัวแสดง AR ของระบบ (เช่น WebXR, Scene Viewer ของ Google หรือ Quick Look ของ Apple) ซึ่งขอใช้กล้องบนอุปกรณ์ของคุณเอง ภาพจากกล้องไม่ถูกส่งมายังเว็บไซต์นี้",
+          "en": "3D models are rendered in your browser and no personal data is sent out. When you tap “View in AR”, your device opens its own AR viewer (such as WebXR, Google Scene Viewer or Apple Quick Look), which asks to use your device's camera. Camera images are not sent to this website.",
+          "zh": "3D 模型在您的浏览器中渲染，不会发送任何个人数据。点击“AR 查看”时，您的设备会打开系统自带的 AR 查看器（如 WebXR、Google Scene Viewer 或 Apple Quick Look），并请求使用设备摄像头。摄像头画面不会发送到本网站。",
+          "ja": "3Dモデルはブラウザ内で描画され、個人データは送信されません。「ARで見る」をタップすると、端末のARビューア（WebXR、GoogleのScene Viewer、AppleのQuick Lookなど）が開き、端末のカメラの使用を求めます。カメラ映像がこのサイトに送られることはありません。"
+        }
+      ]
+    },
+    {
+      "h": { "th": "การเก็บรักษาและการลบข้อมูล", "en": "Retention and deletion", "zh": "保存期限与删除", "ja": "保存期間と削除" },
+      "p": [
+        {
+          "th": "ข้อความสมุดเยี่ยมบนเซิร์ฟเวอร์เก็บไว้ไม่เกิน 2,000 ข้อความล่าสุด ข้อความที่เก่ากว่าจะถูกลบอัตโนมัติ หรือจนกว่าเจ้าของเว็บจะลบตามคำขอหรือเพราะไม่เหมาะสม ข้อความที่เก็บในเบราว์เซอร์ของคุณอยู่จนกว่าคุณจะล้างข้อมูลเว็บไซต์",
+          "en": "Guestbook messages on the server are kept up to the latest 2,000; older ones are deleted automatically, or earlier if the site owner removes them on request or because they are inappropriate. Messages stored in your browser stay until you clear the site's data.",
+          "zh": "服务器上的留言最多保留最近 2,000 条，更早的会被自动删除；也可能因您的请求或内容不当而被网站所有者提前删除。保存在您浏览器中的留言会一直保留，直到您清除网站数据。",
+          "ja": "サーバー上のゲストブックのメッセージは最新の2,000件まで保存され、それより古いものは自動的に削除されます。ご要望や不適切な内容により、運営者が先に削除することもあります。ブラウザ内のメッセージは、サイトデータを消去するまで残ります。"
+        }
+      ]
+    },
+    {
+      "h": { "th": "สิทธิของคุณ", "en": "Your rights", "zh": "您的权利", "ja": "あなたの権利" },
+      "p": [
+        {
+          "th": "ตาม PDPA คุณมีสิทธิขอเข้าถึงและขอรับสำเนา ขอแก้ไขให้ถูกต้อง ขอให้ลบหรือทำลาย ขอให้ระงับการใช้ คัดค้านการเก็บ ใช้ หรือเปิดเผยข้อมูลของคุณ และถอนความยินยอมเมื่อใดก็ได้ รวมถึงร้องเรียนต่อสำนักงานคณะกรรมการคุ้มครองข้อมูลส่วนบุคคล หากต้องการให้ลบข้อความของคุณออกจากสมุดเยี่ยม โปรดแจ้งชื่อที่ใช้และเนื้อหาข้อความตามช่องทางด้านล่าง เนื่องจากเราไม่ได้เก็บข้อมูลที่ใช้ระบุตัวตนอื่นนอกจากที่คุณกรอก",
+          "en": "Under the PDPA you may request access to and a copy of your data, ask for corrections, ask for deletion or destruction, ask us to restrict its use, object to its collection, use or disclosure, and withdraw consent at any time, as well as complain to the Personal Data Protection Committee. To have your message removed from the guestbook, tell us the name you used and the content of the message through the channel below, since we hold no other identifying information beyond what you entered.",
+          "zh": "根据 PDPA，您有权申请访问并获取数据副本、要求更正、要求删除或销毁、要求限制使用、反对收集、使用或披露，并可随时撤回同意，也可向个人数据保护委员会投诉。如需从留言簿中删除您的留言，请通过下方渠道告知您使用的姓名和留言内容，因为除您填写的信息外，我们不保存其他可识别身份的信息。",
+          "ja": "PDPAに基づき、データの開示とコピーの請求、訂正、削除・破棄、利用の制限、収集・利用・開示への異議申立て、同意の撤回をいつでも行うことができ、個人情報保護委員会へ苦情を申し立てることもできます。ゲストブックのメッセージの削除を希望する場合は、使用した名前とメッセージの内容を下記の連絡先に知らせてください。入力された情報以外に本人を特定できる情報は保有していないためです。"
+        }
+      ]
+    },
+    {
+      "h": { "th": "เด็กและเยาวชน", "en": "Children", "zh": "儿童", "ja": "子ども" },
+      "p": [
+        {
+          "th": "เว็บไซต์นี้ไม่ได้มุ่งเก็บข้อมูลจากเด็ก หากผู้ปกครองพบว่าเด็กเขียนข้อมูลส่วนตัวในสมุดเยี่ยม โปรดแจ้งเราเพื่อลบข้อความนั้น",
+          "en": "This website is not aimed at collecting data from children. If a parent finds that a child has written personal details in the guestbook, please tell us so we can remove the message.",
+          "zh": "本网站并非为收集儿童数据而设。如家长发现孩子在留言簿中写下了个人信息，请告知我们以便删除该留言。",
+          "ja": "このサイトは子どもの情報を集めることを目的としていません。お子さまが個人情報をゲストブックに書いたことに保護者が気づいた場合は、削除のためご連絡ください。"
+        }
+      ]
+    },
+    {
+      "h": { "th": "การเปลี่ยนแปลงนโยบาย", "en": "Changes to this policy", "zh": "政策变更", "ja": "ポリシーの変更" },
+      "p": [
+        {
+          "th": "หากมีการเปลี่ยนแปลงวิธีเก็บหรือใช้ข้อมูล เราจะปรับหน้านี้และแก้วันที่ปรับปรุงล่าสุดด้านบน",
+          "en": "If how we collect or use data changes, we will update this page and the date above.",
+          "zh": "如数据收集或使用方式发生变化，我们将更新本页面及上方日期。",
+          "ja": "データの収集や利用方法を変更した場合は、このページと上記の日付を更新します。"
+        }
+      ]
+    }
+  ],
+  "contactBlock": {
+    "h": { "th": "ติดต่อเรา", "en": "Contact", "zh": "联系我们", "ja": "お問い合わせ" },
+    "p": {
+      "th": "ติดต่อเรื่องข้อมูลส่วนบุคคลหรือขอลบข้อความได้ที่หน้า Issues ของโปรเจกต์บน GitHub (หน้านี้เป็นสาธารณะ จึงโปรดอย่าใส่ข้อมูลส่วนตัว ระบุเพียงชื่อที่ใช้และเนื้อหาข้อความที่ต้องการลบ)",
+      "en": "For questions about personal data or to have a message removed, use the project's Issues page on GitHub (it is public, so please do not post personal details — give only the name used and the content of the message to remove).",
+      "zh": "如有个人数据方面的问题或需要删除留言，请使用本项目在 GitHub 上的 Issues 页面（该页面是公开的，请勿发布个人信息，仅说明所用姓名和需要删除的留言内容）。",
+      "ja": "個人データに関するお問い合わせやメッセージの削除は、GitHub上のプロジェクトの Issues ページをご利用ください（公開ページのため個人情報は書かず、使用した名前と削除したいメッセージの内容のみお知らせください）。"
+    },
+    "link": { "th": "เปิดหน้า Issues บน GitHub ↗", "en": "Open the GitHub Issues page ↗", "zh": "打开 GitHub Issues 页面 ↗", "ja": "GitHub の Issues ページを開く ↗" },
+    "url": "https://github.com/kittiphunr/Historical-attractions-in-Lopburi-Province/issues",
+    "emailLabel": { "th": "อีเมล", "en": "Email", "zh": "电子邮件", "ja": "メール" },
+    "otherLabel": { "th": "ช่องทางอื่น", "en": "Other", "zh": "其他方式", "ja": "その他" }
+  },
+  "back": { "th": "← กลับหน้าแรก", "en": "← Back to home", "zh": "← 返回首页", "ja": "← ホームに戻る" },
+  "footerLink": { "th": "นโยบายความเป็นส่วนตัว", "en": "Privacy Policy", "zh": "隐私政策", "ja": "プライバシーポリシー" }
+}
