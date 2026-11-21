@@ -53,6 +53,15 @@ npm start          # เสิร์ฟหน้าเว็บ + API สมุ�
 
 หลังเผยแพร่ แนะนำให้ลงทะเบียนเว็บใน Google Search Console (และ Bing Webmaster Tools) แล้วส่ง `sitemap.xml`
 
+## ติดตั้งลงโฮสต์จริง (นอก GitHub Pages)
+
+```bash
+npm run build
+npm run package -- --site https://ชื่อโดเมน/        # ใส่ที่อยู่จริง (รองรับโฟลเดอร์ย่อย เช่น https://example.com/lopburi/)
+```
+
+ได้โฟลเดอร์ `dist/` ที่มี `site/` (เนื้อหาเว็บ + `.htaccess`), `nginx.conf.example`, `INSTALL.th.md` (คู่มือติดตั้งภาษาไทย: cPanel/FTP, VPS nginx, Netlify/Cloudflare Pages) และไฟล์ `<โดเมน>-site.zip` สคริปต์ (`tools/package-site.mjs`) แทนที่ที่อยู่ GitHub Pages ด้วยที่อยู่จริงในทุกหน้า (canonical, hreflang, ภาพแชร์ลิงก์, sitemap, robots), ตัดไฟล์สำรองสำหรับเปิดแบบ `file://` (~44 MB) ออก, เปลี่ยนข้อความผู้ให้บริการโฮสติ้งในนโยบายความเป็นส่วนตัวเป็นข้อความทั่วไป และตั้ง `<base>` ของหน้า 404 ตามที่อยู่ (`--guestbook-api URL` ใส่ที่อยู่ API สมุดเยี่ยมให้ด้วย) แม่แบบไฟล์ตั้งค่าอยู่ใน `deploy/`
+
 ## หน้าแยกตามภาษา (en / zh / ja)
 
 เว็บมี 4 ฉบับ: ไทยอยู่ที่ราก (`/`, `/places/sam-yot.html`) และภาษาอื่นอยู่ในโฟลเดอร์ `en/`, `zh/`, `ja/` (`/en/`, `/zh/places/sam-yot.html`, `/ja/privacy.html`) เพื่อให้ค้นเจอและแชร์ด้วยภาษานั้นได้ แต่ละหน้ามี `canonical` ของตัวเอง, `hreflang` ครบทุกภาษา + `x-default`, `og:locale` และ JSON-LD ตามภาษา และ `sitemap.xml` ลิสต์ทุกหน้า × ทุกภาษา (48 URL) พร้อมลิงก์ภาษาอื่น

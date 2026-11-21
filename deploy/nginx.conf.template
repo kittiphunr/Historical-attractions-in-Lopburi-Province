@@ -1,0 +1,51 @@
+# ลพบุรี เมืองสามยุค — ตัวอย่างตั้งค่า nginx (VPS / เซิร์ฟเวอร์ของตัวเอง)
+# วางที่ /etc/nginx/conf.d/{{HOST}}.conf แล้วแก้ path ของ root ให้ตรงกับที่วางโฟลเดอร์ site จากนั้น
+#   sudo nginx -t && sudo systemctl reload nginx
+# ออกใบรับรอง HTTPS ฟรีด้วย Let's Encrypt:  sudo certbot --nginx -d {{HOST}} -d www.{{HOST}}
+# (certbot จะเพิ่มบล็อก listen 443 ssl และการเปลี่ยนเส้นทาง HTTP -> HTTPS ให้เอง)
+
+server {
+    listen 80;
+    server_name {{HOST}} www.{{HOST}};
+
+    root /var/www/{{HOST}}/site;
+    index index.html;
+    charset utf-8;
+
+    # หน้า 404 ของเว็บ
+    error_page 404 {{PATH}}404.html;
+    location = {{PATH}}404.html { internal; }
+
+    location {{PATH}} {
+        try_files $uri $uri/ =404;      # โฟลเดอร์ภาษา (/en/ /zh/ /ja/) ใช้ index.html ของโฟลเดอร์นั้น
+    }
+
+    # ชนิดไฟล์: ต้อง include mime.types ไว้ในบล็อก types เองด้วย (ไม่งั้นชนิดเดิมหาย)
+    types {
+        include /etc/nginx/mime.types;
+        model/gltf-binary glb;
+        image/webp webp;
+    }
+
+    # บีบอัดไฟล์ข้อความ
+    gzip on;
+    gzip_vary on;
+    gzip_comp_level 5;
+    gzip_types text/css text/javascript application/javascript application/json application/xml text/xml image/svg+xml text/plain;
+
+    # แคช: HTML/CSS/JS สั้น (การอัปเดตขึ้นเร็ว) ภาพ/โมเดลนาน
+    location ~* \.(html|xml|txt)$ { expires 10m; }
+    location ~* \.(css|js)$ { expires 1h; }
+    location ~* \.(glb|webp|png|jpe?g|svg|ico|woff2?)$ { expires 7d; add_header Cache-Control "public"; }
+
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "strict-origin-when-cross-origin" always;
+}
+
+# (ทางเลือก) www -> ไม่มี www หลังติดตั้งใบรับรองแล้ว:
+# server {
+#     listen 443 ssl;
+#     server_name www.{{HOST}};
+#     # ssl_certificate ... (certbot ใส่ให้)
+#     return 301 https://{{HOST}}$request_uri;
+# }
