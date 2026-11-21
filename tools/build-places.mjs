@@ -70,6 +70,22 @@ function extraSection(a, s, n) {
   return `<section class="reveal">${h2(s.title, n)}<div class="mt-4 space-y-4 leading-relaxed text-ink-700">${paras(body)}${s.bullets && s.bullets.length ? bullets(s.bullets) : ''}</div>
     ${(s.images || []).length ? `<div class="mt-5 grid gap-4 sm:grid-cols-2">${s.images.map((p, i) => figure(a, p, 1 + i)).join('')}</div>` : ''}</section>`;
 }
+/* ลิงก์ Google Maps: ถ้าใส่ coords: [lat, lng] ใน data.js จะนำทางไปพิกัดนั้น ไม่เช่นนั้นค้นจากชื่อสถานที่ + "ลพบุรี" */
+function mapsLinks(a) {
+  const q = a.coords ? `${a.coords[0]},${a.coords[1]}` : `${a.name} ลพบุรี`;
+  const e = encodeURIComponent(q);
+  return { dir: `https://www.google.com/maps/dir/?api=1&destination=${e}`, view: `https://www.google.com/maps/search/?api=1&query=${e}` };
+}
+function travelBlock(a) {
+  const m = mapsLinks(a);
+  return `<section class="reveal card p-5"><h2 class="eyebrow">เดินทางไปที่นี่</h2>
+    <div class="mt-3 flex flex-wrap gap-3">
+      <a class="btn-terra !px-5 !py-2.5 text-sm" target="_blank" rel="noopener noreferrer" href="${esc(m.dir)}">${icon('pin', 'h-4 w-4')}นำทางด้วย Google Maps ↗</a>
+      <a class="btn-soft !px-5 !py-2.5 text-sm" target="_blank" rel="noopener noreferrer" href="${esc(m.view)}">ดูบนแผนที่ ↗</a>
+    </div>
+    <p class="mt-3 text-xs leading-relaxed text-ink-400">ลิงก์เปิด Google Maps ในแท็บใหม่ ตำแหน่งค้นจากชื่อสถานที่ โปรดตรวจสอบเวลาเปิดและการเดินทางก่อนไป</p></section>`;
+}
+
 function miniMap(a) {
   if (!a.map) return '';
   return `<section class="reveal"><h2 class="eyebrow">ตำแหน่งในเมืองเก่า</h2>
@@ -131,6 +147,7 @@ function page(a, idx) {
             <div class="relative flex justify-center pb-4 pt-2"><button type="button" data-ar="${a.id}" class="btn-soft !px-4 !py-2 text-sm">${icon('cube', 'h-4 w-4 text-terra-500')}ดูแบบ AR</button></div>
           </div>
         </div>
+        ${travelBlock(a)}
         <div class="space-y-4">${video(a)}</div>
         ${miniMap(a)}
       </div>
