@@ -5,7 +5,7 @@
 1. `assets/js/data.js` — ข้อมูลหลัก (ชื่อ ประวัติ สถาปัตยกรรม ไฮไลต์ เตรียมตัวไป แหล่งอ้างอิง วิดีโอ)
 2. **ไฟล์ในโฟลเดอร์นี้** `content/places/<id>.json` — รูปภาพและหัวข้อเพิ่มเติมที่คุณเติมเอง (ไม่ต้องแตะโค้ด)
 
-`<id>` คือ `sam-yot`, `sala-phra-kan`, `narai-palace`, `wat-lai`, `mahathat`, `wichayen`, `khao-wong`, `prang-khaek`, `sao-thong-thong`, `nakhon-kosa`
+`<id>` คือ `sam-yot`, `sala-phra-kan`, `narai-palace`, `wat-lai`, `mahathat`, `wichayen`, `khao-wong`, `prang-khaek`, `sao-thong-thong`, `nakhon-kosa`, `kawisararam`
 
 ## วิธีเพิ่มรูป
 
