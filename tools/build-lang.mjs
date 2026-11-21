@@ -4,13 +4,10 @@
    ข้อความที่มีตัวแปรใช้ {0} {1} เช่น "{0} ข้อความจากผู้มาเยือน" */
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs';
 mkdirSync('assets/js/lang', { recursive: true });
-// คำแปลของหน้านโยบายความเป็นส่วนตัวและหน้า 404 อยู่ใน content/privacy.json และ content/404.json (ทุกค่าที่เป็น { th, en, zh, ja }) รวมเข้าพจนานุกรมตอนสร้างไฟล์
-const leaves = [];
-const walk = (v) => { if (v && typeof v === 'object') { if (typeof v.th === 'string') leaves.push(v); else Object.values(v).forEach(walk); } };
-for (const f of ['content/privacy.json', 'content/404.json']) walk(JSON.parse(readFileSync(f, 'utf8')));
+import { loadDict } from './lib/i18n-node.mjs';
+// พจนานุกรม = i18n/<code>.json รวมกับคำแปลของหน้านโยบายความเป็นส่วนตัวและหน้า 404 ใน content/privacy.json, content/404.json
 for (const f of readdirSync('i18n').filter(n => n.endsWith('.json'))) {
-  const code = f.replace('.json', ''), ui = JSON.parse(readFileSync('i18n/' + f, 'utf8'));
-  for (const l of leaves) if (typeof l[code] === 'string') ui[l.th] = l[code];
+  const code = f.replace('.json', ''), ui = loadDict('.', code);
   writeFileSync(`assets/js/lang/${code}.js`, `/* ไฟล์สร้างอัตโนมัติจาก i18n/${f} — อย่าแก้ตรงนี้ */\nI18N.register(${JSON.stringify(code)}, { ui: ${JSON.stringify(ui)} });\n`);
   console.log('lang pack:', code, Object.keys(ui).length, 'entries');
 }

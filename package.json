@@ -14,7 +14,8 @@
     "build:lang": "node tools/build-lang.mjs",
     "shrink": "node tools/shrink-glb.mjs",
     "posters": "node tools/make-posters.mjs",
-    "og": "node tools/make-og.mjs"
+    "og": "node tools/make-og.mjs",
+    "package": "node tools/package-site.mjs"
   },
   "devDependencies": {
     "@gltf-transform/cli": "^4.5.1",

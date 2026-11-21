@@ -1,0 +1,56 @@
+# ลพบุรี เมืองสามยุค — ตั้งค่าเซิร์ฟเวอร์สำหรับ Apache / LiteSpeed (cPanel และโฮสติ้งทั่วไปใช้ได้)
+# ไฟล์นี้ชื่อ .htaccess ต้องอยู่โฟลเดอร์เดียวกับ index.html (ไฟล์ที่ขึ้นต้นด้วยจุดเป็นไฟล์ซ่อน ตอนอัปโหลดต้องเปิด "แสดงไฟล์ซ่อน")
+# ถ้าโฮสต์ไม่รองรับบางโมดูล บรรทัดในกลุ่ม <IfModule> นั้นจะถูกข้ามเอง เว็บยังใช้ได้
+
+Options -Indexes
+DirectoryIndex index.html
+AddDefaultCharset UTF-8
+
+# หน้า 404 ของเว็บ (มีตราจังหวัด ปุ่มกลับหน้าแรก และรายการสถานที่)
+ErrorDocument 404 {{PATH}}404.html
+
+<IfModule mod_mime.c>
+  AddType model/gltf-binary .glb
+  AddType image/webp .webp
+  AddType text/javascript .js
+  AddType application/xml .xml
+</IfModule>
+
+# บีบอัดไฟล์ข้อความ (ไฟล์ภาพและโมเดล 3 มิติบีบอัดมาแล้ว ไม่ต้องบีบซ้ำ)
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json application/xml text/xml image/svg+xml text/plain
+</IfModule>
+
+# แคช: ชื่อไฟล์ไม่ได้ใส่รหัสเวอร์ชัน จึงตั้งสั้นสำหรับ HTML/CSS/JS เพื่อให้การอัปเดตขึ้นเร็ว และนานสำหรับภาพ/โมเดล
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/html "access plus 10 minutes"
+  ExpiresByType text/css "access plus 1 hour"
+  ExpiresByType text/javascript "access plus 1 hour"
+  ExpiresByType application/javascript "access plus 1 hour"
+  ExpiresByType application/xml "access plus 1 hour"
+  ExpiresByType image/webp "access plus 7 days"
+  ExpiresByType image/png "access plus 7 days"
+  ExpiresByType image/jpeg "access plus 7 days"
+  ExpiresByType model/gltf-binary "access plus 7 days"
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# ---- บังคับ HTTPS (AR และบางฟีเจอร์ต้องใช้ HTTPS) ----
+# ปกติโฮสต์ที่ติดตั้งใบรับรอง SSL แล้วมีตัวเลือก "Force HTTPS" ในแผงควบคุม ถ้าไม่มี ให้ลบ # หน้า 4 บรรทัดนี้
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTPS} off
+#   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# </IfModule>
+
+# ---- ถ้าต้องการให้ www.{{HOST}} ไปที่ {{HOST}} (ลบ # ออก) ----
+# <IfModule mod_rewrite.c>
+#   RewriteEngine On
+#   RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+#   RewriteRule ^ https://%1%{REQUEST_URI} [L,R=301]
+# </IfModule>

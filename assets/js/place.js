@@ -19,7 +19,7 @@
   if (document.body.dataset.page === '404') {
     const seg = decodeURIComponent(location.pathname.split('/').filter(Boolean).pop() || '').replace(/\.html?$/i, '').toLowerCase();
     const m = seg.length >= 3 && A.find(x => x.id === seg || x.id.includes(seg) || seg.includes(x.id) || x.en.toLowerCase().replace(/[^a-z]+/g, '-').includes(seg));
-    if (m) { const l = $('#nfSuggestLink'); l.href = 'places/' + m.id + '.html'; l.textContent = m.name; $('#nfSuggest').classList.remove('hidden'); }
+    if (m) { const l = $('#nfSuggestLink'); l.href = (document.documentElement.dataset.prefix || '') + 'places/' + m.id + '.html'; l.textContent = m.name; $('#nfSuggest').classList.remove('hidden'); }
   }
 
   window.addEventListener('langchange', () => paintThemeLabel(isDark() ? 'dark' : 'light'));
