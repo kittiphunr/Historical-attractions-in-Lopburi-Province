@@ -385,6 +385,38 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://centralthaiheritage.com/places/kawisararam.html"/>
   </url>
   <url>
+    <loc>https://centralthaiheritage.com/places/ang-sap-lek.html</loc>
+    <xhtml:link rel="alternate" hreflang="th" href="https://centralthaiheritage.com/places/ang-sap-lek.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://centralthaiheritage.com/en/places/ang-sap-lek.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://centralthaiheritage.com/zh/places/ang-sap-lek.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://centralthaiheritage.com/ja/places/ang-sap-lek.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://centralthaiheritage.com/places/ang-sap-lek.html"/>
+  </url>
+  <url>
+    <loc>https://centralthaiheritage.com/en/places/ang-sap-lek.html</loc>
+    <xhtml:link rel="alternate" hreflang="th" href="https://centralthaiheritage.com/places/ang-sap-lek.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://centralthaiheritage.com/en/places/ang-sap-lek.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://centralthaiheritage.com/zh/places/ang-sap-lek.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://centralthaiheritage.com/ja/places/ang-sap-lek.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://centralthaiheritage.com/places/ang-sap-lek.html"/>
+  </url>
+  <url>
+    <loc>https://centralthaiheritage.com/zh/places/ang-sap-lek.html</loc>
+    <xhtml:link rel="alternate" hreflang="th" href="https://centralthaiheritage.com/places/ang-sap-lek.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://centralthaiheritage.com/en/places/ang-sap-lek.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://centralthaiheritage.com/zh/places/ang-sap-lek.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://centralthaiheritage.com/ja/places/ang-sap-lek.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://centralthaiheritage.com/places/ang-sap-lek.html"/>
+  </url>
+  <url>
+    <loc>https://centralthaiheritage.com/ja/places/ang-sap-lek.html</loc>
+    <xhtml:link rel="alternate" hreflang="th" href="https://centralthaiheritage.com/places/ang-sap-lek.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://centralthaiheritage.com/en/places/ang-sap-lek.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://centralthaiheritage.com/zh/places/ang-sap-lek.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://centralthaiheritage.com/ja/places/ang-sap-lek.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://centralthaiheritage.com/places/ang-sap-lek.html"/>
+  </url>
+  <url>
     <loc>https://centralthaiheritage.com/privacy.html</loc>
     <xhtml:link rel="alternate" hreflang="th" href="https://centralthaiheritage.com/privacy.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://centralthaiheritage.com/en/privacy.html"/>

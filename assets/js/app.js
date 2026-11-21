@@ -3,8 +3,8 @@
   const { $, $$, esc, svg } = window.LopburiUI;
   const PFX = document.documentElement.dataset.prefix || ''; // 'en/' ฯลฯ บนหน้าแยกตามภาษา (ลิงก์ภายในต้องอยู่ในภาษาเดียวกัน)
   const A = window.ATTRACTIONS, S = window.SOURCES, SRC = Object.fromEntries(S.map(s => [s.id, s]));
-  const ERA = { all: 'ทั้งหมด', dvaravati: 'ทวารวดี', khmer: 'ขอม', ayutthaya: 'อยุธยา–พระนารายณ์', faith: 'ภูเขา–ศรัทธา' };
-  const ERA_COLOR = { dvaravati: 'bg-sky-500/15 text-sky-700', khmer: 'bg-terra-500/10 text-terra-600', ayutthaya: 'bg-amber-500/15 text-amber-700', faith: 'bg-emerald-600/15 text-emerald-700' };
+  const ERA = { all: 'ทั้งหมด', dvaravati: 'ทวารวดี', khmer: 'ขอม', ayutthaya: 'อยุธยา–พระนารายณ์', faith: 'ภูเขา–ศรัทธา', nature: 'แหล่งน้ำ–ธรรมชาติ' };
+  const ERA_COLOR = { dvaravati: 'bg-sky-500/15 text-sky-700', khmer: 'bg-terra-500/10 text-terra-600', ayutthaya: 'bg-amber-500/15 text-amber-700', faith: 'bg-emerald-600/15 text-emerald-700', nature: 'bg-teal-600/15 text-teal-700' };
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   window.LopburiUI.initIcons();

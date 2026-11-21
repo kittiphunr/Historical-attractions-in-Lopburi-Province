@@ -22,7 +22,7 @@ const A = ctx.window.ATTRACTIONS;
 const esc = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const dataUri = (f, type) => `data:${type};base64,${readFileSync(join(root, f)).toString('base64')}`;
 const seal = dataUri('assets/img/seal-192.png', 'image/png');
-const ERA = { dvaravati: ['#dff0f7', '#1e6f93'], khmer: ['#f6dfd5', '#a8431f'], ayutthaya: ['#f9e8c8', '#97611b'], faith: ['#d9efe3', '#1f7a52'] };
+const ERA = { dvaravati: ['#dff0f7', '#1e6f93'], khmer: ['#f6dfd5', '#a8431f'], ayutthaya: ['#f9e8c8', '#97611b'], faith: ['#d9efe3', '#1f7a52'], nature: ['#d6edef', '#1b6f7a'] };
 
 const html = (a) => {
   const [chipBg, chipFg] = ERA[a.era] || ERA.khmer;
