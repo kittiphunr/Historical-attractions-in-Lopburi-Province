@@ -41,7 +41,9 @@ http.createServer((req, res) => {
   // static
   let p = decodeURIComponent(url.pathname); if (p === '/') p = '/index.html';
   const file = path.normalize(path.join(ROOT, p));
-  const allowed = ['index.html', 'assets'].some(a => file === path.join(ROOT, a) || file.startsWith(path.join(ROOT, a) + path.sep));
-  if (!file.startsWith(ROOT + path.sep) || !allowed) return send(res, 404, 'Not found', 'text/plain');
-  fs.readFile(file, (err, data) => err ? send(res, 404, 'Not found', 'text/plain') : send(res, 200, data, MIME[path.extname(file)] || 'application/octet-stream'));
+  const allowed = ['index.html', 'privacy.html', '404.html', 'sitemap.xml', 'robots.txt', 'map-debug.html', 'places', 'assets'].some(a => file === path.join(ROOT, a) || file.startsWith(path.join(ROOT, a) + path.sep));
+  // ไม่พบไฟล์: ถ้าเป็นการเปิดหน้าเว็บ แสดง 404.html (สถานะ 404) เหมือน GitHub Pages
+  const notFound = () => fs.readFile(path.join(ROOT, '404.html'), (e, d) => (e || path.extname(p) && path.extname(p) !== '.html') ? send(res, 404, 'Not found', 'text/plain') : send(res, 404, d, 'text/html; charset=utf-8'));
+  if (!file.startsWith(ROOT + path.sep) || !allowed) return notFound();
+  fs.readFile(file, (err, data) => err ? notFound() : send(res, 200, data, MIME[path.extname(file)] || 'application/octet-stream'));
 }).listen(PORT, () => console.log(`เปิดที่ http://localhost:${PORT}`));

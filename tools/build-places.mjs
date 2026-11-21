@@ -300,13 +300,69 @@ function privacyPage() {
 `;
 }
 
+/* ---------- หน้า 404 (404.html): GitHub Pages ใช้ไฟล์นี้กับทุกที่อยู่ที่ไม่มีอยู่ ---------- */
+function notFoundPage() {
+  const N = JSON.parse(read('content/404.json'));
+  const list = A.map(a => `<li><a href="places/${a.id}.html" class="neu flex items-center gap-3 p-3 text-left hover:-translate-y-0.5"><span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-sm font-semibold text-white" style="${GRAD}">${a.no}</span><span class="min-w-0"><b class="block truncate text-sm font-medium text-ink-900">${esc(a.name)}</b><span class="block truncate text-xs text-ink-500">${esc(a.eraLabel)}</span></span></a></li>`).join('');
+  return `<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <script>
+    // หน้านี้ถูกเสิร์ฟที่ที่อยู่ใดก็ได้ จึงกำหนด base ให้ลิงก์/ไฟล์แบบสัมพัทธ์ชี้ที่รากของเว็บเสมอ (GitHub Pages โปรเจกต์: /ชื่อโปรเจกต์/)
+    (function () { var p = location.pathname.split('/'); var base = /\\.github\\.io$/i.test(location.hostname) && p[1] ? '/' + p[1] + '/' : '/'; document.write('<base href="' + base + '">'); })();
+  </script>
+  <title>${esc(N.title.th)} — ลพบุรี เมืองสามยุค</title>
+  <meta name="robots" content="noindex">
+  <meta name="theme-color" content="#f4ece2">
+  <link rel="icon" type="image/png" href="assets/img/favicon-64.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  ${headFonts}<link rel="stylesheet" href="assets/tailwind.css">
+  ${themeScript}<script src="assets/js/loader.js"></script>
+</head>
+<body class="relative overflow-x-hidden pb-28 lg:pb-10" data-page="404">
+  ${chrome}<main id="main" class="mx-auto max-w-3xl px-4 pt-24 text-center lg:pl-[112px] lg:pr-6">
+    <img src="assets/img/seal-384.png" alt="ตราประจำจังหวัดลพบุรี" width="384" height="373" class="mx-auto h-28 w-auto drop-shadow-lg">
+    <p class="mt-6 bg-gradient-to-b from-terra-400 to-terra-700 bg-clip-text text-8xl font-semibold leading-none text-transparent sm:text-9xl" aria-hidden="true">404</p>
+    <h1 class="mt-4 text-3xl font-semibold sm:text-4xl">${esc(N.title.th)}</h1>
+    <p class="mx-auto mt-4 max-w-xl leading-relaxed text-ink-500">${esc(N.lead.th)}</p>
+    <div id="nfSuggest" class="card mx-auto mt-6 hidden max-w-md p-4 text-sm"><p class="text-ink-500">${esc(N.didYouMean.th)}</p><a id="nfSuggestLink" class="mt-1 inline-block text-lg font-medium text-terra-600 underline-offset-4 hover:underline" href="index.html"></a></div>
+    <div class="mt-8 flex flex-wrap justify-center gap-3">
+      <a href="index.html" class="btn-terra">${icon('home', 'h-5 w-5')}${esc(N.home.th)}</a>
+      <a href="index.html#places" class="btn-soft">${icon('landmark', 'h-5 w-5 text-terra-500')}${esc(N.places.th)}</a>
+    </div>
+    <h2 class="mt-14 text-sm uppercase tracking-wider text-terra-500">${esc(N.pick.th)}</h2>
+    <ul class="mt-4 grid gap-3 sm:grid-cols-2">${list}</ul>
+  </main>
+
+  ${footer}
+
+  ${creditsDialog}
+
+  ${arDialog}
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/models.js"></script>
+  <script src="assets/js/three-scenes.js"></script>
+  <script src="assets/js/motion.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/place.js"></script>
+</body>
+</html>
+`;
+}
+
 mkdirSync(join(root, 'places'), { recursive: true });
 A.forEach((a, i) => { writeFileSync(join(root, 'places', a.id + '.html'), page(a, i)); });
 // ลบหน้าที่ไม่มีสถานที่แล้ว (เช่น เปลี่ยน id)
 for (const f of readdirSync(join(root, 'places'))) if (f.endsWith('.html') && !A.some(a => a.id + '.html' === f)) console.warn('หมายเหตุ: places/' + f + ' ไม่มีใน data.js แล้ว (ลบเองได้)');
 
 writeFileSync(join(root, 'privacy.html'), privacyPage());
+writeFileSync(join(root, '404.html'), notFoundPage());
 const urls = [SITE, ...A.map(a => `${SITE}places/${a.id}.html`), SITE + 'privacy.html'];
 writeFileSync(join(root, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls.map(u => `  <url><loc>${u}</loc></url>`).join('\n')}\n</urlset>\n`);
 writeFileSync(join(root, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE}sitemap.xml\n`);
-console.log(`places: ${A.length} หน้า + privacy.html -> places/*.html, sitemap.xml, robots.txt`);
+console.log(`places: ${A.length} หน้า + privacy.html + 404.html -> places/*.html, sitemap.xml, robots.txt`);
