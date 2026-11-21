@@ -145,7 +145,7 @@ function page(a, idx) {
       isPartOf: { '@type': 'TouristDestination', name: 'จังหวัดลพบุรี', url: SITE }, address: { '@type': 'PostalAddress', addressRegion: 'ลพบุรี', addressCountry: 'TH' } },
     { '@type': 'BreadcrumbList', itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'หน้าแรก', item: SITE },
-      { '@type': 'ListItem', position: 2, name: '10 แห่ง', item: SITE + '#places' },
+      { '@type': 'ListItem', position: 2, name: '11 แห่ง', item: SITE + '#places' },
       { '@type': 'ListItem', position: 3, name: a.name, item: url }] }] };
   const extraStart = 5;
   const factsAll = [...a.facts, ...(c.facts || [])];
@@ -185,7 +185,7 @@ function page(a, idx) {
   ${chrome}<main id="main" class="mx-auto max-w-6xl px-4 pt-20 lg:pl-[112px] lg:pr-6">
     <nav aria-label="ตำแหน่งหน้า" class="text-sm text-ink-500"><ol class="flex flex-wrap items-center gap-2">
       <li><a class="hover:text-terra-600" href="index.html">หน้าแรก</a></li><li aria-hidden="true">/</li>
-      <li><a class="hover:text-terra-600" href="index.html#places">10 แห่ง</a></li><li aria-hidden="true">/</li>
+      <li><a class="hover:text-terra-600" href="index.html#places">11 แห่ง</a></li><li aria-hidden="true">/</li>
       <li aria-current="page" class="text-ink-900">${esc(a.name)}</li></ol></nav>
 
     <div class="mt-6 grid items-start gap-8 lg:grid-cols-12 lg:gap-10">
@@ -194,9 +194,9 @@ function page(a, idx) {
         <div class="card overflow-hidden p-0">
           <div class="stage-bg relative overflow-hidden rounded-[1.75rem]">
             <span class="absolute left-5 top-3 z-10 text-6xl font-semibold text-terra-500/20">${a.no}</span>
-            <div id="placeModel" class="model relative h-[340px] sm:h-[420px]" aria-label="โมเดล 3 มิติจำลอง ${esc(a.name)} ลากเพื่อหมุน"></div>
-            <p class="relative px-4 pt-1 text-center text-[11px] text-ink-500"><span data-hint class="hidden">↻ ลาก / ปุ่มลูกศร เพื่อหมุน · ดับเบิลคลิกรีเซ็ต</span>${hasGlb ? `<span class="block">${esc(a.glb.credit)}</span>` : '<span class="block">แบบจำลองเรียบง่าย (สร้างด้วยโค้ด)</span>'}</p>
-            <div class="relative flex justify-center pb-4 pt-2"><button type="button" data-ar="${a.id}" class="btn-soft !px-4 !py-2 text-sm">${icon('cube', 'h-4 w-4 text-terra-500')}ดูแบบ AR</button></div>
+            ${hasGlb ? `<div id="placeModel" class="model relative h-[340px] sm:h-[420px]" aria-label="โมเดล 3 มิติจำลอง ${esc(a.name)} ลากเพื่อหมุน"></div>` : `<div class="relative grid h-[340px] place-items-center px-6 text-center sm:h-[420px]" role="img" aria-label="${esc(a.name)} — โมเดล 3 มิติกำลังจัดทำ">${icon('cube', 'mx-auto h-14 w-14 text-terra-500/40')}<p class="mt-3 text-sm text-ink-500">โมเดล 3 มิติกำลังจัดทำ</p></div>`}
+            ${hasGlb ? `<p class="relative px-4 pt-1 text-center text-[11px] text-ink-500"><span data-hint class="hidden">↻ ลาก / ปุ่มลูกศร เพื่อหมุน · ดับเบิลคลิกรีเซ็ต</span><span class="block">${esc(a.glb.credit)}</span></p>
+            <div class="relative flex justify-center pb-4 pt-2"><button type="button" data-ar="${a.id}" class="btn-soft !px-4 !py-2 text-sm">${icon('cube', 'h-4 w-4 text-terra-500')}ดูแบบ AR</button></div>` : '<div class="pb-4"></div>'}
           </div>
         </div>
         ${travelBlock(a)}
@@ -417,7 +417,7 @@ function homeBlocks() {
     { '@context': 'https://schema.org', '@type': 'TouristDestination', name: 'จังหวัดลพบุรี', alternateName: 'Lopburi Province', description: 'สำรวจ 10 แหล่งประวัติศาสตร์เมืองสามยุคของลพบุรี: ทวารวดี ขอม อยุธยา', url: SITE, image: IMG + 'assets/img/og-cover.jpg', inLanguage: 'th',
       containsPlace: A.map(a => ({ '@type': 'TouristAttraction', name: a.name, alternateName: a.en, url: `${SITE}places/${a.id}.html` })) }
   ];
-  const nolist = `<noscript><nav aria-label="สถานที่ทั้ง 10 แห่ง" class="mt-6"><ul class="grid gap-2 sm:grid-cols-2">${A.map(a => `<li><a class="underline" href="places/${a.id}.html">${esc(a.no)} ${esc(a.name)} — ${esc(a.tagline)}</a></li>`).join('')}</ul></nav></noscript>`;
+  const nolist = `<noscript><nav aria-label="สถานที่ทั้ง 11 แห่ง" class="mt-6"><ul class="grid gap-2 sm:grid-cols-2">${A.map(a => `<li><a class="underline" href="places/${a.id}.html">${esc(a.no)} ${esc(a.name)} — ${esc(a.tagline)}</a></li>`).join('')}</ul></nav></noscript>`;
   return { jsonld: `\n  <script type="application/ld+json">${JSON.stringify(ld)}</script>\n  `, nolist, hreflang: '\n  ' + hreflangLinks('') + '\n  ' };
 }
 let homeThai;

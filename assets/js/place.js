@@ -4,11 +4,11 @@
   const A = window.ATTRACTIONS, id = document.body.dataset.place, a = A.find(x => x.id === id);
   U.initIcons(); U.initTheme(); U.initAR(); U.initCredits(); U.initLightbox();
 
-  // เมนูข้าง/ล่าง: ไฮไลต์ "10 แห่ง" เพราะอยู่ในหมวดสถานที่
+  // เมนูข้าง/ล่าง: ไฮไลต์ "11 แห่ง" เพราะอยู่ในหมวดสถานที่
   if (a) $$('[data-sec="places"]').forEach(el => { el.setAttribute('aria-current', 'true'); if (el.closest('nav[aria-label*=มือถือ]')) el.classList.add('text-terra-600'); });
 
   // ภาพปก -> กดเพื่อโหลดโมเดล 3 มิติ (ไม่โหลดไฟล์ .glb จนกว่าจะกด)
-  if (a) mountLazy($('#placeModel'), a.id, a.name, a.model, 420, { az: 0.62, glb: a.glb && a.glb.url, tight: !!(a.glb && a.glb.base) });
+  if (a && a.glb && $('#placeModel')) mountLazy($('#placeModel'), a.id, a.name, a.model, 420, { az: 0.62, glb: a.glb && a.glb.url, tight: !!(a.glb && a.glb.base) });
 
   // เนื้อหาค่อย ๆ ปรากฏเมื่อเลื่อนถึง
   const reveal = $$('.reveal');
