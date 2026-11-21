@@ -117,8 +117,9 @@ function page(a, idx) {
   const c = loadContent(a.id);
   const prev = A[(idx + A.length - 1) % A.length], next = A[(idx + 1) % A.length];
   const url = `${SITE}places/${a.id}.html`;
+  const ogImg = existsSync(join(root, 'assets/og', a.id + '.jpg')) ? `${SITE}assets/og/${a.id}.jpg` : `${SITE}assets/img/og-cover.jpg`;
   const title = `${a.name} — ลพบุรี เมืองสามยุค`;
-  const ld = { '@context': 'https://schema.org', '@type': 'TouristAttraction', name: a.name, alternateName: a.en, description: a.summary, url, image: SITE + 'assets/img/og-cover.jpg', address: { '@type': 'PostalAddress', addressRegion: 'ลพบุรี', addressCountry: 'TH' } };
+  const ld = { '@context': 'https://schema.org', '@type': 'TouristAttraction', name: a.name, alternateName: a.en, description: a.summary, url, image: ogImg, address: { '@type': 'PostalAddress', addressRegion: 'ลพบุรี', addressCountry: 'TH' } };
   const extraStart = 5;
   const factsAll = [...a.facts, ...(c.facts || [])];
   const hasGlb = !!a.glb;
@@ -135,10 +136,12 @@ function page(a, idx) {
   <meta property="og:description" content="${esc(a.tagline)}">
   <meta property="og:type" content="article">
   <meta property="og:url" content="${url}">
-  <meta property="og:image" content="${SITE}assets/img/og-cover.jpg">
+  <meta property="og:image" content="${ogImg}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="${esc(a.name)} — ${esc(a.en)}">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="${ogImg}">
   <link rel="canonical" href="${url}">
   <link rel="icon" type="image/png" href="assets/img/favicon-64.png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
