@@ -221,10 +221,10 @@
   });
 
   /* ---------- route ---------- */
-  $('#routeList').innerHTML = window.ROUTE.map(([n, id, note], i) => `
+  $('#routeList').innerHTML = window.ROUTE.map(([n, id, note], i) => { const pl = A.find(x => x.id === id); return `
     <li class="reveal" style="transition-delay:${i * 50}ms"><a href="${PFX}places/${id}.html" class="card flex items-center gap-4 p-4 transition hover:-translate-y-0.5">
-      <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full text-lg font-semibold text-white" style="background:linear-gradient(145deg,#dc6f45,#a8431f)">${i + 1}</span>
-      <span class="min-w-0"><b class="block font-medium text-ink-900">${esc(n)}</b><span class="block text-sm text-ink-500">${esc(note)}</span></span></a></li>`).join('');
+      <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full text-lg font-semibold text-white" style="background:linear-gradient(145deg,#dc6f45,#a8431f)">${esc(pl ? pl.no : String(i + 1))}</span>
+      <span class="min-w-0"><b class="block font-medium text-ink-900">${esc(n)}</b><span class="block text-sm text-ink-500">${esc(note)}</span></span></a></li>`; }).join('');
 
   /* ---------- reveal ---------- */
   let io;
