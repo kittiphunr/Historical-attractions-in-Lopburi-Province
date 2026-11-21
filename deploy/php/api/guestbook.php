@@ -22,6 +22,7 @@ try {
     $place = (string)($b['place'] ?? '');
     if ($place !== '' && !lop_valid_place($place)) $place = '';
     if (!empty($b['website'])) lop_json(['id' => lop_new_id(), 'name' => $name, 'message' => $message, 'rating' => $rating, 'place' => $place, 'at' => lop_iso(gmdate('Y-m-d H:i:s'))], 201); // ช่องล่อบอต: ทำเป็นสำเร็จแต่ไม่บันทึก
+    lop_captcha_verify($b);
     if ($name === '') lop_fail('name');
     if (lop_len($message) < 3) lop_fail('short');
     if (lop_has_link($name) || lop_has_link($message)) lop_fail('links');

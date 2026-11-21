@@ -21,6 +21,12 @@ return [
     // ข้อความสุ่มยาว ๆ ใช้ผสมตอนทำค่าแฮช IP (ตั้งครั้งเดียว อย่าเปลี่ยนบ่อย) เช่น สร้างจาก https://www.random.org/strings/
     'ip_salt'      => 'เปลี่ยนเป็นข้อความสุ่มของคุณเอง-อย่างน้อย-24-ตัวอักษร',
 
+    // CAPTCHA กันสแปม: 'pow' (ค่าเริ่มต้น เบราว์เซอร์คำนวณเองเงียบ ๆ ไม่มีบริการภายนอก) | 'turnstile' (Cloudflare Turnstile ฟรี ต้องสมัครแล้วใส่คีย์ 2 ตัวด้านล่าง) | 'off'
+    'captcha'            => 'pow',
+    'captcha_bits'       => 16,   // ความยาก pow (8-22) ยิ่งสูงยิ่งช้า: 16 ≈ 1 วินาที
+    'turnstile_site_key' => '',   // (เฉพาะ turnstile) คีย์สาธารณะ จาก dash.cloudflare.com -> Turnstile
+    'turnstile_secret'   => '',   // (เฉพาะ turnstile) คีย์ลับ ห้ามเผยแพร่
+
     // โดเมนที่อนุญาตให้ส่งข้อมูลมาที่ API นี้ (นอกจากโดเมนเดียวกับ API เอง) เว้นว่างไว้ถ้าเว็บกับ API อยู่โดเมนเดียวกัน
     'allowed_origins' => [
         // 'https://www.centralthaiheritage.com',

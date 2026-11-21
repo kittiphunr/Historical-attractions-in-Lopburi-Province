@@ -32,6 +32,7 @@ try {
     $name = lop_clean($b['name'] ?? '', 40);
     $message = lop_clean($b['message'] ?? '', 500);
     $rating = (int)($b['rating'] ?? 0);
+    lop_captcha_verify($b);
     if ($name === '') lop_fail('name');
     if ($rating < 1 || $rating > 5) lop_fail('rating');
     if (lop_len($message) < 5) lop_fail('short');

@@ -56,11 +56,13 @@ for (const f of textFiles) {
 
 const guestbook = flag('guestbook-api') || (PHP ? 'api/guestbook.php' : '');
 const reviews = PHP ? 'api/reviews.php' : '';
-if (guestbook || reviews) {
+const captcha = PHP ? 'api/captcha.php' : '';
+if (guestbook || reviews || captcha) {
   const cfgFile = join(dir, 'assets/js/config.js');
   let c = readFileSync(cfgFile, 'utf8');
   if (guestbook) c = c.replace(/guestbookApi:\s*'[^']*'/, `guestbookApi: '${guestbook}'`);
   if (reviews) c = c.replace(/reviewsApi:\s*'[^']*'/, `reviewsApi: '${reviews}'`);
+  if (captcha) c = c.replace(/captchaApi:\s*'[^']*'/, `captchaApi: '${captcha}'`);
   writeFileSync(cfgFile, c);
 }
 

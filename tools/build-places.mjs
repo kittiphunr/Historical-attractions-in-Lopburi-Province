@@ -273,6 +273,7 @@ function page(a, idx) {
   <script src="assets/js/i18n.js"></script>
   <script src="assets/js/common.js"></script>
   <script src="assets/js/place.js"></script>
+  <script src="assets/js/captcha.js"></script>
   <script src="assets/js/reviews.js"></script>
 </body>
 </html>

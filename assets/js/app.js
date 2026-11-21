@@ -295,7 +295,13 @@
     const btn = $('button[type=submit]', f); btn.disabled = true;
     try {
       if (mode === 'server') {
-        const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(entry) });
+        let captcha = null;
+        if (window.LopburiCaptcha && window.LopburiCaptcha.enabled) {
+          err.textContent = 'กำลังตรวจสอบความปลอดภัย…';
+          try { captcha = await window.LopburiCaptcha.get(f); } catch (e2) { throw new Error('ยืนยันตัวตนไม่สำเร็จ ลองใหม่อีกครั้ง'); }
+          err.textContent = '';
+        }
+        const r = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(captcha ? { ...entry, captcha } : entry) });
         const j = await r.json(); if (!r.ok) throw new Error(j.error || 'บันทึกไม่สำเร็จ');
         entries.unshift(j);
       } else { entries.unshift({ ...entry, id: 'l' + Date.now(), at: new Date().toISOString() }); writeLocal(entries); }
@@ -303,6 +309,7 @@
     } catch (e) { err.textContent = (e instanceof TypeError ? 'บันทึกไม่สำเร็จ' : e.message) || 'เกิดข้อผิดพลาด'; }
     btn.disabled = false;
   });
+  if (window.LopburiCaptcha && window.LopburiCaptcha.enabled) $('#gbForm').addEventListener('focusin', () => { if (mode === 'server') window.LopburiCaptcha.prepare($('#gbForm')); }, { once: true });
   load();
 
   /* ---------- หลายภาษา ---------- */

@@ -66,13 +66,17 @@
     if (!name) { setStatus(T('กรุณาใส่ชื่อ'), true); f.name.focus(); return; }
     if (!rating) { setStatus(T('กรุณาให้คะแนนดาว'), true); box.firstElementChild.focus(); return; }
     if (message.length < 5) { setStatus(T('ข้อความสั้นเกินไป'), true); f.message.focus(); return; }
-    btn.disabled = true; setStatus(T('กำลังส่ง…'), false);
+    btn.disabled = true; setStatus(T('กำลังตรวจสอบความปลอดภัย…'), false);
+    let captcha = null;
+    try { captcha = await window.LopburiCaptcha.get(f); } catch (e) { setStatus(T('ยืนยันตัวตนไม่สำเร็จ ลองใหม่อีกครั้ง'), true); btn.disabled = false; return; }
+    setStatus(T('กำลังส่ง…'), false);
     try {
-      await api('', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ place, name, rating, message, lang: document.documentElement.lang }) });
+      await api('', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ place, name, rating, message, captcha, lang: document.documentElement.lang }) });
       f.reset(); rating = 0; paint(); setStatus(T('ขอบคุณสำหรับรีวิว! รีวิวจะแสดงหลังผู้ดูแลตรวจสอบ'), false);
     } catch (e) { setStatus(e.status ? T(e.message) : T('บันทึกไม่สำเร็จ'), true); }
     btn.disabled = false;
   });
+  if (window.LopburiCaptcha) $('rvForm').addEventListener('focusin', () => window.LopburiCaptcha.prepare($('rvForm')), { once: true });
   $('rvMore').addEventListener('click', () => load(false));
   load(true);
 })();

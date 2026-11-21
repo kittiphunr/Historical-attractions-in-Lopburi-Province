@@ -7,5 +7,7 @@ window.LOPBURI_CONFIG = {
   guestbookApi: '',
   // URL ของ API รีวิวสถานที่ (ใช้กับ PHP + MySQL เท่านั้น) เช่น 'api/reviews.php'
   // เว้นว่าง = ซ่อนส่วน "รีวิวจากผู้เข้าชม" ในหน้าสถานที่
-  reviewsApi: ''
+  reviewsApi: '',
+  // URL ของ API ออกโจทย์ CAPTCHA กันสแปม (ใช้กับ PHP + MySQL) เช่น 'api/captcha.php' เว้นว่าง = ไม่ใช้ CAPTCHA
+  captchaApi: ''
 };

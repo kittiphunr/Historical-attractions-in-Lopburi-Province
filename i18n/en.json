@@ -496,5 +496,7 @@
  "โหลดรีวิวไม่สำเร็จ ลองอีกครั้ง": "Could not load reviews; please try again",
  "ขอบคุณสำหรับรีวิว! รีวิวจะแสดงหลังผู้ดูแลตรวจสอบ": "Thank you for your review! It will appear after a moderator checks it.",
  "คุณเพิ่งรีวิวสถานที่นี้ไปแล้ว": "You have just reviewed this place",
- "ระบบขัดข้อง ลองใหม่ภายหลัง": "Something went wrong; please try again later"
+ "ระบบขัดข้อง ลองใหม่ภายหลัง": "Something went wrong; please try again later",
+ "กำลังตรวจสอบความปลอดภัย…": "Running a quick security check…",
+ "ยืนยันตัวตนไม่สำเร็จ ลองใหม่อีกครั้ง": "Verification failed. Please try again."
 }
