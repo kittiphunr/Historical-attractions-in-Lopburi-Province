@@ -49,8 +49,12 @@ const credit = (p) => [p.author ? `ภาพ: ${esc(p.author)}` : 'ภาพ: �
   p.sourceUrl ? `<a class="underline" target="_blank" rel="noopener noreferrer" href="${esc(p.sourceUrl)}">ต้นฉบับ ↗</a>` : ''].filter(Boolean).join(' · ');
 
 function figure(a, p, i) {
-  const big = i === 0;
-  return `<figure class="${big ? 'sm:col-span-2' : ''} overflow-hidden rounded-2xl bg-cream-50 shadow-neu"><img src="${esc(imgSrc(a.id, p.src))}" alt="${esc(p.alt || p.caption || a.name)}" loading="${big ? 'eager' : 'lazy'}" decoding="async" class="${big ? 'aspect-[16/10]' : 'aspect-[4/3]'} w-full object-cover">
+  const big = i === 0, alt = p.alt || p.caption || a.name;
+  return `<figure class="${big ? 'sm:col-span-2' : ''} overflow-hidden rounded-2xl bg-cream-50 shadow-neu">
+    <button type="button" data-lb class="group relative block w-full cursor-zoom-in overflow-hidden outline-offset-[-4px]" aria-haspopup="dialog" aria-label="ขยายรูป: ${esc(p.caption || alt)}">
+      <img src="${esc(imgSrc(a.id, p.src))}" alt="${esc(alt)}" loading="${big ? 'eager' : 'lazy'}" decoding="async" class="${big ? 'aspect-[16/10]' : 'aspect-[4/3]'} w-full object-cover transition duration-500 group-hover:scale-[1.03]">
+      <span class="pointer-events-none absolute right-3 top-3 grid h-9 w-9 place-items-center rounded-full bg-char-900/60 text-snow-50 opacity-0 backdrop-blur transition group-hover:opacity-100 group-focus-visible:opacity-100" aria-hidden="true"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2M11 8v6M8 11h6"/></svg></span>
+    </button>
     <figcaption class="px-4 py-3 text-xs leading-relaxed text-ink-500">${p.caption ? `<span class="block text-sm text-ink-700">${esc(p.caption)}</span>` : ''}${credit(p)}</figcaption></figure>`;
 }
 function gallery(a, c) {
@@ -93,6 +97,21 @@ function miniMap(a) {
       <span class="absolute -translate-x-1/2 -translate-y-1/2" style="left:${a.map[0]}%;top:${a.map[1]}%"><span class="absolute inset-0 -m-2 animate-ping rounded-full bg-terra-400/40"></span><span class="relative grid h-9 w-9 place-items-center rounded-full border-2 border-white bg-terra-500 text-sm font-semibold text-white shadow-dark">${a.no}</span></span></div>
     <a href="index.html#map" class="mt-3 inline-flex items-center gap-1 text-sm text-terra-600 underline-offset-4 hover:underline">ดูแผนที่ทั้งจังหวัด ${icon('arrow', 'h-4 w-4')}</a></section>`;
 }
+
+const lightbox = `<dialog id="lightbox" class="m-auto w-[min(96vw,1280px)] max-h-[96vh] overflow-hidden rounded-[1.5rem] border-0 bg-char-900 p-0 text-snow-50 shadow-dark backdrop:bg-black/80 backdrop:backdrop-blur-sm" aria-label="ภาพขยาย">
+    <div class="flex max-h-[96vh] flex-col">
+      <div class="flex items-center justify-between gap-3 px-4 py-3 sm:px-5">
+        <p id="lbCount" class="text-sm text-snow-200" aria-live="polite"></p>
+        <button id="lbClose" type="button" class="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-snow-50 transition hover:bg-white/20" aria-label="ปิดภาพ"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div id="lbStage" class="relative flex min-h-0 flex-1 items-center justify-center px-2 sm:px-16" style="touch-action:pan-y">
+        <button id="lbPrev" type="button" class="absolute left-2 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-snow-50 transition hover:bg-white/25 sm:left-4" aria-label="ภาพก่อนหน้า"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <img id="lbImg" alt="" draggable="false" class="max-h-[70vh] w-auto max-w-full select-none rounded-lg object-contain opacity-0 transition-opacity duration-200">
+        <button id="lbNext" type="button" class="absolute right-2 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-snow-50 transition hover:bg-white/25 sm:right-4" aria-label="ภาพถัดไป"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+      <div id="lbCap" class="max-h-[22vh] overflow-y-auto px-5 pb-5 pt-3 text-center text-sm leading-relaxed text-snow-200 [&_a]:text-snow-50 [&_a]:underline [&_span]:text-snow-50"></div>
+    </div>
+  </dialog>`;
 
 function page(a, idx) {
   const c = loadContent(a.id);
@@ -191,6 +210,8 @@ function page(a, idx) {
   ${footer}
 
   ${creditsDialog}
+
+  ${lightbox}
 
   ${arDialog}
 
