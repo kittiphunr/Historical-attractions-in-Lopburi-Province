@@ -37,6 +37,15 @@
     return null;
   }
 
+  /* ชื่อหน้า/คำอธิบายที่ต่อด้วย " — " (เช่น "ชื่อสถานที่ — ลพบุรี เมืองสามยุค"): ลองแปลทั้งข้อความก่อน ถ้าไม่มีให้แปลทีละท่อน */
+  function lookupTitle(str) {
+    const full = lookup(norm(str)); if (full != null) return full;
+    if (!str.includes(' — ')) return null;
+    let hit = false;
+    const out = str.split(' — ').map(p => { const t = lookup(norm(p)); if (t != null) { hit = true; return t; } return p; });
+    return hit ? out.join(' — ') : null;
+  }
+
   /* ใช้ในโค้ด: I18N.t('{0} ข้อความ', 5) */
   function t(s, ...vars) {
     let r = s;
@@ -61,7 +70,7 @@
       if (el.nodeName === 'META' && !/^(description|og:title|og:description)$/.test(el.getAttribute('name') || el.getAttribute('property') || '')) return;
       let store = origAttr.get(el); if (!store) { store = {}; origAttr.set(el, store); }
       if (store[a] === undefined) store[a] = el.getAttribute(a);
-      const o = store[a]; const tr = lang === 'th' ? null : lookup(norm(o));
+      const o = store[a]; const tr = lang === 'th' ? null : (el.nodeName === 'META' ? lookupTitle(o) : lookup(norm(o)));
       const next = tr != null ? tr : o; if (el.getAttribute(a) !== next) el.setAttribute(a, next);
     });
   }
@@ -78,7 +87,7 @@
     apply(document.body);
     document.querySelectorAll('meta[name="description"],meta[property="og:title"],meta[property="og:description"]').forEach(trAttrs);
     if (document.documentElement.dataset.thTitle === undefined) document.documentElement.dataset.thTitle = document.title;
-    const th = document.documentElement.dataset.thTitle; const tr = lang === 'th' ? null : lookup(norm(th)); document.title = tr != null ? tr : th;
+    const th = document.documentElement.dataset.thTitle; const tr = lang === 'th' ? null : lookupTitle(th); document.title = tr != null ? tr : th;
   }
 
   function loadPack(code) {

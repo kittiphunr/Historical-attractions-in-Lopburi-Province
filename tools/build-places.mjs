@@ -130,7 +130,7 @@ function page(a, idx) {
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <base href="../">
   <title>${esc(title)}</title>
-  <meta name="description" content="${esc(a.tagline + ' — ' + a.summary).slice(0, 300)}">
+  <meta name="description" content="${esc(a.tagline + ' — ' + a.summary)}">
   <meta name="theme-color" content="#f4ece2">
   <meta property="og:title" content="${esc(title)}">
   <meta property="og:description" content="${esc(a.tagline)}">
