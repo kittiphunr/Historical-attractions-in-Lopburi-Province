@@ -275,7 +275,7 @@
  "ใช้เวลาแวะสั้น ๆ ระหว่างเส้นทางเดินเมืองเก่า": "A short stop on the old-town walking route",
  "ไม่พบสถานที่ในหมวดนี้": "No sites in this category",
  "เดินเมืองเก่าในหนึ่งวัน": "Walk the old town in a day",
- "แปดจุดอยู่ในย่านเมืองเก่าและใกล้กันมาก เหมาะกับการเดินเท้า (ลำดับเป็นข้อเสนอแนะ ตรวจสอบเวลาเปิดของแต่ละแห่งก่อนไป) วัดเขาวงพระจันทร์อยู่ไกลออกไป ควรแยกเป็นอีกทริป": "The eight stops are in the old town and very close together, ideal on foot (the order is a suggestion; check each site's opening times first). Wat Khao Wong Phra Chan is farther away and should be a separate trip.",
+ "เก้าจุดอยู่ในย่านเมืองเก่าและใกล้กันมาก เหมาะกับการเดินเท้า เรียงตามเส้นทางประวัติศาสตร์ (A) บนแผนที่ และหมายเลขตรงกับแผนที่ (ลำดับเป็นข้อเสนอแนะ ตรวจสอบเวลาเปิดของแต่ละแห่งก่อนไป) ตามแผนที่ วัดไลย์ อ่างซับเหล็ก และวัดเขาวงพระจันทร์อยู่นอกย่านเมืองเก่า จัดเป็นเส้นทางวัฒนธรรม (B) และเส้นทางธรรมชาติ (C) ควรแยกเป็นอีกทริป": "The nine stops are in the old town and very close together, ideal on foot, in the order of historic route A on the map, with numbers that match the map (the order is a suggestion; check each site’s opening times first). According to the map, Wat Lai, Ang Sap Lek and Wat Khao Wong Phra Chan lie outside the old town, as cultural route B and nature route C, and should be separate trips.",
  "เริ่มที่โบราณสถานที่เก่าที่สุด": "Start at the oldest monument",
  "ทักทายลิงและสักการะ": "Greet the monkeys and pay respects",
  "ไฮไลต์ภาพถ่ายของเมือง": "The city's photo highlight",
@@ -542,5 +542,7 @@
  "ภาพแผนที่ประกอบ: จัดเตรียมโดยเจ้าของโปรเจกต์ (แผนผังเชิงภาพ ตำแหน่งและระยะทางไม่ตรงมาตราส่วนจริง ไม่ใช่แผนที่สำหรับนำทาง)": "Map illustration: provided by the project owner (a schematic picture; positions and distances are not to scale and it is not a navigation map)",
  "แผนที่ท่องเที่ยวลพบุรีแบบภาพ แสดงแหล่งประวัติศาสตร์และธรรมชาติ": "Illustrated tourist map of Lopburi showing historical and natural sites",
  "ตำแหน่งบนแผนที่": "Position on the map",
- "แผนที่ท่องเที่ยวลพบุรีแบบภาพ (แผนผัง ไม่ตรงมาตราส่วนจริง)": "Illustrated tourist map of Lopburi (schematic, not to scale)"
+ "แผนที่ท่องเที่ยวลพบุรีแบบภาพ (แผนผัง ไม่ตรงมาตราส่วนจริง)": "Illustrated tourist map of Lopburi (schematic, not to scale)",
+ "เรื่องเล่าต่างชาติสมัยพระนารายณ์": "Foreign stories from King Narai’s reign",
+ "หนึ่งในปราสาทขอมที่เก่าที่สุดของเมือง": "One of the oldest Khmer shrines in town"
 }
