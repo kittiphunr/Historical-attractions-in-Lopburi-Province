@@ -462,7 +462,7 @@
  "สื่อรายสถานที่": "Media by place",
  "แหล่งข้อมูลที่ใช้": "Sources used",
  "หัวข้อเครดิต": "Credit sections",
- "โมเดลสถานที่ทุกแห่งที่มีโมเดลแล้ว (10 จาก 11 แห่ง) และโมเดลแผนที่ทั้งจังหวัด (ไฟล์ .glb) ปั้นโดยเจ้าของโปรเจกต์ เรนเดอร์ด้วย": "The models of all 11 sites and the whole-province map model (.glb files) were made by the project owner, rendered with",
+ "โมเดลสถานที่ทั้ง 11 แห่งและโมเดลแผนที่ทั้งจังหวัด (ไฟล์ .glb) ปั้นโดยเจ้าของโปรเจกต์ เรนเดอร์ด้วย": "The models of all 11 sites and the whole-province map model (.glb files) were made by the project owner, rendered with",
  "เดินทางไปที่นี่": "Getting there",
  "นำทางด้วย Google Maps ↗": "Directions on Google Maps ↗",
  "ดูบนแผนที่ ↗": "View on map ↗",
@@ -516,6 +516,6 @@
  "พระประธานปางมารวิชัยศิลปะอู่ทอง": "Principal Buddha in the Subduing Mara posture, U Thong style",
  "ตั้งอยู่ติดพระนารายณ์ราชนิเวศน์ แวะต่อกันได้ในเส้นทางเดียว": "Right beside King Narai’s Palace, so both fit into one walk",
  "อยู่ติดพระราชวังทางทิศใต้": "Just south of the palace",
- "โมเดล 3 มิติกำลังจัดทำ": "3D model in progress",
- "Wat Kawisararam": "วัดกวิศรารามราชวรวิหาร"
+ "Wat Kawisararam": "วัดกวิศรารามราชวรวิหาร",
+ "โมเดล 3 มิติกำลังจัดทำ": "3D model in progress"
 }
