@@ -108,7 +108,7 @@
       const img = (m) => `<img src="assets/poster/map-${m}.webp" alt="" loading="lazy" decoding="async" draggable="false" class="poster-img poster-${m} absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]" onerror="this.remove()">`;
       const b = document.createElement('button'); b.type = 'button'; b.id = 'mvPoster';
       b.className = 'poster group absolute inset-0 z-[15] block h-full w-full overflow-hidden transition-opacity duration-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-terra-500';
-      b.setAttribute('aria-label', 'เปิดแผนที่ 3 มิติทั้งจังหวัด');
+      b.setAttribute('aria-label', 'แตะเพื่อดูแผนที่ 3 มิติทั้งจังหวัด');
       b.innerHTML = `${img('day')}${img('night')}<span class="pointer-events-none absolute inset-x-0 bottom-5 grid justify-items-center"><span class="btn-terra">${svg('cube', 'h-5 w-5')}แตะเพื่อดูแผนที่ 3 มิติ</span></span>`;
       b.addEventListener('click', () => start());
       host.appendChild(b);
@@ -132,12 +132,18 @@
     });
     document.addEventListener('click', (e) => {
       const t = e.target.closest('[data-mvsel]'); if (!t) return;
-      if (!viewer) start();
-      if (viewer) { const id = t.dataset.mvsel; Promise.resolve(viewer.ready).then(() => viewer.select(id)).catch(() => {}); host.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); }
+      const id = t.dataset.mvsel;
+      start().then((v) => { if (v) Promise.resolve(v.ready).then(() => v.select(id)).catch(() => {}); });
+      host.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
     });
+    let startP = null;
+    // เริ่มแผนที่ 3 มิติ (โหลดตัวแสดง 3 มิติก่อนถ้ายังไม่ได้โหลด) คืน promise ของตัวควบคุมแผนที่ (หรือ null ถ้าไม่มี WebGL)
     function start() {
-      if (started) return; started = true;
+      if (startP) return startP; started = true;
       host.dataset.state = 'loading'; $('#mvLoading').style.display = '';
+      return (startP = window.LopburiUI.loadGLScript().catch((e) => console.warn(e.message)).then(() => { create(); return viewer; }));
+    }
+    function create() {
       viewer = (window.LopburiGL && window.LopburiGL.createMapViewer(host, { url: P.url, hotspots: places.map(h => ({ id: h.id, x: h.x, z: h.z, el: h.el })) })) || null;
       if (!viewer) { const pp = $('#mvPoster'); if (pp) pp.remove(); host.dataset.state = 'live'; $('#mvLoadTxt').textContent = 'อุปกรณ์นี้แสดง 3 มิติแบบ WebGL ไม่ได้ ใช้แผนที่ภาพด้านบนแทน'; $('#mvSpin').style.display = 'none'; $('#mvMarkers').style.display = 'none'; return; }
       viewer.onSelect(showInfo);
@@ -187,7 +193,7 @@
       const el = document.createElement('article');
       el.id = a.id; el.className = 'reveal card group flex scroll-mt-6 flex-col overflow-hidden p-0 transition hover:-translate-y-1';
       el.innerHTML = `
-        <a href="places/${a.id}.html" class="flex flex-1 flex-col outline-offset-[-4px]" aria-label="${esc(a.name)} — ดูรายละเอียด">
+        <a href="places/${a.id}.html" class="flex flex-1 flex-col outline-offset-[-4px]">
           <div class="stage-bg relative aspect-[4/3] overflow-hidden">
             <span class="absolute left-5 top-3 z-10 text-6xl font-semibold text-terra-500/25">${a.no}</span>
             ${POSTER(a.id, 'day')}${POSTER(a.id, 'night')}

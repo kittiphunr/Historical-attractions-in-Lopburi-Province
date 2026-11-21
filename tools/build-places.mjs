@@ -16,6 +16,7 @@ const ctx = { window: {} };
 runInNewContext(read('assets/js/data.js'), ctx);
 const A = ctx.window.ATTRACTIONS, S = ctx.window.SOURCES, SRC = Object.fromEntries(S.map(s => [s.id, s]));
 
+const ogExtra = ['<meta property="og:site_name" content="ลพบุรี เมืองสามยุค">', '<meta property="og:locale" content="th_TH">', '<meta property="og:locale:alternate" content="en_US">', '<meta property="og:locale:alternate" content="zh_CN">', '<meta property="og:locale:alternate" content="ja_JP">'].join('\n  ');
 const esc = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const ERA_COLOR = { dvaravati: 'bg-sky-500/15 text-sky-700', khmer: 'bg-terra-500/10 text-terra-600', ayutthaya: 'bg-amber-500/15 text-amber-700', faith: 'bg-emerald-600/15 text-emerald-700' };
 const GRAD = 'background:linear-gradient(145deg,#dc6f45,#a8431f)';
@@ -119,7 +120,13 @@ function page(a, idx) {
   const url = `${SITE}places/${a.id}.html`;
   const ogImg = existsSync(join(root, 'assets/og', a.id + '.jpg')) ? `${SITE}assets/og/${a.id}.jpg` : `${SITE}assets/img/og-cover.jpg`;
   const title = `${a.name} — ลพบุรี เมืองสามยุค`;
-  const ld = { '@context': 'https://schema.org', '@type': 'TouristAttraction', name: a.name, alternateName: a.en, description: a.summary, url, image: ogImg, address: { '@type': 'PostalAddress', addressRegion: 'ลพบุรี', addressCountry: 'TH' } };
+  const ld = { '@context': 'https://schema.org', '@graph': [
+    { '@type': 'TouristAttraction', '@id': url + '#place', name: a.name, alternateName: a.en, description: a.summary, url, image: ogImg, inLanguage: 'th', mainEntityOfPage: url,
+      isPartOf: { '@type': 'TouristDestination', name: 'จังหวัดลพบุรี', url: SITE }, address: { '@type': 'PostalAddress', addressRegion: 'ลพบุรี', addressCountry: 'TH' } },
+    { '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'หน้าแรก', item: SITE },
+      { '@type': 'ListItem', position: 2, name: '10 แห่ง', item: SITE + '#places' },
+      { '@type': 'ListItem', position: 3, name: a.name, item: url }] }] };
   const extraStart = 5;
   const factsAll = [...a.facts, ...(c.facts || [])];
   const hasGlb = !!a.glb;
@@ -130,7 +137,7 @@ function page(a, idx) {
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <base href="../">
   <title>${esc(title)}</title>
-  <meta name="description" content="${esc(a.tagline + ' — ' + a.summary).slice(0, 300)}">
+  <meta name="description" content="${esc(a.tagline + ' — ' + a.summary)}">
   <meta name="theme-color" content="#f4ece2">
   <meta property="og:title" content="${esc(title)}">
   <meta property="og:description" content="${esc(a.tagline)}">
@@ -142,12 +149,14 @@ function page(a, idx) {
   <meta property="og:image:alt" content="${esc(a.name)} — ${esc(a.en)}">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="${ogImg}">
+  <meta name="robots" content="index,follow,max-image-preview:large">
+  ${ogExtra}
   <link rel="canonical" href="${url}">
   <link rel="icon" type="image/png" href="assets/img/favicon-64.png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   ${headFonts}<link rel="stylesheet" href="assets/tailwind.css">
   <script type="application/ld+json">${JSON.stringify(ld)}</script>
-  ${themeScript}<script src="assets/js/loader.js"></script>
+  ${themeScript}
 </head>
 <body class="relative overflow-x-hidden pb-28 lg:pb-10" data-place="${a.id}">
   <a href="places/${a.id}.html#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-terra-500 focus:px-4 focus:py-2 focus:text-white">ข้ามไปยังเนื้อหา</a>
@@ -182,7 +191,7 @@ function page(a, idx) {
           <p class="mt-1 text-sm tracking-widest text-terra-500">${esc(a.en)}</p>
           <p class="mt-5 text-xl font-medium leading-snug text-ink-900">${esc(a.tagline)}</p>
           <p class="mt-3 leading-relaxed text-ink-500">${esc(a.summary)}</p>
-          <dl class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">${factsAll.map(([k, v]) => `<div class="neu p-3"><dt class="text-[11px] uppercase tracking-wider text-terra-500">${esc(k)}</dt><dd class="mt-1 text-sm font-medium text-ink-900">${esc(v)}</dd></div>`).join('')}</dl>
+          <dl class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">${factsAll.map(([k, v]) => `<div class="neu p-3"><dt class="text-[11px] uppercase tracking-wider text-terra-600">${esc(k)}</dt><dd class="mt-1 text-sm font-medium text-ink-900">${esc(v)}</dd></div>`).join('')}</dl>
         </header>
 
         <section class="reveal">${h2('ภาพถ่าย', '01')}<div class="mt-4">${gallery(a, c)}</div></section>
@@ -221,7 +230,6 @@ function page(a, idx) {
   <script src="assets/js/config.js"></script>
   <script src="assets/js/data.js"></script>
   <script src="assets/js/models.js"></script>
-  <script src="assets/js/three-scenes.js"></script>
   <script src="assets/js/motion.js"></script>
   <script src="assets/js/i18n.js"></script>
   <script src="assets/js/common.js"></script>
@@ -252,6 +260,7 @@ function privacyPage() {
   <meta name="description" content="${esc(P.intro[0].th)}">
   <meta name="theme-color" content="#f4ece2">
   <meta name="robots" content="index,follow">
+  ${ogExtra}
   <meta property="og:title" content="${esc(title)}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="${url}">
@@ -260,7 +269,7 @@ function privacyPage() {
   <link rel="icon" type="image/png" href="assets/img/favicon-64.png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   ${headFonts}<link rel="stylesheet" href="assets/tailwind.css">
-  ${themeScript}<script src="assets/js/loader.js"></script>
+  ${themeScript}
 </head>
 <body class="relative overflow-x-hidden pb-28 lg:pb-10" data-page="privacy">
   <a href="privacy.html#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-terra-500 focus:px-4 focus:py-2 focus:text-white">ข้ามไปยังเนื้อหา</a>
@@ -292,8 +301,6 @@ function privacyPage() {
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/data.js"></script>
-  <script src="assets/js/models.js"></script>
-  <script src="assets/js/three-scenes.js"></script>
   <script src="assets/js/motion.js"></script>
   <script src="assets/js/i18n.js"></script>
   <script src="assets/js/common.js"></script>
@@ -322,7 +329,7 @@ function notFoundPage() {
   <link rel="icon" type="image/png" href="assets/img/favicon-64.png">
   <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
   ${headFonts}<link rel="stylesheet" href="assets/tailwind.css">
-  ${themeScript}<script src="assets/js/loader.js"></script>
+  ${themeScript}
 </head>
 <body class="relative overflow-x-hidden pb-28 lg:pb-10" data-page="404">
   ${chrome}<main id="main" class="mx-auto max-w-3xl px-4 pt-24 text-center lg:pl-[112px] lg:pr-6">
@@ -347,8 +354,6 @@ function notFoundPage() {
 
   <script src="assets/js/config.js"></script>
   <script src="assets/js/data.js"></script>
-  <script src="assets/js/models.js"></script>
-  <script src="assets/js/three-scenes.js"></script>
   <script src="assets/js/motion.js"></script>
   <script src="assets/js/i18n.js"></script>
   <script src="assets/js/common.js"></script>
@@ -356,6 +361,27 @@ function notFoundPage() {
 </body>
 </html>
 `;
+}
+
+/* ---------- ส่วนที่สร้างลงใน index.html: ข้อมูลโครงสร้าง (JSON-LD) และรายการสถานที่สำหรับผู้ที่ปิด JavaScript ---------- */
+function injectBlock(html, name, content) {
+  const a = `<!--${name}:start-->`, z = `<!--${name}:end-->`, i = html.indexOf(a), j = html.indexOf(z);
+  if (i < 0 || j < 0) throw new Error(`index.html ไม่มีเครื่องหมาย ${a} ... ${z}`);
+  return html.slice(0, i + a.length) + content + html.slice(j);
+}
+function homeBlocks() {
+  const ld = [
+    { '@context': 'https://schema.org', '@type': 'WebSite', name: 'ลพบุรี เมืองสามยุค', url: SITE, inLanguage: ['th', 'en', 'zh-Hans', 'ja'] },
+    { '@context': 'https://schema.org', '@type': 'TouristDestination', name: 'จังหวัดลพบุรี', alternateName: 'Lopburi Province', description: 'สำรวจ 10 แหล่งประวัติศาสตร์เมืองสามยุคของลพบุรี: ทวารวดี ขอม อยุธยา', url: SITE, image: SITE + 'assets/img/og-cover.jpg', inLanguage: 'th',
+      containsPlace: A.map(a => ({ '@type': 'TouristAttraction', name: a.name, alternateName: a.en, url: `${SITE}places/${a.id}.html` })) }
+  ];
+  const nolist = `<noscript><nav aria-label="สถานที่ทั้ง 10 แห่ง" class="mt-6"><ul class="grid gap-2 sm:grid-cols-2">${A.map(a => `<li><a class="underline" href="places/${a.id}.html">${esc(a.no)} ${esc(a.name)} — ${esc(a.tagline)}</a></li>`).join('')}</ul></nav></noscript>`;
+  return { jsonld: `\n  <script type="application/ld+json">${JSON.stringify(ld)}</script>\n  `, nolist };
+}
+{
+  const f = join(root, 'index.html'), cur = readFileSync(f, 'utf8'), hb = homeBlocks();
+  const next = injectBlock(injectBlock(cur, 'jsonld', hb.jsonld), 'nolist', hb.nolist);
+  if (next !== cur) writeFileSync(f, next);
 }
 
 mkdirSync(join(root, 'places'), { recursive: true });

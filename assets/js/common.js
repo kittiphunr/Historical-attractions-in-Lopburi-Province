@@ -47,7 +47,20 @@
 
   /* ---------- โมเดล 3 มิติ: Three.js เป็นหลัก / CSS 3D เป็นตัวสำรอง ---------- */
   // สร้างตัวเรนเดอร์ WebGL ตอนผู้ใช้กดเปิดโมเดลครั้งแรกเท่านั้น (หน้าแรกจึงเบา: โหลดแค่ภาพปก)
-  let GL = null, glTried = false;
+  let GL = null, glTried = false, glLoading = null;
+  // ตัวแสดง 3 มิติ (three-scenes.js ~740 KB) โหลดเมื่อผู้ใช้กดครั้งแรกเท่านั้น; ว่างเมื่อเบราว์เซอร์ว่างงานก็ prefetch ไว้ให้กดแล้วเปิดไว
+  function loadGLScript() {
+    if (window.LopburiGL) return Promise.resolve();
+    return glLoading || (glLoading = new Promise((res, rej) => {
+      const s = document.createElement('script'); s.src = 'assets/js/three-scenes.js';
+      s.onload = res; s.onerror = () => { glLoading = null; rej(new Error('โหลดตัวแสดง 3 มิติไม่สำเร็จ')); }; document.head.appendChild(s);
+    }));
+  }
+  if (location.protocol !== 'file:') {
+    const warm = () => { if (window.LopburiGL || document.querySelector('link[data-warm-gl]')) return; const l = document.createElement('link'); l.rel = 'prefetch'; l.as = 'script'; l.href = 'assets/js/three-scenes.js'; l.dataset.warmGl = '1'; document.head.appendChild(l); };
+    const idle = () => (window.requestIdleCallback ? requestIdleCallback(warm, { timeout: 6000 }) : setTimeout(warm, 4000));
+    if (document.readyState === 'complete') idle(); else window.addEventListener('load', () => setTimeout(idle, 1500), { once: true });
+  }
   function ensureGL() {
     if (!glTried) {
       glTried = true;
@@ -59,23 +72,27 @@
   /* ภาพปก (poster) ก่อน แล้วกดเพื่อโหลด 3 มิติ — ภาพสร้างด้วย npm run posters (assets/poster/<id>-day|night.webp) */
   const ACTIVE3D = new Set();
   function mountLazy(host, key, label, type, size, opts = {}) {
-    const go = () => {
-      ACTIVE3D.add(key); ensureGL();
+    const go = async () => {
+      ACTIVE3D.add(key);
+      const p = host.querySelector('.poster');
+      const busy = () => { if (p) { p.disabled = true; p.dataset.busy = '1'; const l = p.querySelector('[data-pl]'); if (l) l.textContent = T('กำลังโหลดโมเดล…'); } };
+      if (!window.LopburiGL) { busy(); try { await loadGLScript(); } catch (e) { console.warn(e.message); } }
+      ensureGL();
       mountModel(host, type, size, opts);
       host.dataset.active = '1';
       if (host.hasAttribute('aria-label')) host.setAttribute('role', 'img');
       const hint = host.parentElement && host.parentElement.querySelector('[data-hint]'); if (hint) hint.classList.remove('hidden');
-      const p = host.querySelector('.poster'); if (!p) return;
+      if (!p) return;
       const done = () => { p.classList.add('opacity-0'); setTimeout(() => p.remove(), 450); };
       if (host.dataset.glb === 'loading') {
-        p.disabled = true; p.dataset.busy = '1'; p.querySelector('[data-pl]').textContent = T('กำลังโหลดโมเดล…');
+        busy();
         const mo = new MutationObserver(() => { if (host.dataset.glb !== 'loading') { mo.disconnect(); done(); } }); mo.observe(host, { attributes: true, attributeFilter: ['data-glb'] });
       } else done();
     };
     if (ACTIVE3D.has(key)) { go(); return; }
     const b = document.createElement('button'); b.type = 'button';
     b.className = 'poster group absolute inset-0 z-10 block h-full w-full overflow-hidden transition-opacity duration-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-terra-500';
-    b.setAttribute('aria-label', 'เปิดโมเดล 3 มิติ: ' + label);
+    b.setAttribute('aria-label', 'แตะเพื่อดู 3 มิติ: ' + label);
     const img = (m) => `<img src="assets/poster/${key}-${m}.webp" alt="" loading="lazy" decoding="async" draggable="false" class="poster-img poster-${m} absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.03]" onerror="this.remove()">`;
     b.innerHTML = `${img('day')}${img('night')}<span class="pointer-events-none absolute inset-x-0 bottom-3 grid justify-items-center"><span class="btn-terra !px-4 !py-2 text-sm">${svg('cube', 'h-4 w-4')}<span data-pl>แตะเพื่อดู 3 มิติ</span></span></span>`;
     b.addEventListener('click', go, { once: true });
@@ -110,7 +127,7 @@
       let src, isBlob = false;
       if (a.glb && a.glb.ar && location.protocol === 'file:') throw new Error('เปิดผ่านเซิร์ฟเวอร์ (npm start) หรือเว็บ HTTPS เพื่อดูไฟล์ AR นี้');
       if (a.glb && a.glb.ar) src = a.glb.ar;                      // ไฟล์ .glb ที่ทำไว้สำหรับ AR
-      else { const blob = await window.LopburiGL.exportGLB(a.model); arBlobUrl = src = URL.createObjectURL(blob); isBlob = true; } // โมเดลที่สร้างด้วยโค้ด: ส่งออกขนาดจริง ~40 ซม.
+      else { await loadGLScript(); const blob = await window.LopburiGL.exportGLB(a.model); arBlobUrl = src = URL.createObjectURL(blob); isBlob = true; } // โมเดลที่สร้างด้วยโค้ด: ส่งออกขนาดจริง ~40 ซม.
       const mv = document.createElement('model-viewer');
       Object.entries({ src, alt: `โมเดล 3 มิติ ${a.name}`, ar: '', 'ar-modes': isBlob ? 'webxr quick-look' : 'webxr scene-viewer quick-look', 'ar-scale': 'auto', 'ar-placement': 'floor',
         'camera-controls': '', 'auto-rotate': '', 'shadow-intensity': '1', 'shadow-softness': '0.9', 'touch-action': 'pan-y', 'interaction-prompt': 'auto' }).forEach(([k, v]) => mv.setAttribute(k, v));
@@ -208,5 +225,5 @@
     dlg.addEventListener('close', () => { document.documentElement.style.overflow = ''; img.removeAttribute('src'); if (back && back.isConnected) back.focus(); });
   }
 
-  window.LopburiUI = { $, $$, esc, svg, ICONS, initIcons, isDark, paintThemeLabel, applyTheme, initTheme, ensureGL, mountModel, mountLazy, initAR, initCredits, initLightbox };
+  window.LopburiUI = { $, $$, esc, svg, ICONS, initIcons, isDark, paintThemeLabel, applyTheme, initTheme, ensureGL, mountModel, mountLazy, initAR, initCredits, initLightbox, loadGLScript };
 })();
