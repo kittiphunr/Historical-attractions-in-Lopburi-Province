@@ -53,6 +53,10 @@ npm start          # เสิร์ฟหน้าเว็บ + API สมุ�
 
 หลังเผยแพร่ แนะนำให้ลงทะเบียนเว็บใน Google Search Console (และ Bing Webmaster Tools) แล้วส่ง `sitemap.xml`
 
+## ที่อยู่หลักของเว็บ (canonical)
+
+เว็บหลักคือ `https://centralthaiheritage.com/` ตั้งไว้ใน `site.config.json` (`canonicalUrl`) และใช้เป็น `canonical`, `hreflang`, `og:url`, JSON-LD และ `sitemap.xml` ของทุกหน้า ส่วนสำเนาบน GitHub Pages เป็นฉบับสำรอง: หน้าทุกหน้าชี้ canonical ไปที่เว็บหลัก เพื่อไม่ให้เสิร์ชเอนจินนับเป็นเนื้อหาซ้ำ และไม่ประกาศ sitemap ของตัวเอง (`robots.txt` บน GitHub Pages ไม่มีบรรทัด Sitemap) ภาพแชร์ลิงก์ (`og:image`) ชี้ที่ `previewUrl` (GitHub Pages) เพื่อให้เปิดได้เสมอแม้เว็บหลักยังไม่ขึ้น เปลี่ยนโดเมนหลักโดยแก้ `canonicalUrl` แล้ว `npm run build` (และแก้บรรทัด `canonical`/`og:url` ใน `index.html` ให้ตรงกัน)
+
 ## ติดตั้งลงโฮสต์จริง (นอก GitHub Pages)
 
 ```bash

@@ -1,0 +1,5 @@
+{
+  "_help": "canonicalUrl = ที่อยู่หลักของเว็บ (ใช้ใน canonical, hreflang, og:url, JSON-LD, sitemap) ; previewUrl = ที่ที่ไฟล์ภาพแชร์ลิงก์ (og:image) อยู่ ซึ่งต้องเปิดได้เสมอ (ใช้ GitHub Pages จนกว่าเว็บหลักจะขึ้น) ; แก้แล้วรัน npm run build",
+  "canonicalUrl": "https://centralthaiheritage.com/",
+  "previewUrl": "https://kittiphunr.github.io/Historical-attractions-in-Lopburi-Province/"
+}

@@ -17,7 +17,8 @@ if (!site) { console.error('ต้องระบุที่อยู่เว�
 if (!/^https?:\/\//.test(site)) site = 'https://' + site;
 if (!site.endsWith('/')) site += '/';
 const url = new URL(site), HOST = url.host, PATH = url.pathname, ORIGIN = url.origin;
-const OLD = 'https://kittiphunr.github.io/Historical-attractions-in-Lopburi-Province/';
+const cfg = JSON.parse(readFileSync(join(root, 'site.config.json'), 'utf8'));
+const OLDS = [cfg.canonicalUrl, cfg.previewUrl]; // ที่อยู่หลักและที่อยู่ภาพแชร์ลิงก์ในโปรเจกต์ -> ที่อยู่ใหม่ทั้งสอง
 const out = resolve(root, flag('out', 'dist')), dir = join(out, 'site');
 const slug = HOST.replace(/[^a-z0-9.-]/gi, '-');
 
@@ -45,7 +46,7 @@ let hostingReplaced = 0;
 
 for (const f of textFiles) {
   let t = readFileSync(f, 'utf8'), o = t;
-  t = t.split(OLD).join(site);
+  for (const old of OLDS) if (old !== site) t = t.split(old).join(site);
   if (ghLeaf) for (const c of ['th', 'en', 'zh', 'ja']) if (ghLeaf[c] && t.includes(ghLeaf[c])) { t = t.split(ghLeaf[c]).join(generic[c]); hostingReplaced++; }
   if (f.endsWith('404.html')) t = t.replace(/\(function \(\) \{ var p = location\.pathname[\s\S]*?document\.write\('<base href="' \+ base \+ '">'\); \}\)\(\);/, `document.write('<base href="${PATH}">');`);
   if (t !== o) writeFileSync(f, t);
@@ -65,11 +66,11 @@ writeFileSync(join(out, 'nginx.conf.example'), fill(readFileSync(join(root, 'dep
 writeFileSync(join(out, 'INSTALL.th.md'), fill(readFileSync(join(root, 'deploy/INSTALL.th.template.md'), 'utf8')));
 
 /* ตรวจความสมบูรณ์ */
-const left = textFiles.filter(f => readFileSync(f, 'utf8').includes('kittiphunr.github.io'));
+const left = textFiles.filter(f => OLDS.some(o => o !== site && readFileSync(f, 'utf8').includes(o)));
 const gh = textFiles.filter(f => /github\.com|GitHub Pages/i.test(readFileSync(f, 'utf8')));
 console.log(`ที่อยู่เว็บ: ${site}  (host ${HOST}, path ${PATH})`);
 console.log(`ไฟล์ในเว็บ: ${files.length + 1} ไฟล์ ${mb.toFixed(1)} MB ; แก้ที่อยู่ในไฟล์ข้อความ ${textFiles.length} ไฟล์ ; ข้อความผู้ให้บริการโฮสติ้งที่ปรับ ${hostingReplaced} จุด`);
-if (left.length) console.warn('⚠ ยังเหลือที่อยู่ GitHub Pages ใน:', left.map(f => f.replace(dir, '')).slice(0, 5));
+if (left.length) console.warn('⚠ ยังเหลือที่อยู่เดิมของโปรเจกต์ใน:', left.map(f => f.replace(dir, '')).slice(0, 5));
 console.log(`ลิงก์ GitHub (Issues ในนโยบายความเป็นส่วนตัว) ใน ${gh.length} ไฟล์ — ตรวจแล้วควรเป็นช่องทางติดต่อเท่านั้น`);
 
 /* zip */

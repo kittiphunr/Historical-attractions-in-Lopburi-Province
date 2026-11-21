@@ -9,7 +9,9 @@ import { loadDict, makeTranslator } from './lib/i18n-node.mjs';
 import { fileURLToPath } from 'node:url';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const SITE = 'https://kittiphunr.github.io/Historical-attractions-in-Lopburi-Province/';
+// ที่อยู่หลักของเว็บ (canonical/hreflang/og:url/JSON-LD/sitemap) และที่อยู่ของภาพแชร์ลิงก์ ตั้งใน site.config.json
+const cfg = JSON.parse(readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'site.config.json'), 'utf8'));
+const SITE = cfg.canonicalUrl, IMG = cfg.previewUrl;
 const read = (p) => readFileSync(join(root, p), 'utf8');
 
 /* ---------- หน้าแยกตามภาษา: th = ราก, en/zh/ja = โฟลเดอร์ en/ zh/ ja/ (สร้างจากหน้าไทยด้วยตัวแปลฝั่ง Node) ---------- */
@@ -136,7 +138,7 @@ function page(a, idx) {
   const c = loadContent(a.id);
   const prev = A[(idx + A.length - 1) % A.length], next = A[(idx + 1) % A.length];
   const url = `${SITE}places/${a.id}.html`;
-  const ogImg = existsSync(join(root, 'assets/og', a.id + '.jpg')) ? `${SITE}assets/og/${a.id}.jpg` : `${SITE}assets/img/og-cover.jpg`;
+  const ogImg = existsSync(join(root, 'assets/og', a.id + '.jpg')) ? `${IMG}assets/og/${a.id}.jpg` : `${IMG}assets/img/og-cover.jpg`;
   const title = `${a.name} — ลพบุรี เมืองสามยุค`;
   const ld = { '@context': 'https://schema.org', '@graph': [
     { '@type': 'TouristAttraction', '@id': url + '#place', name: a.name, alternateName: a.en, description: a.summary, url, image: ogImg, inLanguage: 'th', mainEntityOfPage: url,
@@ -283,7 +285,7 @@ function privacyPage() {
   <meta property="og:title" content="${esc(title)}">
   <meta property="og:type" content="website">
   <meta property="og:url" content="${url}">
-  <meta property="og:image" content="${SITE}assets/img/og-cover.jpg">
+  <meta property="og:image" content="${IMG}assets/img/og-cover.jpg">
   <link rel="canonical" href="${url}">
   ${hreflangLinks('privacy.html')}
   <link rel="icon" type="image/png" href="assets/img/favicon-64.png">
@@ -392,7 +394,7 @@ function injectBlock(html, name, content) {
 function homeBlocks() {
   const ld = [
     { '@context': 'https://schema.org', '@type': 'WebSite', name: 'ลพบุรี เมืองสามยุค', url: SITE, inLanguage: ['th', 'en', 'zh-Hans', 'ja'] },
-    { '@context': 'https://schema.org', '@type': 'TouristDestination', name: 'จังหวัดลพบุรี', alternateName: 'Lopburi Province', description: 'สำรวจ 10 แหล่งประวัติศาสตร์เมืองสามยุคของลพบุรี: ทวารวดี ขอม อยุธยา', url: SITE, image: SITE + 'assets/img/og-cover.jpg', inLanguage: 'th',
+    { '@context': 'https://schema.org', '@type': 'TouristDestination', name: 'จังหวัดลพบุรี', alternateName: 'Lopburi Province', description: 'สำรวจ 10 แหล่งประวัติศาสตร์เมืองสามยุคของลพบุรี: ทวารวดี ขอม อยุธยา', url: SITE, image: IMG + 'assets/img/og-cover.jpg', inLanguage: 'th',
       containsPlace: A.map(a => ({ '@type': 'TouristAttraction', name: a.name, alternateName: a.en, url: `${SITE}places/${a.id}.html` })) }
   ];
   const nolist = `<noscript><nav aria-label="สถานที่ทั้ง 10 แห่ง" class="mt-6"><ul class="grid gap-2 sm:grid-cols-2">${A.map(a => `<li><a class="underline" href="places/${a.id}.html">${esc(a.no)} ${esc(a.name)} — ${esc(a.tagline)}</a></li>`).join('')}</ul></nav></noscript>`;
