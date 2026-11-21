@@ -184,6 +184,21 @@
     </div>
   </dialog>
 
+  <dialog id="lightbox" class="m-auto w-[min(96vw,1280px)] max-h-[96vh] overflow-hidden rounded-[1.5rem] border-0 bg-char-900 p-0 text-snow-50 shadow-dark backdrop:bg-black/80 backdrop:backdrop-blur-sm" aria-label="ภาพขยาย">
+    <div class="flex max-h-[96vh] flex-col">
+      <div class="flex items-center justify-between gap-3 px-4 py-3 sm:px-5">
+        <p id="lbCount" class="text-sm text-snow-200" aria-live="polite"></p>
+        <button id="lbClose" type="button" class="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-snow-50 transition hover:bg-white/20" aria-label="ปิดภาพ"><svg viewBox="0 0 24 24" class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+      </div>
+      <div id="lbStage" class="relative flex min-h-0 flex-1 items-center justify-center px-2 sm:px-16" style="touch-action:pan-y">
+        <button id="lbPrev" type="button" class="absolute left-2 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-snow-50 transition hover:bg-white/25 sm:left-4" aria-label="ภาพก่อนหน้า"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 6l-6 6 6 6"/></svg></button>
+        <img id="lbImg" alt="" draggable="false" class="max-h-[70vh] w-auto max-w-full select-none rounded-lg object-contain opacity-0 transition-opacity duration-200">
+        <button id="lbNext" type="button" class="absolute right-2 top-1/2 z-10 grid h-11 w-11 -translate-y-1/2 place-items-center rounded-full bg-white/10 text-snow-50 transition hover:bg-white/25 sm:right-4" aria-label="ภาพถัดไป"><svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+      </div>
+      <div id="lbCap" class="max-h-[22vh] overflow-y-auto px-5 pb-5 pt-3 text-center text-sm leading-relaxed text-snow-200 [&_a]:text-snow-50 [&_a]:underline [&_span]:text-snow-50"></div>
+    </div>
+  </dialog>
+
   <dialog id="arDialog" class="m-auto w-[min(94vw,760px)] max-h-[94vh] overflow-hidden rounded-[1.75rem] border-0 bg-cream-50 p-0 text-ink-700 shadow-dark backdrop:bg-char-900/60 backdrop:backdrop-blur-sm" aria-labelledby="arTitle">
     <div class="flex items-center justify-between gap-3 px-5 py-4">
       <div><p class="eyebrow">3D · AR</p><h2 id="arTitle" class="text-lg font-semibold text-ink-900">โมเดล 3 มิติ</h2></div>

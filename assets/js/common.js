@@ -173,5 +173,40 @@
     window.addEventListener('hashchange', () => { if (location.hash === '#credits') open(null); });
   }
 
-  window.LopburiUI = { $, $$, esc, svg, ICONS, initIcons, isDark, paintThemeLabel, applyTheme, initTheme, ensureGL, mountModel, mountLazy, initAR, initCredits };
+  /* ---------- ขยายรูป (lightbox): กดรูปที่มี [data-lb] เปิดภาพใหญ่ + เครดิต, เลื่อนซ้าย/ขวาด้วยปุ่ม ลูกศร หรือปัด ---------- */
+  function initLightbox() {
+    const dlg = $('#lightbox'); if (!dlg) return;
+    const img = $('#lbImg'), cap = $('#lbCap'), cnt = $('#lbCount'), prev = $('#lbPrev'), next = $('#lbNext'), stage = $('#lbStage');
+    const items = () => $$('[data-lb]');
+    let idx = 0, back = null;
+    function show(i) {
+      const list = items(); if (!list.length) return;
+      idx = (i + list.length) % list.length;
+      const t = list[idx], im = t.querySelector('img'), fc = t.closest('figure') && t.closest('figure').querySelector('figcaption');
+      img.classList.add('opacity-0'); img.onload = () => img.classList.remove('opacity-0'); img.onerror = img.onload;
+      img.src = im.currentSrc || im.src; img.alt = im.alt;
+      cap.innerHTML = fc ? fc.innerHTML : '';
+      cnt.textContent = T('ภาพที่ {0} จาก {1}', idx + 1, list.length);
+      prev.hidden = next.hidden = list.length < 2;
+      [list[(idx + 1) % list.length], list[(idx + list.length - 1) % list.length]].forEach(n => { const p = new Image(); p.src = n.querySelector('img').src; });
+    }
+    const step = (d) => show(idx + d);
+    document.addEventListener('click', (e) => {
+      const t = e.target.closest('[data-lb]'); if (!t) return;
+      back = t; show(items().indexOf(t)); dlg.showModal(); document.documentElement.style.overflow = 'hidden';
+      if (window.Motion) window.Motion.dialogIn(dlg);
+      $('#lbClose').focus();
+    });
+    $('#lbClose').addEventListener('click', () => dlg.close());
+    prev.addEventListener('click', () => step(-1)); next.addEventListener('click', () => step(1));
+    dlg.addEventListener('keydown', (e) => { if (e.key === 'ArrowLeft') { e.preventDefault(); step(-1); } else if (e.key === 'ArrowRight') { e.preventDefault(); step(1); } });
+    dlg.addEventListener('click', (e) => { if (e.target === dlg || e.target === stage) dlg.close(); });
+    let sx = null;
+    stage.addEventListener('pointerdown', (e) => { if (e.target.closest('button')) return; sx = e.clientX; });
+    stage.addEventListener('pointerup', (e) => { if (sx === null) return; const dx = e.clientX - sx; sx = null; if (Math.abs(dx) > 50) step(dx < 0 ? 1 : -1); });
+    stage.addEventListener('pointercancel', () => { sx = null; });
+    dlg.addEventListener('close', () => { document.documentElement.style.overflow = ''; img.removeAttribute('src'); if (back && back.isConnected) back.focus(); });
+  }
+
+  window.LopburiUI = { $, $$, esc, svg, ICONS, initIcons, isDark, paintThemeLabel, applyTheme, initTheme, ensureGL, mountModel, mountLazy, initAR, initCredits, initLightbox };
 })();

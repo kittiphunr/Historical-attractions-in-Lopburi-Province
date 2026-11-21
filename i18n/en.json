@@ -468,5 +468,12 @@
  "เดินทางไปที่นี่": "Getting there",
  "นำทางด้วย Google Maps ↗": "Directions on Google Maps ↗",
  "ดูบนแผนที่ ↗": "View on map ↗",
- "ลิงก์เปิด Google Maps ในแท็บใหม่ ตำแหน่งค้นจากชื่อสถานที่ โปรดตรวจสอบเวลาเปิดและการเดินทางก่อนไป": "Opens Google Maps in a new tab. The location is found by searching the place name; please check opening hours and transport before you go."
+ "ลิงก์เปิด Google Maps ในแท็บใหม่ ตำแหน่งค้นจากชื่อสถานที่ โปรดตรวจสอบเวลาเปิดและการเดินทางก่อนไป": "Opens Google Maps in a new tab. The location is found by searching the place name; please check opening hours and transport before you go.",
+ "ขยายรูป: {0}": "Enlarge photo: {0}",
+ "ปิดภาพ": "Close photo",
+ "ภาพก่อนหน้า": "Previous photo",
+ "ภาพถัดไป": "Next photo",
+ "ภาพขยาย": "Enlarged photo",
+ "ภาพที่ {0} จาก {1}": "Photo {0} of {1}",
+ "ภาพ: {0}": "Photo: {0}"
 }
