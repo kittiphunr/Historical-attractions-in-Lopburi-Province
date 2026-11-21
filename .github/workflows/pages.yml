@@ -32,12 +32,12 @@ jobs:
           npm ci
           npm run build
 
-      # เผยแพร่เฉพาะไฟล์ที่เว็บใช้จริง (index.html, places/, assets/, sitemap.xml): ไม่รวม source-models/ (ไฟล์ต้นฉบับโมเดลขนาดใหญ่), src/, tools/, i18n/,
+      # เผยแพร่เฉพาะไฟล์ที่เว็บใช้จริง (index.html, privacy.html, places/, assets/, sitemap.xml, robots.txt): ไม่รวม source-models/ (ไฟล์ต้นฉบับโมเดลขนาดใหญ่), src/, tools/, i18n/,
       # และไฟล์สำรองสำหรับ file:// (assets/model/offline) ที่ใช้เฉพาะตอนเปิดไฟล์โดยตรงบนเครื่อง
       - name: Assemble site
         run: |
           mkdir -p _site
-          cp index.html sitemap.xml robots.txt _site/
+          cp index.html privacy.html sitemap.xml robots.txt _site/
           cp -r places _site/places
           cp -r assets _site/assets
           rm -rf _site/assets/model/offline
