@@ -194,8 +194,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $pw = (string)($_POST['admin_pass'] ?? ''); $errs = issues($pw);
         if ($pw !== (string)($_POST['admin_pass2'] ?? '')) $errs[] = 'รหัสผ่านและการยืนยันไม่ตรงกัน';
         if ($errs) { notice(implode(' · ', $errs)); go(3); }
+        $cap = in_array($_POST['captcha'] ?? 'pow', ['pow', 'turnstile', 'off'], true) ? (string)$_POST['captcha'] : 'pow';
+        $tsKey = trim((string)($_POST['ts_site'] ?? '')); $tsSecret = trim((string)($_POST['ts_secret'] ?? ''));
+        if ($cap === 'turnstile' && ($tsKey === '' || $tsSecret === '' || !preg_match('/^[\w\-]{8,100}$/', $tsKey) || !preg_match('/^[\w\-]{8,100}$/', $tsSecret))) { notice('เลือก Turnstile ต้องกรอก Site key และ Secret key ให้ถูกต้อง (จาก dash.cloudflare.com → Turnstile)'); go(3); }
         $S['admin'] = ['hash' => password_hash($pw, PASSWORD_DEFAULT), 'proxy' => isset($_POST['trust_proxy']),
-                       'origin' => trim((string)($_POST['origin'] ?? ''))];
+                       'origin' => trim((string)($_POST['origin'] ?? '')), 'captcha' => $cap, 'ts_site' => $tsKey, 'ts_secret' => $tsSecret];
         if ($S['admin']['origin'] !== '' && !preg_match('#^https?://[A-Za-z0-9.\-]+(:\d+)?$#', $S['admin']['origin'])) { $S['admin'] = null; notice('โดเมนเพิ่มเติมต้องอยู่ในรูป https://www.example.com (ไม่มี / ท้ายและไม่มีเส้นทาง)'); go(3); }
         $S['max'] = max($S['max'], 4); go(4);
     }
@@ -211,6 +214,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'db_host' => $S['db']['host'], 'db_name' => $S['db']['name'], 'db_user' => $S['db']['user'], 'db_pass' => $S['db']['pass'],
                 'table_prefix' => 'lop_', 'admin_password_hash' => $S['admin']['hash'], 'ip_salt' => bin2hex(random_bytes(24)),
                 'allowed_origins' => $S['admin']['origin'] !== '' ? [$S['admin']['origin']] : [], 'trust_proxy' => (bool)$S['admin']['proxy'],
+                'captcha' => $S['admin']['captcha'], 'captcha_bits' => 16,
+                'turnstile_site_key' => $S['admin']['captcha'] === 'turnstile' ? $S['admin']['ts_site'] : '', 'turnstile_secret' => $S['admin']['captcha'] === 'turnstile' ? $S['admin']['ts_secret'] : '',
                 'limits' => ['guestbook_per_ip' => [3, 600], 'review_per_ip' => [3, 3600], 'review_per_place' => [1, 86400], 'guestbook_global' => [120, 3600], 'review_global' => [60, 3600]],
             ];
             if ($S['db']['port'] !== '3306') $cfg['db_port'] = $S['db']['port'];
@@ -253,6 +258,12 @@ switch ($step) {
             . field('รหัสผ่านผู้ดูแล', 'admin_pass', '', 'password', 'required minlength="10" autocomplete="new-password"')
             . field('ยืนยันรหัสผ่าน', 'admin_pass2', '', 'password', 'required minlength="10" autocomplete="new-password"')
             . field('โดเมนเพิ่มเติมที่อนุญาตให้ส่งข้อความ (ไม่บังคับ)', 'origin', '', 'text', 'placeholder="https://www.example.com"', 'ถ้าเว็บเปิดได้ทั้งมี/ไม่มี www ให้ใส่อีกแบบที่นี่ · เว้นว่างถ้าใช้โดเมนเดียว')
+            . '<fieldset class="f" style="border:1px solid var(--line);border-radius:8px;padding:10px 12px"><legend style="font-weight:600;font-size:.9rem">CAPTCHA กันสแปม</legend>'
+            . '<label style="display:block"><input type="radio" name="captcha" value="pow" checked> <b>ในตัว (แนะนำ)</b> — เบราว์เซอร์คำนวณเงียบ ๆ ราว 1 วินาที ไม่ต้องสมัครบริการ ไม่ส่งข้อมูลออกนอกเว็บ</label>'
+            . '<label style="display:block"><input type="radio" name="captcha" value="turnstile"> <b>Cloudflare Turnstile</b> — เข้มกว่า ฟรี ต้องสมัครแล้วใส่คีย์ด้านล่าง</label>'
+            . '<label style="display:block"><input type="radio" name="captcha" value="off"> ปิด (พึ่งการจำกัดความถี่และช่องล่อบอตเท่านั้น)</label>'
+            . '<div style="margin-top:8px">' . field('Turnstile Site key (เฉพาะถ้าเลือก Turnstile)', 'ts_site', '', 'text', 'autocomplete="off"')
+            . field('Turnstile Secret key', 'ts_secret', '', 'password', 'autocomplete="off"') . '</div></fieldset>'
             . '<label class="f"><span><input type="checkbox" name="trust_proxy" value="1"> เว็บอยู่หลัง Cloudflare / CDN</span><small>เลือกเฉพาะเมื่อใช้ CDN เพื่อให้จำกัดความถี่ตาม IP ผู้ใช้จริง</small></label>'
             . '<div class="row"><a class="btn l" href="install.php?step=2">← กลับ</a><button class="btn">ต่อไป →</button></div></form>');
     case 4:

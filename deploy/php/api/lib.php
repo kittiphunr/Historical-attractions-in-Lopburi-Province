@@ -15,6 +15,7 @@ const LOP_MSG = [
     'dup'    => 'คุณเพิ่งรีวิวสถานที่นี้ไปแล้ว',
     'rating' => 'กรุณาให้คะแนนดาว',
     'server' => 'ระบบขัดข้อง ลองใหม่ภายหลัง',
+    'captcha' => 'ยืนยันตัวตนไม่สำเร็จ ลองใหม่อีกครั้ง',
 ];
 
 ini_set('display_errors', '0');
@@ -151,6 +152,61 @@ function lop_rate_check(string $kind, string $place): void {
     }
     [$n, $s] = lop_limit($kind . '_global');
     if (lop_count_since('kind = ?', [$kind], $s) >= $n) lop_fail('busy', 429, ['Retry-After' => '900']);
+}
+
+/* ---------- CAPTCHA ----------
+ * pow (ค่าเริ่มต้น): เซิร์ฟเวอร์ออกโจทย์ {salt, exp, sig} เบราว์เซอร์หาเลข n ที่ทำให้ SHA-256(salt + n) ขึ้นต้นด้วยบิต 0 ครบตามที่กำหนด
+ *   (ใช้เวลา ~1 วินาทีต่อครั้งในเบราว์เซอร์ ผู้ใช้ไม่ต้องทำอะไร ไม่มีบริการภายนอก) โจทย์ผูกกับ IP (ค่าแฮช) และหมดอายุใน 10 นาที
+ * turnstile: ตรวจโทเคนกับ Cloudflare Turnstile (ต้องมี turnstile_site_key และ turnstile_secret ใน config)
+ * off: ไม่ตรวจ */
+const LOP_POW_TTL = 600;
+function lop_captcha_mode(): string {
+    $m = lop_config()['captcha'] ?? 'pow';
+    return in_array($m, ['pow', 'turnstile', 'off'], true) ? $m : 'pow';
+}
+function lop_pow_bits(): int { return max(8, min(22, (int)(lop_config()['captcha_bits'] ?? 16))); }
+function lop_pow_sign(string $salt, int $exp): string {
+    return hash_hmac('sha256', $salt . '|' . $exp . '|' . lop_ip_hash(), (string)lop_config()['ip_salt'] . '|captcha');
+}
+function lop_zero_bits(string $bin): int {
+    $n = 0;
+    for ($i = 0, $l = strlen($bin); $i < $l; $i++) {
+        $b = ord($bin[$i]);
+        if ($b === 0) { $n += 8; continue; }
+        while (($b & 0x80) === 0) { $n++; $b = ($b << 1) & 0xFF; }
+        break;
+    }
+    return $n;
+}
+function lop_turnstile_check(string $token): bool {
+    $secret = (string)(lop_config()['turnstile_secret'] ?? '');
+    if ($secret === '' || $token === '' || strlen($token) > 2048) return false;
+    $data = http_build_query(['secret' => $secret, 'response' => $token, 'remoteip' => lop_ip()]);
+    $url = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
+    $out = false;
+    if (function_exists('curl_init')) {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [CURLOPT_POST => true, CURLOPT_POSTFIELDS => $data, CURLOPT_RETURNTRANSFER => true, CURLOPT_TIMEOUT => 6, CURLOPT_CONNECTTIMEOUT => 4]);
+        $out = curl_exec($ch); curl_close($ch);
+    } elseif (ini_get('allow_url_fopen')) {
+        $out = @file_get_contents($url, false, stream_context_create(['http' => ['method' => 'POST', 'header' => "Content-Type: application/x-www-form-urlencoded\r\n", 'content' => $data, 'timeout' => 6]]));
+    }
+    if (!is_string($out)) { error_log('lopburi captcha: เรียก Turnstile ไม่ได้ (ตรวจ curl/allow_url_fopen และการเชื่อมต่อออกนอกเครื่อง)'); return false; }
+    $j = json_decode($out, true);
+    return is_array($j) && !empty($j['success']);
+}
+/** ตรวจ CAPTCHA ของคำขอส่งข้อความ (ล้มเหลว = ตอบ 400 และจบ) */
+function lop_captcha_verify(array $b): void {
+    $mode = lop_captcha_mode();
+    if ($mode === 'off') return;
+    $c = $b['captcha'] ?? null;
+    if (!is_array($c)) lop_fail('captcha');
+    if ($mode === 'turnstile') { if (!lop_turnstile_check((string)($c['token'] ?? ''))) lop_fail('captcha'); return; }
+    $salt = (string)($c['salt'] ?? ''); $exp = (int)($c['exp'] ?? 0); $n = (string)($c['n'] ?? ''); $sig = (string)($c['sig'] ?? '');
+    if (!preg_match('/^[0-9a-f]{24}$/', $salt) || !preg_match('/^\d{1,10}$/', $n)) lop_fail('captcha');
+    if ($exp < time() || $exp > time() + LOP_POW_TTL + 30) lop_fail('captcha');
+    if (!hash_equals(lop_pow_sign($salt, $exp), $sig)) lop_fail('captcha');
+    if (lop_zero_bits(hash('sha256', $salt . $n, true)) < lop_pow_bits()) lop_fail('captcha');
 }
 
 function lop_new_id(): string { return bin2hex(random_bytes(6)); }
