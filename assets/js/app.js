@@ -1,50 +1,19 @@
 (function () {
   const T = window.T || ((s, ...v) => v.reduce((r, x, i) => r.replace('{' + i + '}', x), s));
-  const $ = (s, r = document) => r.querySelector(s);
-  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const { $, $$, esc, svg } = window.LopburiUI;
   const A = window.ATTRACTIONS, S = window.SOURCES, SRC = Object.fromEntries(S.map(s => [s.id, s]));
   const ERA = { all: 'ทั้งหมด', dvaravati: 'ทวารวดี', khmer: 'ขอม', ayutthaya: 'อยุธยา–พระนารายณ์', faith: 'ภูเขา–ศรัทธา' };
   const ERA_COLOR = { dvaravati: 'bg-sky-500/15 text-sky-700', khmer: 'bg-terra-500/10 text-terra-600', ayutthaya: 'bg-amber-500/15 text-amber-700', faith: 'bg-emerald-600/15 text-emerald-700' };
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const esc = (t) => String(t).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-  /* ---------- ไอคอน (inline SVG เส้น) ---------- */
-  const ICONS = {
-    home: '<path d="M3 11l9-8 9 8M5 10v10h5v-6h4v6h5V10"/>',
-    compass: '<circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/>',
-    landmark: '<path d="M3 21h18M5 21V10M19 21V10M9 21V10M15 21V10M2 10l10-6 10 6z"/>',
-    route: '<circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h7a3 3 0 000-6H9a3 3 0 010-6h7"/>',
-    book: '<path d="M4 5a2 2 0 012-2h13v16H6a2 2 0 00-2 2zM4 19V5M9 7h6"/>',
-    info: '<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.01"/>',
-    arrow: '<path d="M5 12h14M13 6l6 6-6 6"/>',
-    pin: '<path d="M12 21s7-6.2 7-11a7 7 0 10-14 0c0 4.800 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
-    calendar: '<rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 10h18"/>',
-    cube: '<path d="M12 3l8 4.500v9L12 21l-8-4.500v-9zM12 12l8-4.500M12 12v9M12 12L4 7.500"/>',
-    prang: '<path d="M16 3l3 8h-6zM11 12h10l2 6H9zM8 19h16l2 8H6z" fill="currentColor" stroke="none" transform="scale(.75)"/>'
-  };
-  const svg = (name, cls = '') => `<svg viewBox="0 0 24 24" class="${cls}" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[name] || ''}</svg>`;
-  $$('i[data-i]').forEach(i => { i.outerHTML = svg(i.dataset.i, i.className); });
+  window.LopburiUI.initIcons();
 
   /* ---------- บาร์โค้ดบนตั๋ว: รหัสจังหวัดลพบุรี (ISO 3166-2:TH-16) ---------- */
   if (window.renderBarcode && $('#ticketBarcode')) { window.renderBarcode($('#ticketBarcode'), 'TH-16'); if (window.Motion) window.Motion.barcode($('#ticketBarcode')); }
 
 
-  /* ---------- โหมดกลางวัน / กลางคืน ---------- */
-  const THEME_KEY = 'lopburi.theme';
-  const isDark = () => document.documentElement.classList.contains('dark');
-  function paintThemeLabel(mode) { const btn = $('#themeBtn'); if (!btn) return; btn.setAttribute('aria-pressed', mode === 'dark'); btn.setAttribute('aria-label', T(mode === 'dark' ? 'สลับเป็นโหมดกลางวัน' : 'สลับเป็นโหมดกลางคืน')); }
-  function applyTheme(mode, persist) {
-    document.documentElement.classList.toggle('dark', mode === 'dark');
-    const meta = document.querySelector('meta[name="theme-color"]'); if (meta) meta.content = mode === 'dark' ? '#1e1814' : '#f4ece2';
-    paintThemeLabel(mode);
-    if (window.LopburiGL && window.LopburiGL.setNight) window.LopburiGL.setNight(mode === 'dark');
-    const mv = document.querySelector('#arStage model-viewer'); if (mv) mv.setAttribute('exposure', mode === 'dark' ? '0.75' : '1');
-    if (persist) { try { localStorage.setItem(THEME_KEY, mode); } catch (e) { /* โหมดส่วนตัว */ } }
-    window.dispatchEvent(new CustomEvent('themechange', { detail: { mode } }));
-  }
-  $('#themeBtn').addEventListener('click', () => { const toDark = !isDark(); applyTheme(toDark ? 'dark' : 'light', true); if (window.Motion) window.Motion.themeBurst($('#themeBtn'), toDark); });
-  // ตามการตั้งค่าระบบ ถ้าผู้ใช้ยังไม่เคยเลือกเอง
-  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => { let saved = null; try { saved = localStorage.getItem(THEME_KEY); } catch (err) { /* ไม่มี storage */ } if (!saved) applyTheme(e.matches ? 'dark' : 'light', false); });
+  const { isDark, paintThemeLabel } = window.LopburiUI;
+  window.LopburiUI.initTheme();
 
   /* ---------- ทักทายตามเวลา ---------- */
   (function () { const h = new Date().getHours(); $('#hello').textContent = h < 12 ? 'สวัสดีตอนเช้า' : h < 17 ? 'สวัสดีตอนบ่าย' : 'สวัสดีตอนเย็น'; })();
@@ -100,99 +69,13 @@
   const spy = new IntersectionObserver((es) => es.forEach(e => e.isIntersecting && setActive(e.target.id)), { rootMargin: '-35% 0px -55% 0px' });
   $$('main > section[id]').forEach(s => spy.observe(s)); setActive('top');
 
-  /* ---------- โมเดล 3 มิติ: Three.js เป็นหลัก / CSS 3D เป็นตัวสำรอง ---------- */
-  // สร้างตัวเรนเดอร์ WebGL ตอนผู้ใช้กดเปิดโมเดลครั้งแรกเท่านั้น (หน้าแรกจึงเบา: โหลดแค่ภาพปก)
-  let GL = null, glTried = false;
-  function ensureGL() {
-    if (!glTried) {
-      glTried = true;
-      GL = window.LopburiGL && window.LopburiGL.init() ? window.LopburiGL : null;
-      if (GL) { GL.setNight(isDark()); GL.onFail(() => location.reload()); }
-    }
-    return GL;
-  }
-  /* ภาพปก (poster) ก่อน แล้วกดเพื่อโหลด 3 มิติ — ภาพสร้างด้วย npm run posters (assets/poster/<id>-day|night.webp) */
-  const ACTIVE3D = new Set();
-  function mountLazy(host, key, label, type, size, opts = {}) {
-    const go = () => {
-      ACTIVE3D.add(key); ensureGL();
-      mountModel(host, type, size, opts);
-      host.dataset.active = '1';
-      if (host.hasAttribute('aria-label')) host.setAttribute('role', 'img');
-      const hint = host.parentElement && host.parentElement.querySelector('[data-hint]'); if (hint) hint.classList.remove('hidden');
-      const p = host.querySelector('.poster'); if (!p) return;
-      const done = () => { p.classList.add('opacity-0'); setTimeout(() => p.remove(), 450); };
-      if (host.dataset.glb === 'loading') {
-        p.disabled = true; p.dataset.busy = '1'; p.querySelector('[data-pl]').textContent = T('กำลังโหลดโมเดล…');
-        const mo = new MutationObserver(() => { if (host.dataset.glb !== 'loading') { mo.disconnect(); done(); } }); mo.observe(host, { attributes: true, attributeFilter: ['data-glb'] });
-      } else done();
-    };
-    if (ACTIVE3D.has(key)) { go(); return; }
-    const b = document.createElement('button'); b.type = 'button';
-    b.className = 'poster group absolute inset-0 z-10 block h-full w-full overflow-hidden transition-opacity duration-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-terra-500';
-    b.setAttribute('aria-label', 'เปิดโมเดล 3 มิติ: ' + label);
-    const img = (m) => `<img src="assets/poster/${key}-${m}.webp" alt="" loading="lazy" decoding="async" draggable="false" class="poster-img poster-${m} absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.03]" onerror="this.remove()">`;
-    b.innerHTML = `${img('day')}${img('night')}<span class="pointer-events-none absolute inset-x-0 bottom-3 grid justify-items-center"><span class="btn-terra !px-4 !py-2 text-sm">${svg('cube', 'h-4 w-4')}<span data-pl>แตะเพื่อดู 3 มิติ</span></span></span>`;
-    b.addEventListener('click', go, { once: true });
-    host.appendChild(b);
-  }
-  function mountModel(host, type, size, opts = {}) {
-    if (opts.glb) host.addEventListener('glbfail', () => host.insertAdjacentHTML('afterend', `<p class="relative z-10 px-4 pb-2 text-center text-[11px] text-terra-600">กำลังแสดงโมเดลจำลองแทน เพราะโหลดไฟล์ .glb ไม่สำเร็จ${location.protocol === 'file:' ? ' (เปิดแบบ file://) — เปิดผ่านเซิร์ฟเวอร์ด้วย npm start' : ''}</p>`), { once: true });
-    if (GL && GL.addView(host, type, opts)) return 'webgl';
-    const m = window.Lopburi3D.createModel(type, size);
-    host.appendChild(m.root);
-    window.Lopburi3D.interactive(host, m.stage, { speed: 0.1, ry: -28 + (opts.shift || 0) });
-    return 'css';
-  }
+  const { mountLazy } = window.LopburiUI;
   const heroHost = $('#heroModel');
   mountLazy(heroHost, 'hero', 'พระปรางค์สามยอด', 'triprang', 520, { speed: 0.0042, glb: A.find(x => x.id === 'sam-yot').glb.url });
   if (window.Motion) { window.Motion.countOnView($('#srcCount'), S.length, { suffix: '+' }); $$('[data-count]').forEach(el => window.Motion.countOnView(el, +el.dataset.count)); window.Motion.float($('#bannerSeal')); } else $('#srcCount').textContent = S.length + '+';
 
 
-  /* ---------- AR / ดู 3 มิติเต็มจอ (model-viewer โหลดตอนกดเท่านั้น ~1 MB) ---------- */
-  const arDlg = $('#arDialog'); let arBlobUrl = null, arReturnFocus = null, arLoading = null;
-  const arStatus = (t) => { $('#arStatus').textContent = t; };
-  function ensureAR() {
-    if (window.__lopburiARReady) return Promise.resolve();
-    return arLoading || (arLoading = new Promise((res, rej) => {
-      const s = document.createElement('script'); s.src = 'assets/js/ar.js'; s.onload = res; s.onerror = () => { arLoading = null; rej(new Error('โหลดตัวแสดง AR ไม่สำเร็จ')); }; document.head.appendChild(s);
-    }));
-  }
-  function arCleanup() { $('#arStage').replaceChildren(); if (arBlobUrl) { URL.revokeObjectURL(arBlobUrl); arBlobUrl = null; } $('#arHelp').classList.add('hidden'); }
-  async function openAR(id, trigger) {
-    const a = id === 'province' ? { name: 'แผนที่ 3 มิติทั้งจังหวัด', glb: { ar: window.PROVINCE_MODEL.ar } } : A.find(x => x.id === id); if (!a) return;
-    arReturnFocus = trigger || null; arCleanup();
-    $('#arTitle').textContent = a.name + ' — 3 มิติ / AR'; arStatus('กำลังเตรียมโมเดล…');
-    arDlg.showModal(); if (window.Motion) window.Motion.dialogIn(arDlg);
-    try {
-      await ensureAR();
-      let src, isBlob = false;
-      if (a.glb && a.glb.ar && location.protocol === 'file:') throw new Error('เปิดผ่านเซิร์ฟเวอร์ (npm start) หรือเว็บ HTTPS เพื่อดูไฟล์ AR นี้');
-      if (a.glb && a.glb.ar) src = a.glb.ar;                      // ไฟล์ .glb ที่ทำไว้สำหรับ AR
-      else { const blob = await window.LopburiGL.exportGLB(a.model); arBlobUrl = src = URL.createObjectURL(blob); isBlob = true; } // โมเดลที่สร้างด้วยโค้ด: ส่งออกขนาดจริง ~40 ซม.
-      const mv = document.createElement('model-viewer');
-      Object.entries({ src, alt: `โมเดล 3 มิติ ${a.name}`, ar: '', 'ar-modes': isBlob ? 'webxr quick-look' : 'webxr scene-viewer quick-look', 'ar-scale': 'auto', 'ar-placement': 'floor',
-        'camera-controls': '', 'auto-rotate': '', 'shadow-intensity': '1', 'shadow-softness': '0.9', 'touch-action': 'pan-y', 'interaction-prompt': 'auto' }).forEach(([k, v]) => mv.setAttribute(k, v));
-      mv.className = 'h-full w-full'; mv.style.background = 'transparent'; mv.setAttribute('exposure', isDark() ? '0.75' : '1');
-      const btn = document.createElement('button'); btn.slot = 'ar-button'; btn.type = 'button'; btn.className = 'btn-terra absolute bottom-4 left-1/2 -translate-x-1/2';
-      btn.innerHTML = svg('cube', 'h-5 w-5') + 'ดูใน AR (วางบนโต๊ะ)'; mv.append(btn);
-      mv.addEventListener('load', () => setTimeout(() => {
-        if (mv.canActivateAR) arStatus('แตะ “ดูใน AR” เพื่อวางโมเดลบนโต๊ะหรือพื้นจริง · ลากเพื่อหมุน ใช้สองนิ้วซูม');
-        else {
-          arStatus('ลากเพื่อหมุน ใช้สองนิ้วซูม');
-          const help = $('#arHelp'); help.classList.remove('hidden');
-          help.textContent = (window.isSecureContext ? '' : 'หน้านี้ไม่ได้เปิดผ่าน HTTPS จึงใช้ AR ไม่ได้ · ') + 'อุปกรณ์หรือเบราว์เซอร์นี้ยังเปิด AR ไม่ได้ — AR ใช้ได้บน Android (Chrome พร้อม Google Play Services for AR) และ iPhone/iPad (Safari) ลองเปิดหน้านี้จากมือถือ';
-        }
-      }, 400));
-      mv.addEventListener('error', () => arStatus('แสดงโมเดลไม่สำเร็จ ลองใหม่อีกครั้ง'));
-      $('#arStage').append(mv);
-    } catch (e) { arStatus('เปิดโมเดลไม่สำเร็จ: ' + (e.message || e)); }
-  }
-  document.addEventListener('click', (e) => { const t = e.target.closest('[data-ar]'); if (t) openAR(t.dataset.ar, t); });
-  $('#arClose').addEventListener('click', () => arDlg.close());
-  arDlg.addEventListener('click', (e) => { if (e.target === arDlg) arDlg.close(); });
-  arDlg.addEventListener('close', () => { arCleanup(); if (arReturnFocus) arReturnFocus.focus(); });
-
+  window.LopburiUI.initAR();
 
   /* ---------- แผนที่ 3 มิติทั้งจังหวัด (โหลดเมื่อเลื่อนใกล้ถึง) ---------- */
   (function initMap3D() {
@@ -238,7 +121,7 @@
       info.innerHTML = `<div class="flex items-start gap-3"><span class="grid h-10 w-10 shrink-0 place-items-center rounded-xl text-white" style="background:linear-gradient(145deg,#dc6f45,#a8431f)">${h.a.no}</span>
         <div class="min-w-0 flex-1"><b class="block text-ink-900">${esc(h.a.name)}</b><span class="block text-xs text-terra-600">${esc(h.a.eraLabel)}</span><p class="mt-1 text-xs leading-relaxed text-ink-500">${esc(h.a.tagline)}</p></div>
         <button type="button" data-mv="close" class="text-ink-400 hover:text-ink-900" aria-label="ปิดการ์ด">✕</button></div>
-        <div class="mt-3 flex flex-wrap gap-2"><a href="#${h.id}" class="btn-terra !px-4 !py-2 text-sm">อ่านรายละเอียด</a><button type="button" data-ar="${h.id}" class="btn-soft !px-4 !py-2 text-sm">${svg('cube', 'h-4 w-4 text-terra-500')}ดูโมเดลอาคาร AR</button></div>`;
+        <div class="mt-3 flex flex-wrap gap-2"><a href="places/${h.id}.html" class="btn-terra !px-4 !py-2 text-sm">อ่านรายละเอียด</a><button type="button" data-ar="${h.id}" class="btn-soft !px-4 !py-2 text-sm">${svg('cube', 'h-4 w-4 text-terra-500')}ดูโมเดลอาคาร AR</button></div>`;
       info.classList.remove('hidden'); if (window.Motion) window.Motion.slideUp(info);
     }
     host.addEventListener('click', (e) => {
@@ -274,7 +157,7 @@
 
   /* ---------- Top list ---------- */
   $('#topList').innerHTML = ['sam-yot', 'narai-palace', 'khao-wong'].map(id => A.find(a => a.id === id)).map(a => `
-    <li><a href="#${a.id}" class="neu flex items-center gap-4 p-3 hover:-translate-y-0.5">
+    <li><a href="places/${a.id}.html" class="neu flex items-center gap-4 p-3 hover:-translate-y-0.5">
       <span class="grid h-14 w-14 shrink-0 place-items-center rounded-xl text-lg font-semibold text-white" style="background:linear-gradient(145deg,#dc6f45,#a8431f)">${a.no}</span>
       <span class="min-w-0 flex-1"><b class="block truncate font-medium text-ink-900">${esc(a.name)}</b><span class="block truncate text-xs text-ink-500">${esc(a.eraLabel)}</span></span>
       ${svg('arrow', 'h-5 w-5 text-terra-500')}</a></li>`).join('');
@@ -283,7 +166,7 @@
   const mapWrap = $('#mapWrap');
   A.filter(a => a.map).forEach(a => {
     const b = document.createElement('a');
-    b.href = '#' + a.id; b.className = 'group absolute -translate-y-1/2 -translate-x-[calc(100%+6px)]';
+    b.href = 'places/' + a.id + '.html'; b.className = 'group absolute -translate-y-1/2 -translate-x-[calc(100%+6px)]';
     b.style.left = a.map[0] + '%'; b.style.top = a.map[1] + '%';
     b.setAttribute('aria-label', `${a.name} — ดูรายละเอียด`);
     b.innerHTML = `<span class="absolute inset-0 -m-1 animate-ping rounded-full bg-terra-400/40 sm:-m-2"></span>
@@ -294,87 +177,33 @@
 
   /* ---------- places ---------- */
   const list = $('#placeList');
-  function photoBlock(a) {
-    if (a.photo) {
-      const p = a.photo;
-      return `<figure class="overflow-hidden rounded-2xl shadow-neu"><img src="${esc(p.src)}" alt="${esc(p.alt || a.name)}" loading="lazy" class="w-full object-cover">
-        <figcaption class="bg-cream-50 px-4 py-2 text-xs text-ink-500">ภาพ: ${esc(p.author)} · ${p.licenseUrl ? `<a class="underline" target="_blank" rel="noopener noreferrer" href="${esc(p.licenseUrl)}">${esc(p.license)}</a>` : esc(p.license)} · <a class="underline" target="_blank" rel="noopener noreferrer" href="${esc(p.sourceUrl)}">ต้นฉบับ ↗</a></figcaption></figure>`;
-    }
-    return `<div class="rounded-2xl bg-cream-100 px-4 py-5 text-center text-xs text-ink-500 shadow-press"><p>ช่องภาพถ่ายจริง · ยังไม่ได้ใส่ภาพ</p><p class="mt-1 text-ink-400">ภาพที่ใส่ต้องมีผู้ถ่าย สัญญาอนุญาต และลิงก์ต้นทางใต้ภาพ</p></div>`;
-  }
-  function videoBlock(a) {
-    const v = a.video;
-    if (v.id) {
-      return `<div class="overflow-hidden rounded-2xl shadow-neu"><div class="aspect-video"><iframe class="h-full w-full" loading="lazy" src="https://www.youtube-nocookie.com/embed/${esc(v.id)}" title="${esc(v.title || a.name)}" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe></div>
-        <p class="bg-cream-50 px-4 py-2 text-xs text-ink-500">วิดีโอ: ${esc(v.title || '')} · ช่อง ${esc(v.channel || '')} · <a class="underline" target="_blank" rel="noopener noreferrer" href="${esc(v.url)}">ดูบน YouTube ↗</a></p></div>`;
-    }
-    return `<a class="btn-soft w-full !py-3 text-sm" target="_blank" rel="noopener noreferrer" href="${esc(v.search)}"><svg viewBox="0 0 24 24" class="h-5 w-5 fill-terra-500" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>ค้นวิดีโอแนะนำบน YouTube</a>
-      <p class="mt-2 text-center text-[11px] text-ink-400">เปิดผลค้นหา “${esc(v.query)}” — วิดีโอทุกคลิปเป็นสิทธิ์ของเจ้าของช่อง ดูชื่อช่องในหน้าวิดีโอ</p>`;
-  }
-  const bullets = (arr, dot = 'bg-terra-400') => `<ul class="space-y-3">${arr.map(t => `<li class="flex gap-3"><span class="mt-2 h-1.5 w-1.5 shrink-0 rounded-full ${dot}"></span><span>${esc(t)}</span></li>`).join('')}</ul>`;
-  const paras = (arr) => arr.map(t => `<p>${esc(t)}</p>`).join('');
-
+  const POSTER = (id, m) => `<img src="assets/poster/${id}-${m}.webp" alt="" loading="lazy" decoding="async" draggable="false" class="poster-img poster-${m} absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.04]" onerror="this.remove()">`;
   function render(filter = 'all') {
     list.innerHTML = '';
     const items = A.filter(a => filter === 'all' || a.era === filter);
     $('#emptyMsg').classList.toggle('hidden', items.length > 0);
-    items.forEach((a, idx) => {
-      const flip = idx % 2 === 1;
+    items.forEach((a) => {
       const el = document.createElement('article');
-      el.id = a.id; el.className = 'reveal card scroll-mt-6 p-4 sm:p-6 lg:p-8';
+      el.id = a.id; el.className = 'reveal card group flex scroll-mt-6 flex-col overflow-hidden p-0 transition hover:-translate-y-1';
       el.innerHTML = `
-        <div class="grid items-start gap-8 lg:grid-cols-12 lg:gap-10">
-          <div class="${flip ? 'lg:order-2' : ''} lg:col-span-5 lg:sticky lg:top-6">
-            <div class="stage-bg relative overflow-hidden rounded-3xl shadow-press">
-              <span class="absolute left-5 top-3 z-10 text-6xl font-semibold text-terra-500/20">${a.no}</span>
-              <div class="model relative h-[320px] sm:h-[380px]" aria-label="โมเดล 3 มิติจำลอง ${esc(a.name)} ลากเพื่อหมุน"></div>
-              <p class="relative pt-1 text-center text-[11px] text-ink-500"><span data-hint class="hidden">↻ ลาก / ปุ่มลูกศร เพื่อหมุน · ดับเบิลคลิกรีเซ็ต</span>${a.glb ? `<span class="block">${esc(a.glb.credit)}</span>` : ''}</p>
-              <div class="relative flex justify-center pb-3 pt-2"><button type="button" data-ar="${a.id}" class="btn-soft !px-4 !py-2 text-sm">${svg('cube', 'h-4 w-4 text-terra-500')}ดูแบบ AR</button></div>
-            </div>
-            <div class="mt-5 space-y-4">${photoBlock(a)}${videoBlock(a)}</div>
+        <a href="places/${a.id}.html" class="flex flex-1 flex-col outline-offset-[-4px]" aria-label="${esc(a.name)} — ดูรายละเอียด">
+          <div class="stage-bg relative aspect-[4/3] overflow-hidden">
+            <span class="absolute left-5 top-3 z-10 text-6xl font-semibold text-terra-500/25">${a.no}</span>
+            ${POSTER(a.id, 'day')}${POSTER(a.id, 'night')}
+            <span class="absolute right-3 top-3 z-10 inline-flex items-center gap-1 rounded-full bg-cream-50/90 px-2.5 py-1 text-[11px] text-ink-700 shadow-neu">${svg('cube', 'h-3.5 w-3.5 text-terra-500')}3D</span>
           </div>
-          <div class="${flip ? 'lg:order-1' : ''} lg:col-span-7">
-            <span class="inline-block rounded-full px-3 py-1 text-xs font-medium ${ERA_COLOR[a.era]}">${esc(a.eraLabel)}</span>
-            <h3 class="mt-4 text-4xl font-semibold sm:text-5xl">${esc(a.name)}</h3>
-            <p class="mt-1 text-sm tracking-widest text-terra-500">${esc(a.en)}</p>
-            <p class="mt-5 text-xl font-medium leading-snug text-ink-900">${esc(a.tagline)}</p>
-            <p class="mt-3 leading-relaxed text-ink-500">${esc(a.summary)}</p>
-            <dl class="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-4">
-              ${a.facts.map(([k, v]) => `<div class="neu p-3"><dt class="text-[11px] uppercase tracking-wider text-terra-500">${esc(k)}</dt><dd class="mt-1 text-sm font-medium text-ink-900">${esc(v)}</dd></div>`).join('')}
-            </dl>
-            <div class="mt-8" data-tabs>
-              <div role="tablist" class="flex flex-wrap gap-2">
-                ${[['history', 'ประวัติศาสตร์'], ['arch', 'สถาปัตยกรรม'], ['hi', 'ไฮไลต์'], ['visit', 'เตรียมตัวไป']].map(([k, l], i) =>
-                  `<button role="tab" id="${a.id}-t-${k}" aria-controls="${a.id}-p-${k}" aria-selected="${i === 0}" tabindex="${i === 0 ? 0 : -1}" class="chip aria-selected:bg-terra-500 aria-selected:text-white aria-selected:shadow-press">${l}</button>`).join('')}
-              </div>
-              <div class="mt-5 min-h-[160px] leading-relaxed text-ink-700">
-                <div role="tabpanel" id="${a.id}-p-history" aria-labelledby="${a.id}-t-history" class="space-y-4">${paras(a.history)}</div>
-                <div role="tabpanel" id="${a.id}-p-arch" aria-labelledby="${a.id}-t-arch" class="hidden space-y-4">${paras(a.architecture)}</div>
-                <div role="tabpanel" id="${a.id}-p-hi" aria-labelledby="${a.id}-t-hi" class="hidden">${bullets(a.highlights)}</div>
-                <div role="tabpanel" id="${a.id}-p-visit" aria-labelledby="${a.id}-t-visit" class="hidden">${bullets(a.visit, 'bg-amber-500')}</div>
-              </div>
-            </div>
-            <div class="mt-8 border-t border-cream-200 pt-5">
-              <p class="mb-2 text-xs uppercase tracking-wider text-terra-500">แหล่งอ้างอิง</p>
-              <div class="flex flex-wrap gap-2">${a.sources.map(id => `<a class="rounded-full bg-cream-100 px-3 py-1 text-xs text-ink-700 shadow-neu hover:text-terra-600" target="_blank" rel="noopener noreferrer" href="${esc(SRC[id].url)}" title="${esc(SRC[id].name)}">${esc(SRC[id].name.split(' — ')[0])} ↗</a>`).join('')}</div>
-            </div>
+          <div class="flex flex-1 flex-col p-5">
+            <span class="inline-block w-fit rounded-full px-3 py-1 text-xs font-medium ${ERA_COLOR[a.era]}">${esc(a.eraLabel)}</span>
+            <h3 class="mt-3 text-2xl font-semibold text-ink-900">${esc(a.name)}</h3>
+            <p class="mt-0.5 text-xs tracking-widest text-terra-500">${esc(a.en)}</p>
+            <p class="mt-3 line-clamp-3 text-sm leading-relaxed text-ink-500">${esc(a.tagline)}</p>
+            <span class="mt-auto inline-flex items-center gap-1.5 pt-4 text-sm font-medium text-terra-600">ดูรายละเอียด ${svg('arrow', 'h-4 w-4 transition group-hover:translate-x-1')}</span>
           </div>
-        </div>`;
+        </a>`;
       list.appendChild(el);
-      mountLazy($('.model', el), a.id, a.name, a.model, 360, { az: 0.62 + idx * 0.35, shift: idx * 20, glb: a.glb && a.glb.url, tight: !!(a.glb && a.glb.base) });
     });
     observeReveal();
   }
-  list.addEventListener('click', (e) => {
-    const t = e.target.closest('[role=tab]'); if (!t) return;
-    $$('[role=tab]', t.closest('[data-tabs]')).forEach(b => { const on = b === t; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; $('#' + b.getAttribute('aria-controls')).classList.toggle('hidden', !on); });
-    if (window.Motion) window.Motion.slideUp($('#' + t.getAttribute('aria-controls')));
-  });
-  list.addEventListener('keydown', (e) => {
-    const t = e.target.closest('[role=tab]'); if (!t || !['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
-    const tabs = $$('[role=tab]', t.closest('[data-tabs]')); const i = tabs.indexOf(t);
-    const n = tabs[(i + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; n.focus(); n.click();
-  });
   const filters = $('#filters');
   Object.entries(ERA).forEach(([k, l]) => {
     const b = document.createElement('button'); b.className = 'chip'; b.textContent = l; b.setAttribute('aria-pressed', k === 'all');
@@ -384,7 +213,7 @@
 
   /* ---------- route ---------- */
   $('#routeList').innerHTML = window.ROUTE.map(([n, id, note], i) => `
-    <li class="reveal" style="transition-delay:${i * 50}ms"><a href="#${id}" class="card flex items-center gap-4 p-4 transition hover:-translate-y-0.5">
+    <li class="reveal" style="transition-delay:${i * 50}ms"><a href="places/${id}.html" class="card flex items-center gap-4 p-4 transition hover:-translate-y-0.5">
       <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full text-lg font-semibold text-white" style="background:linear-gradient(145deg,#dc6f45,#a8431f)">${i + 1}</span>
       <span class="min-w-0"><b class="block font-medium text-ink-900">${esc(n)}</b><span class="block text-sm text-ink-500">${esc(note)}</span></span></a></li>`).join('');
 
@@ -403,7 +232,9 @@
     $$('.reveal:not(.in)').forEach(el => io.observe(el));
   }
   render(); observeReveal();
-  if (location.hash && $(location.hash)) setTimeout(() => $(location.hash).scrollIntoView(), 50);
+  const oldId = location.hash.slice(1);
+  if (oldId && A.some(x => x.id === oldId)) location.replace('places/' + oldId + '.html'); // ลิงก์เก่า #id -> หน้าแยก
+  else if (location.hash && $(location.hash)) setTimeout(() => $(location.hash).scrollIntoView(), 50);
   $$('a[href^="#"]').forEach(a => a.addEventListener('click', () => { const t = $(a.getAttribute('href')); if (t) t.classList.add('in'); }));
 
   /* ---------- guestbook ---------- */
