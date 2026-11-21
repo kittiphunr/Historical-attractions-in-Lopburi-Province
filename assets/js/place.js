@@ -15,6 +15,13 @@
   if (window.Motion) window.Motion.reveal(reveal);
   else { const io = new IntersectionObserver((es) => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { threshold: .06 }); reveal.forEach(el => io.observe(el)); }
 
+  // หน้า 404: เดาหน้าที่ผู้ใช้น่าจะหา จากส่วนท้ายของที่อยู่ (เช่น /places/sam-yot หรือ /sam-yot)
+  if (document.body.dataset.page === '404') {
+    const seg = decodeURIComponent(location.pathname.split('/').filter(Boolean).pop() || '').replace(/\.html?$/i, '').toLowerCase();
+    const m = seg.length >= 3 && A.find(x => x.id === seg || x.id.includes(seg) || seg.includes(x.id) || x.en.toLowerCase().replace(/[^a-z]+/g, '-').includes(seg));
+    if (m) { const l = $('#nfSuggestLink'); l.href = 'places/' + m.id + '.html'; l.textContent = m.name; $('#nfSuggest').classList.remove('hidden'); }
+  }
+
   window.addEventListener('langchange', () => paintThemeLabel(isDark() ? 'dark' : 'light'));
   if (window.I18N) window.I18N.init();
   if (window.Motion) { window.Motion.cursor(); window.Motion.ripples(); }
