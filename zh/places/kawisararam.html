@@ -99,8 +99,9 @@
         <div class="card overflow-hidden p-0">
           <div class="stage-bg relative overflow-hidden rounded-[1.75rem]">
             <span class="absolute left-5 top-3 z-10 text-6xl font-semibold text-terra-500/20">11</span>
-            <div class="relative grid h-[340px] place-items-center px-6 text-center sm:h-[420px]" role="img" aria-label="วัดกวิศรารามราชวรวิหาร — โมเดล 3 มิติกำลังจัดทำ"><i data-i="cube" class="mx-auto h-14 w-14 text-terra-500/40"></i><p class="mt-3 text-sm text-ink-500">3D 模型制作中</p></div>
-            <div class="pb-4"></div>
+            <div id="placeModel" class="model relative h-[340px] sm:h-[420px]" aria-label="卡维萨拉兰寺（皇家寺院） 的简易 3D 模型——拖动可旋转"></div>
+            <p class="relative px-4 pt-1 text-center text-[11px] text-ink-500"><span data-hint class="hidden">↻ 拖动 / 方向键旋转 · 双击重置</span><span class="block">3D 模型：由项目所有者制作（Kittiphun Ruttanakorn）</span></p>
+            <div class="relative flex justify-center pb-4 pt-2"><button type="button" data-ar="kawisararam" class="btn-soft !px-4 !py-2 text-sm"><i data-i="cube" class="h-4 w-4 text-terra-500"></i>AR 查看</button></div>
           </div>
         </div>
         <section class="reveal card p-5"><h2 class="eyebrow">前往这里</h2>
@@ -190,7 +191,7 @@
       <div class="min-h-0 flex-1 overflow-y-auto px-5 pb-6 sm:px-7">
         <div role="tabpanel" id="cpanel-notes" aria-labelledby="ctab-notes" class="space-y-3 text-sm leading-relaxed text-ink-500">
           <p><b class="text-ink-900">图片和视频政策：</b> 本网站不会在未注明来源的情况下嵌入他人的照片或视频。每张实拍照片都会在图下标明摄影师、许可协议和原始链接；视频则显示频道名称并链接到版权方 YouTube。</p>
-          <p><b class="text-ink-900">3D 模型：</b> 已有模型的全部景点（11处中的10处）的模型以及全府地图模型（.glb 文件）均由项目所有者制作，渲染采用 <a class="text-terra-600 underline" href="https://threejs.org/" target="_blank" rel="noopener noreferrer">Three.js</a> （MIT），并提供 CSS 3D 备用方案；它们并非改编自他人的照片或模型。</p>
+          <p><b class="text-ink-900">3D 模型：</b> 全部 11 处景点的模型以及全府地图模型（.glb 文件）均由项目所有者制作，渲染采用 <a class="text-terra-600 underline" href="https://threejs.org/" target="_blank" rel="noopener noreferrer">Three.js</a> （MIT），并提供 CSS 3D 备用方案；它们并非改编自他人的照片或模型。</p>
           <p><b class="text-ink-900">华富里府徽：</b> 由项目所有者提供的图像，用于配合内容和说明本网站身份。府徽的权利归发布机构所有。本网站不是华富里府的官方网站。</p>
           <p><b class="text-ink-900">首页封面图：</b> 由项目所有者提供的全景拼合图（三塔寺、水边铁路、红顶白色建筑）。该图由多个部分合成，各部分的摄影者或创作者及授权许可尚不明确，因此仅注明由项目所有者提供。若了解来源，将在此补充致谢。</p>
           <p><b class="text-ink-900">AR:</b> 使用 <a class="text-terra-600 underline" href="https://modelviewer.dev/" target="_blank" rel="noopener noreferrer">&lt;model-viewer&gt;</a> （Google，Apache-2.0），支持 Android Chrome 的 WebXR、Scene Viewer 以及 iPhone/iPad 的 Quick Look。需要 HTTPS 和支持 AR 的设备。</p>
