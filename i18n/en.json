@@ -74,7 +74,6 @@
  "วัดไลย์": "Wat Lai",
  "วัดพระศรีรัตนมหาธาตุ": "Wat Phra Si Rattana Mahathat",
  "บ้านวิชาเยนทร์": "Baan Wichayen (Phaulkon's House)",
- "ภาพแผนที่ประกอบ: จัดเตรียมโดยเจ้าของโปรเจกต์ (ภาพแสดงเฉพาะ 7 จากทั้งหมด 12 แห่ง)": "Map illustration: provided by the project owner (shows 7 of the 12 sites)",
  "แผนที่ 3 มิติทั้งจังหวัด": "3D map of the whole province",
  "หมุน เอียง และซูมแผนที่ได้อิสระ แตะหมุดหรือแตะที่ตัวแผนที่ใกล้สถานที่เพื่อให้กล้องบินเข้าไปดู แล้วเปิดอ่านรายละเอียดหรือดูโมเดลอาคารแบบ AR ได้ทันที": "Rotate, tilt and zoom the map freely. Tap a pin, or tap the map near a site, and the camera flies in — then read the details or view the building in AR.",
  "กำลังโหลดโมเดลแผนที่ (ราว 2.5 MB)…": "Loading the map model (about 2.5 MB)…",
@@ -341,7 +340,6 @@
  "ไดโอรามาพระปรางค์สามยอด 3 มิติ ลากเพื่อหมุน": "3D diorama of Phra Prang Sam Yot, drag to rotate",
  "แผนที่ภาพไอโซเมตริกของลพบุรี แสดงแหล่งประวัติศาสตร์และธรรมชาติ": "Isometric map of Lopburi showing historical and natural sites",
  "สรุป": "Summary",
- "แผนที่ภาพไอโซเมตริกของลพบุรี แสดงพระปรางค์สามยอด ศาลพระกาฬ พระนารายณ์ราชนิเวศน์ วัดไลย์ วัดพระศรีรัตนมหาธาตุ บ้านวิชาเยนทร์ และวัดเขาวงพระจันทร์": "Isometric map of Lopburi showing Phra Prang Sam Yot, San Phra Kan, King Narai's Palace, Wat Lai, Wat Phra Si Rattana Mahathat, Baan Wichayen and Wat Khao Wong Phra Chan",
  "แผนที่ 3 มิติทั้งจังหวัดลพบุรี ลากเพื่อหมุน ปุ่มลูกศรเพื่อหมุน บวกและลบเพื่อซูม": "3D map of the whole of Lopburi province; drag to rotate, arrow keys to rotate, plus and minus to zoom",
  "ซูมเข้า": "Zoom in",
  "ซูมออก": "Zoom out",
@@ -539,5 +537,10 @@
  "เป็นแหล่งธรรมชาติกลางแจ้ง ควรเตรียมหมวก น้ำดื่ม และรองเท้าที่เหมาะกับการเดินขึ้นเขา": "This is an outdoor natural site, so bring a hat, drinking water and shoes suited to a walk uphill.",
  "มีข่าวการปรับปรุงพื้นที่ให้เป็นแหล่งท่องเที่ยวเชิงธรรมชาติ สิ่งอำนวยความสะดวกและเวลาเปิดอาจเปลี่ยนไป ตรวจสอบก่อนเดินทาง": "There is news of the area being upgraded as a nature-tourism site, so facilities and opening times may change; check before you go.",
  "แหล่งข้อมูลระบุตำบลของอ่างไม่ตรงกัน จึงควรตรวจตำแหน่งบนแผนที่ด้วยปุ่มนำทางก่อนออกเดินทาง": "Sources name different subdistricts for the reservoir, so check its position on the map with the navigation button before you set out.",
- "Ang Sap Lek": "อ่างซับเหล็ก"
+ "Ang Sap Lek": "อ่างซับเหล็ก",
+ "แผนที่เส้นทางท่องเที่ยวลพบุรีแบบภาพ แสดงสถานที่ทั้ง 12 แห่งพร้อมหมายเลข เส้นทางประวัติศาสตร์ เส้นทางวัฒนธรรม และเส้นทางธรรมชาติ": "Illustrated tourist-route map of Lopburi showing all 12 places with numbers, the historic, cultural and nature routes",
+ "ภาพแผนที่ประกอบ: จัดเตรียมโดยเจ้าของโปรเจกต์ (แผนผังเชิงภาพ ตำแหน่งและระยะทางไม่ตรงมาตราส่วนจริง ไม่ใช่แผนที่สำหรับนำทาง)": "Map illustration: provided by the project owner (a schematic picture; positions and distances are not to scale and it is not a navigation map)",
+ "แผนที่ท่องเที่ยวลพบุรีแบบภาพ แสดงแหล่งประวัติศาสตร์และธรรมชาติ": "Illustrated tourist map of Lopburi showing historical and natural sites",
+ "ตำแหน่งบนแผนที่": "Position on the map",
+ "แผนที่ท่องเที่ยวลพบุรีแบบภาพ (แผนผัง ไม่ตรงมาตราส่วนจริง)": "Illustrated tourist map of Lopburi (schematic, not to scale)"
 }
