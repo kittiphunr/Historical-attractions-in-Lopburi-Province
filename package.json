@@ -15,7 +15,9 @@
     "shrink": "node tools/shrink-glb.mjs",
     "posters": "node tools/make-posters.mjs",
     "og": "node tools/make-og.mjs",
-    "package": "node tools/package-site.mjs"
+    "package": "node tools/package-site.mjs",
+    "package:static": "node tools/package-site.mjs --out dist/static",
+    "package:php": "node tools/package-site.mjs --php --out dist/php"
   },
   "devDependencies": {
     "@gltf-transform/cli": "^4.5.1",
