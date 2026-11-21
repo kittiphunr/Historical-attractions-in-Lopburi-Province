@@ -76,6 +76,7 @@
 
 
   window.LopburiUI.initAR();
+  window.LopburiUI.initCredits();
 
   /* ---------- แผนที่ 3 มิติทั้งจังหวัด (โหลดเมื่อเลื่อนใกล้ถึง) ---------- */
   (function initMap3D() {
@@ -216,13 +217,6 @@
     <li class="reveal" style="transition-delay:${i * 50}ms"><a href="places/${id}.html" class="card flex items-center gap-4 p-4 transition hover:-translate-y-0.5">
       <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full text-lg font-semibold text-white" style="background:linear-gradient(145deg,#dc6f45,#a8431f)">${i + 1}</span>
       <span class="min-w-0"><b class="block font-medium text-ink-900">${esc(n)}</b><span class="block text-sm text-ink-500">${esc(note)}</span></span></a></li>`).join('');
-
-  /* ---------- credits ---------- */
-  $('#mediaTable').innerHTML = A.map(a => `<tr><td class="px-4 py-3 font-medium text-ink-900">${esc(a.name)}</td>
-    <td class="px-4 py-3">${a.photo ? `<span class="text-emerald-700">มี · ${esc(a.photo.author)}</span>` : '<span class="text-ink-400">ยังไม่ได้ใส่</span>'}</td>
-    <td class="px-4 py-3">${a.video.id ? `<a class="underline" target="_blank" rel="noopener noreferrer" href="${esc(a.video.url)}">${esc(a.video.channel)}</a>` : `<a class="text-terra-600 underline" target="_blank" rel="noopener noreferrer" href="${esc(a.video.search)}">ลิงก์ค้นหา</a>`}</td></tr>`).join('');
-  $('#srcTotal').textContent = S.length;
-  $('#srcList').innerHTML = S.map(s => `<li><a class="block rounded-xl bg-cream-50 px-3 py-2 text-ink-700 shadow-neu hover:text-terra-600" target="_blank" rel="noopener noreferrer" href="${esc(s.url)}">${esc(s.name)} <span class="text-terra-400">↗</span></a></li>`).join('');
 
   /* ---------- reveal ---------- */
   let io;

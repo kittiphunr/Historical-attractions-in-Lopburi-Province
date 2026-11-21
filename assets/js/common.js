@@ -137,5 +137,41 @@
 
   }
 
-  window.LopburiUI = { $, $$, esc, svg, ICONS, initIcons, isDark, paintThemeLabel, applyTheme, initTheme, ensureGL, mountModel, mountLazy, initAR };
+  /* ---------- เครดิตและแหล่งอ้างอิง: หน้าต่างป๊อบอัพ (เปิดจากปุ่ม [data-credits] หรือ #credits) ---------- */
+  function initCredits() {
+    const dlg = $('#creditsDialog'); if (!dlg) return;
+    const S = window.SOURCES || [];
+    $('#mediaTable').innerHTML = A.map(a => `<tr><td class="px-4 py-3 font-medium text-ink-900">${esc(a.name)}</td>
+      <td class="px-4 py-3">${a.photo ? `<span class="text-emerald-700">มี · ${esc(a.photo.author)}</span>` : '<span class="text-ink-400">ยังไม่ได้ใส่</span>'}</td>
+      <td class="px-4 py-3">${a.video.id ? `<a class="underline" target="_blank" rel="noopener noreferrer" href="${esc(a.video.url)}">${esc(a.video.channel)}</a>` : `<a class="text-terra-600 underline" target="_blank" rel="noopener noreferrer" href="${esc(a.video.search)}">ลิงก์ค้นหา</a>`}</td></tr>`).join('');
+    $('#srcTotal').textContent = S.length;
+    $('#srcList').innerHTML = S.map(s => `<li><a class="block rounded-xl bg-cream-100 px-3 py-2 text-ink-700 shadow-neu hover:text-terra-600" target="_blank" rel="noopener noreferrer" href="${esc(s.url)}">${esc(s.name)} <span class="text-terra-400">↗</span></a></li>`).join('');
+
+    const tabs = $$('[role=tab]', dlg);
+    const pick = (t) => { tabs.forEach(b => { const on = b === t; b.setAttribute('aria-selected', on); b.tabIndex = on ? 0 : -1; $('#' + b.getAttribute('aria-controls')).classList.toggle('hidden', !on); }); $('#' + t.getAttribute('aria-controls')).parentElement.scrollTop = 0; };
+    tabs.forEach(t => t.addEventListener('click', () => pick(t)));
+    $('[role=tablist]', dlg).addEventListener('keydown', (e) => {
+      if (!['ArrowLeft', 'ArrowRight'].includes(e.key)) return;
+      const t = e.target.closest('[role=tab]'); if (!t) return;
+      const n = tabs[(tabs.indexOf(t) + (e.key === 'ArrowRight' ? 1 : tabs.length - 1)) % tabs.length]; n.focus(); pick(n);
+    });
+
+    let back = null;
+    const open = (trigger) => {
+      back = trigger || null; pick(tabs[0]);
+      if (!dlg.open) dlg.showModal();
+      if (window.Motion) window.Motion.dialogIn(dlg);
+    };
+    document.addEventListener('click', (e) => { const t = e.target.closest('[data-credits]'); if (t) { e.preventDefault(); open(t); } });
+    $('#creditsClose').addEventListener('click', () => dlg.close());
+    dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+    dlg.addEventListener('close', () => {
+      if (location.hash === '#credits') history.replaceState(null, '', location.pathname + location.search);
+      if (back) back.focus();
+    });
+    if (location.hash === '#credits') open(null);
+    window.addEventListener('hashchange', () => { if (location.hash === '#credits') open(null); });
+  }
+
+  window.LopburiUI = { $, $$, esc, svg, ICONS, initIcons, isDark, paintThemeLabel, applyTheme, initTheme, ensureGL, mountModel, mountLazy, initAR, initCredits };
 })();

@@ -26,7 +26,8 @@ const home = read('index.html');
 const slice = (a, b) => { const i = home.indexOf(a), j = home.indexOf(b, i); if (i < 0 || j < 0) throw new Error('index.html เปลี่ยนโครงสร้าง: ไม่พบ ' + a); return home.slice(i, j); };
 const toHome = (h) => h.replace(/href="#top"/g, 'href="index.html"').replace(/href="#([a-z0-9-]+)"/g, 'href="index.html#$1"');
 const chrome = toHome(slice('<!-- ===== แถบเมนูซ้าย', '<main id="main"'));
-const footer = slice('<footer', '</footer>') + '</footer>';
+const footer = toHome(slice('<footer', '</footer>') + '</footer>');
+const creditsDialog = slice('<dialog id="creditsDialog"', '</dialog>') + '</dialog>';
 const arDialog = slice('<dialog id="arDialog"', '</dialog>') + '</dialog>';
 const headFonts = slice('<link rel="preconnect" href="https://fonts.googleapis.com">', '<link rel="stylesheet" href="assets/tailwind.css">');
 const themeScript = slice('<script>\n    (function () { var m;', '</head>');
@@ -170,6 +171,8 @@ function page(a, idx) {
   </main>
 
   ${footer}
+
+  ${creditsDialog}
 
   ${arDialog}
 
