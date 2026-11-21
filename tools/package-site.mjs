@@ -75,6 +75,8 @@ if (PHP) {
   for (const d of ['api', 'admin']) cpSync(join(dir, d, 'htaccess'), join(dir, d, '.htaccess')) || rmSync(join(dir, d, 'htaccess'));
   writeFileSync(join(dir, 'api/places.json'), JSON.stringify(places, null, 2) + '\n');
   cpSync(join(root, 'deploy/php/schema.sql'), join(out, 'schema.sql'));
+  cpSync(join(root, 'deploy/php/schema.sql'), join(dir, 'api/schema.sql'));   // ตัวช่วยติดตั้ง install.php ใช้ไฟล์นี้
+  cpSync(join(root, 'deploy/php/install.php'), join(dir, 'install.php'));
   phpFiles = ['schema.sql', 'INSTALL.php.th.md'];
 }
 

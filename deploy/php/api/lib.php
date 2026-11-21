@@ -58,7 +58,7 @@ function lop_db(): PDO {
     if ($pdo) return $pdo;
     $c = lop_config();
     try {
-        $pdo = new PDO('mysql:host=' . ($c['db_host'] ?? 'localhost') . ';dbname=' . ($c['db_name'] ?? '') . ';charset=utf8mb4', (string)($c['db_user'] ?? ''), (string)($c['db_pass'] ?? ''), [
+        $pdo = new PDO('mysql:host=' . ($c['db_host'] ?? 'localhost') . (!empty($c['db_port']) ? ';port=' . (int)$c['db_port'] : '') . ';dbname=' . ($c['db_name'] ?? '') . ';charset=utf8mb4', (string)($c['db_user'] ?? ''), (string)($c['db_pass'] ?? ''), [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false,
