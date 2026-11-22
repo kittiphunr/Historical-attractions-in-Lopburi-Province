@@ -25,11 +25,11 @@ npm start          # เสิร์ฟหน้าเว็บ + API สมุ�
 
 ## ปรับตำแหน่งหมุดบนแผนที่ 3 มิติ
 
-พิกัดหมุดอยู่ที่ `PROVINCE_MODEL.hotspots` ใน `assets/js/data.js` (หน่วยของไฟล์โมเดล กึ่งกลาง ≈ 0,0) หมุดของปรางค์แขก วัดนครโกษา และวัดเสาธงทองเป็นตำแหน่งที่ประมาณจากทิศทางจริงเทียบกับหมุดอื่น เพราะในโมเดลแผนที่ไม่มีอาคารเฉพาะของสามแห่งนี้ ถ้าต้องการขยับ ให้รัน `npm start` แล้วเปิด `/map-debug.html` (มุมมองจากด้านบน มีตารางพิกัดและหมุดทุกจุด) อ่านพิกัดจากตารางแล้วแก้ค่า x, z ใน `data.js` (ไฟล์ `map-debug.html` ใช้ตอนพัฒนา ไม่ถูกเผยแพร่)
+พิกัดหมุดอยู่ที่ `PROVINCE_MODEL.hotspots` ใน `content/data.template.js` (หน่วยของไฟล์โมเดล กึ่งกลาง ≈ 0,0) หมุดของปรางค์แขก วัดนครโกษา และวัดเสาธงทองเป็นตำแหน่งที่ประมาณจากทิศทางจริงเทียบกับหมุดอื่น เพราะในโมเดลแผนที่ไม่มีอาคารเฉพาะของสามแห่งนี้ ถ้าต้องการขยับ ให้รัน `npm start` แล้วเปิด `/map-debug.html` (มุมมองจากด้านบน มีตารางพิกัดและหมุดทุกจุด) อ่านพิกัดจากตารางแล้วแก้ค่า x, z ใน `content/data.template.js` แล้ว `npm run build:data` (ไฟล์ `map-debug.html` ใช้ตอนพัฒนา ไม่ถูกเผยแพร่)
 
 ## หน้าแยกของแต่ละสถานที่
 
-หน้าแรกแสดงการ์ดสรุป กดแล้วไปที่หน้าของสถานที่นั้น (`places/<id>.html`) ซึ่งมีภาพถ่าย ประวัติ สถาปัตยกรรม ไฮไลต์ เตรียมตัวไป วิดีโอ แผนที่ตำแหน่ง โมเดล 3 มิติ/AR แหล่งอ้างอิง และลิงก์ไปสถานที่ก่อนหน้า/ถัดไป หน้าเหล่านี้เป็น HTML จริงที่สร้างจาก `assets/js/data.js` + `content/places/<id>.json` ด้วย `npm run build:places` (รวมอยู่ใน `npm run build`; สร้าง `sitemap.xml` และ `robots.txt` ให้ด้วย) ลิงก์เก่าแบบ `#sam-yot` จะพาไปหน้าใหม่อัตโนมัติ
+หน้าแรกแสดงการ์ดสรุป กดแล้วไปที่หน้าของสถานที่นั้น (`places/<id>.html`) ซึ่งมีภาพถ่าย ประวัติ สถาปัตยกรรม ไฮไลต์ เตรียมตัวไป วิดีโอ แผนที่ตำแหน่ง โมเดล 3 มิติ/AR แหล่งอ้างอิง และลิงก์ไปสถานที่ก่อนหน้า/ถัดไป หน้าเหล่านี้เป็น HTML จริงที่สร้างจาก `content/places/<id>.json` (ไฟล์เดียวต่อสถานที่ รวมคำแปล) ด้วย `npm run build:places` (รวมอยู่ใน `npm run build`; สร้าง `sitemap.xml` และ `robots.txt` ให้ด้วย) ลิงก์เก่าแบบ `#sam-yot` จะพาไปหน้าใหม่อัตโนมัติ
 
 **เพิ่มรูปภาพและข้อมูลของแต่ละสถานที่:** ดู [`content/places/README.md`](content/places/README.md) (วางรูปใน `assets/places/<id>/` แล้วเติม `content/places/<id>.json`) โค้ดส่วนที่ใช้ร่วมกันของทุกหน้า (ธีม, 3 มิติ, AR) อยู่ใน `assets/js/common.js`
 
@@ -105,7 +105,7 @@ npm run posters -- sam-yot map                           # เฉพาะบา
 
 ทุกครั้งที่เปลี่ยน/เพิ่มโมเดล ให้รัน `npm run posters` แล้ว commit ภาพใหม่ ถ้าไม่มีภาพปก ปุ่มยังใช้งานได้ (แสดงพื้นหลังเปล่าพร้อมปุ่ม "แตะเพื่อดู 3 มิติ")
 
-**เพิ่มโมเดลของสถานที่อื่น:** ย่อไฟล์ด้วย `npm run shrink` วางใน `assets/model/` แล้วใส่ `glb: { url, ar, credit }` ที่สถานที่นั้นใน `assets/js/data.js` (ดูตัวอย่างของ `sam-yot`) จากนั้นรัน `npm run posters`
+**เพิ่มโมเดลของสถานที่อื่น:** ย่อไฟล์ด้วย `npm run shrink` วางใน `assets/model/` แล้วใส่ `glb: { url, ar, credit }` ใน `place` ของ `content/places/<id>.json` (ดูตัวอย่างของ `sam-yot`) จากนั้นรัน `npm run posters`
 
 ## โมเดล 3 มิติที่ใช้ในเว็บ
 
@@ -143,7 +143,7 @@ npm run shrink -- ต้นฉบับ.glb --out assets/model/prang-sam-yot.glb
   npm run shrink -- source-models/lopburi-province.original.glb --out assets/model/lopburi-province.glb --ar 0.5
   npm run posters -- --software map     # สร้างภาพปกแผนที่ใหม่
   ```
-- ตำแหน่งหมุดเก็บที่ `PROVINCE_MODEL.hotspots` ใน `assets/js/data.js` (พิกัด x,z ในหน่วยของไฟล์ต้นฉบับ เหนืออยู่บนเมื่อมองจากด้านบน) ความสูงคำนวณจากผิวโมเดลเอง ถ้าเปลี่ยนโมเดลต้องวัดพิกัดใหม่ ปัจจุบันโมเดลมี 7 สถานที่ (ไม่มีปรางค์แขก วัดเสาธงทอง วัดนครโกษา)
+- ตำแหน่งหมุดเก็บที่ `PROVINCE_MODEL.hotspots` ใน `content/data.template.js` (พิกัด x,z ในหน่วยของไฟล์ต้นฉบับ เหนืออยู่บนเมื่อมองจากด้านบน) ความสูงคำนวณจากผิวโมเดลเอง ถ้าเปลี่ยนโมเดลต้องวัดพิกัดใหม่ ปัจจุบันโมเดลมี 7 สถานที่ (ไม่มีปรางค์แขก วัดเสาธงทอง วัดนครโกษา)
 - ตัวดู: `createMapViewer` ใน `src/three-scenes.js` ใช้ renderer ของตัวเอง โหลดโมเดลเมื่อเลื่อนใกล้ถึง ถ้าไม่มี WebGL จะแจ้งและให้ใช้แผนที่ภาพแทน
 
 ## AR (ดูโมเดลบนโต๊ะจริง)
@@ -152,7 +152,7 @@ npm run shrink -- ต้นฉบับ.glb --out assets/model/prang-sam-yot.glb
 
 - `src/ar.js` → `assets/js/ar.js` (~1 MB) โหลดเฉพาะตอนกดปุ่ม ใช้ three 0.183 (`three-mv`) แยกจากตัวเรนเดอร์หลัก (three 0.187) เพราะ model-viewer 4.4 ผูกกับ 0.183 (alias ตอน build)
 - โมเดลที่สร้างด้วยโค้ด: `LopburiGL.exportGLB(type)` ส่งออก .glb ตอนกด (กว้างราว 40 ซม. พร้อมฐานดินเผา ก้นแตะพื้น) ไม่ต้องมีไฟล์สำรอง ผ่านตัวตรวจ Khronos glTF Validator ครบ 10 แบบ
-- โมเดลที่ปั้นเอง: ใช้ไฟล์ AR แยก `assets/model/prang-sam-yot.ar.glb` (2.5 MB, ไม่บีบอัดแบบ meshopt/WebP เพราะ Scene Viewer/Quick Look ไม่รองรับ) สร้างด้วย `tools/make-ar-glb.mjs` (ขั้นตอนอยู่ในคอมเมนต์ต้นไฟล์) กำหนดที่ฟิลด์ `glb.ar` ใน `assets/js/data.js`
+- โมเดลที่ปั้นเอง: ใช้ไฟล์ AR แยก `assets/model/prang-sam-yot.ar.glb` (2.5 MB, ไม่บีบอัดแบบ meshopt/WebP เพราะ Scene Viewer/Quick Look ไม่รองรับ) สร้างด้วย `tools/make-ar-glb.mjs` (ขั้นตอนอยู่ในคอมเมนต์ต้นไฟล์) กำหนดที่ฟิลด์ `glb.ar` ใน `content/places/<id>.json`
 - ข้อกำหนด: ต้องเปิดผ่าน **HTTPS** (หรือ localhost) และอุปกรณ์ที่รองรับ AR ถ้าไม่รองรับจะยังดู 3 มิติได้ พร้อมข้อความอธิบาย
 - ยังไม่ได้ทดสอบ AR บนอุปกรณ์จริง (ทดสอบได้เฉพาะการแสดงผล 3 มิติ การส่งออก และการจัดการกรณีไม่รองรับ)
 
@@ -166,7 +166,7 @@ npm run shrink -- ต้นฉบับ.glb --out assets/model/prang-sam-yot.glb
   npx @gltf-transform/cli optimize source-models/prang-sam-yot.original.glb assets/model/prang-sam-yot.glb \
     --compress meshopt --simplify true --simplify-ratio 0.07 --simplify-error 0.002 --texture-compress webp --texture-size 2048 --no-instance --no-palette
   ```
-- ใส่ .glb ให้สถานที่อื่น: เพิ่มฟิลด์ `glb: { url, credit }` ใน `assets/js/data.js`
+- ใส่ .glb ให้สถานที่อื่น: เพิ่มฟิลด์ `glb: { url, credit }` ใน `place` ของ `content/places/<id>.json`
 
 ## ตราประจำจังหวัด
 
@@ -186,7 +186,7 @@ npm run shrink -- ต้นฉบับ.glb --out assets/model/prang-sam-yot.glb
 
 ปุ่มภาษา (ไอคอนโลก) มุมขวาบน สลับทั้งหน้าโดยไม่โหลดหน้าใหม่ และจำค่าที่เลือกไว้ (`localStorage` + `?lang=xx` ใน URL) ถ้ายังไม่เลือกจะดูภาษาของเบราว์เซอร์ (ไม่รองรับ → ไทย) รองรับคีย์บอร์ด (ลูกศร/Esc) และเปลี่ยน `<html lang>`, ชื่อหน้า, meta และฟอนต์ตามภาษา (Noto Sans SC/JP โหลดเฉพาะเมื่อเลือก)
 
-- **ภาษาไทยคือต้นฉบับ** ในหน้าเว็บและ `assets/js/data.js` ภาษาอื่นเป็นพจนานุกรม "ข้อความไทย → คำแปล" ที่ `i18n/<code>.json` (แก้ไขตรงนี้) แล้ว `npm run build` สร้าง `assets/js/lang/<code>.js` (~90 KB ต่อภาษา โหลดเฉพาะภาษาที่เลือก)
+- **ภาษาไทยคือต้นฉบับ** ในหน้าเว็บและไฟล์สถานที่ ภาษาอื่นเป็นพจนานุกรม "ข้อความไทย → คำแปล": ข้อความเฉพาะสถานที่อยู่ใน `translations` ของ `content/places/<id>.json` ส่วนข้อความของเว็บทั้งหมดอยู่ที่ `i18n/<code>.json` (แก้ไขที่สองแห่งนี้) แล้ว `npm run build` สร้าง `assets/js/lang/<code>.js` (~90 KB ต่อภาษา โหลดเฉพาะภาษาที่เลือก)
 - ตัวแปล `assets/js/i18n.js` สแกนข้อความและ `aria-label`/`alt`/`title`/`placeholder` และเฝ้าดูเนื้อหาที่ `app.js` สร้างภายหลัง (MutationObserver) จึงไม่ต้องแก้เทมเพลต เก็บข้อความไทยต้นฉบับไว้ สลับกลับไทยได้เหมือนเดิมทุกตัวอักษร ถ้าไม่มีคำแปลจะแสดงข้อความไทยแทน (ไม่ว่าง)
 - ข้อความที่มีตัวแปรใช้ `{0}` `{1}` เช่น `"{0} ข้อความจากผู้มาเยือน"`; ในโค้ดเรียก `T('ข้อความ', ...ค่า)`; วันที่ใช้ locale ของภาษาที่เลือก
 - เพิ่มภาษาใหม่: สร้าง `i18n/<code>.json` แล้วเพิ่มรายการใน `LANGS` ของ `assets/js/i18n.js`
@@ -225,13 +225,13 @@ npm run shrink -- ต้นฉบับ.glb --out assets/model/prang-sam-yot.glb
 
 เซสชันที่สร้างงานนี้ออกอินเทอร์เน็ตไปยัง Wikipedia / Wikimedia Commons / YouTube ไม่ได้ จึง **ไม่ได้ฝังภาพถ่ายจริงหรือวิดีโอของใคร** และไม่ได้แต่ง ID วิดีโอขึ้นมาเอง
 
-- ภาพถ่ายจริง: ใส่ใน `assets/js/data.js` ที่ฟิลด์ `photo` ของแต่ละสถานที่ — เว็บจะแสดงผู้ถ่าย สัญญาอนุญาต และลิงก์ต้นฉบับใต้ภาพให้อัตโนมัติ
+- ภาพถ่ายจริง: ใส่ใน `content/places/<id>.json` ที่ `place.photo` ของแต่ละสถานที่ — เว็บจะแสดงผู้ถ่าย สัญญาอนุญาต และลิงก์ต้นฉบับใต้ภาพให้อัตโนมัติ
   ```js
   photo: { src: 'assets/img/sam-yot.jpg', alt: '...', author: 'ชื่อผู้ถ่าย', license: 'CC BY-SA 4.0',
            licenseUrl: 'https://creativecommons.org/licenses/by-sa/4.0/', sourceUrl: 'https://commons.wikimedia.org/wiki/File:...' }
   ```
 - วิดีโอ: ตอนนี้เป็นปุ่มค้นหา YouTube (ลิงก์ใช้ได้จริงเสมอ) ถ้าเลือกคลิปแล้วให้ใส่ `video: { id, title, channel, url }` เว็บจะฝังคลิป (youtube-nocookie) พร้อมชื่อช่องและลิงก์ต้นทาง
-- ภาพแผนที่เส้นทางท่องเที่ยว 12 แห่ง (ต้นฉบับ `source-models/map-routes.original.webp` ส่วน `map-isometric.original.webp` เป็นภาพเวอร์ชันเก่า) ย่อเป็น `assets/img/lopburi-map-768.webp` / `lopburi-map-1536.webp` เป็นภาพที่เจ้าของโปรเจกต์จัดเตรียมให้ พิกัดหมายเลขที่กดได้เก็บเป็นเปอร์เซ็นต์ของภาพที่ฟิลด์ `map` ใน `assets/js/data.js` (ถ้าเปลี่ยนภาพแผนที่ต้องปรับค่านี้ด้วย)
+- ภาพแผนที่เส้นทางท่องเที่ยว 12 แห่ง (ต้นฉบับ `source-models/map-routes.original.webp` ส่วน `map-isometric.original.webp` เป็นภาพเวอร์ชันเก่า) ย่อเป็น `assets/img/lopburi-map-768.webp` / `lopburi-map-1536.webp` เป็นภาพที่เจ้าของโปรเจกต์จัดเตรียมให้ พิกัดหมายเลขที่กดได้เก็บเป็นเปอร์เซ็นต์ของภาพที่ `place.map` ใน `content/places/<id>.json` (ถ้าเปลี่ยนภาพแผนที่ต้องปรับค่านี้ด้วย)
 
 ## ความถูกต้องของข้อมูล
 
@@ -244,7 +244,9 @@ npm run shrink -- ต้นฉบับ.glb --out assets/model/prang-sam-yot.glb
 |---|---|
 | `index.html` | โครงหน้า (Tailwind utility classes) |
 | `src/input.css`, `tailwind.config.js` | ธีมครีม/ส้มดินเผา + คอมโพเนนต์การ์ดนูน + CSS 3D สำรอง |
-| `assets/js/data.js` | ข้อมูลสถานที่, แหล่งอ้างอิง, timeline, เส้นทาง |
+| `content/places/<id>.json` | ข้อมูลสถานที่ (ไทย + คำแปล + รูป) ไฟล์เดียวต่อแห่ง · สร้างด้วย `npm run new-place` ตรวจด้วย `npm run check` |
+| `content/data.template.js` | แหล่งอ้างอิงกลาง, timeline, เส้นทาง, หมุดแผนที่ 3 มิติ |
+| `assets/js/data.js` | **สร้างอัตโนมัติ** จาก 2 รายการบน (`npm run build:data`) — อย่าแก้ตรง ๆ |
 | `assets/js/models.js` | นิยามอาคาร 10 แบบ (ไม่ผูกตัวเรนเดอร์) + ตัวเรนเดอร์สำรอง CSS 3D |
 | `src/three-scenes.js` → `assets/js/three-scenes.js` | ตัวเรนเดอร์ Three.js: renderer เดียว/canvas เดียว วาดหลาย viewport |
 | `assets/js/app.js` | เรนเดอร์, ตัวกรอง, แท็บ, แผนที่, สมุดเยี่ยม |
