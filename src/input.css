@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 /* ฟอนต์ภาษาไทยของเว็บ: JS Saowapark (ไฟล์ woff2 ในโฟลเดอร์ assets/font ที่แปลงจาก source-models/JS-Saowapark-*.original.ttf) ใช้กับหน้าภาษาไทยเท่านั้น
-   ฟอนต์นี้เล็กและแคบกว่า Prompt จึงใช้ size-adjust ขยายให้อ่านสบายใกล้เคียงกัน มีเฉพาะน้ำหนักปกติ ตัวหนาเป็นการหนาเทียมของเบราว์เซอร์ */
-@font-face { font-family: 'JS Saowapark'; src: url('font/js-saowapark-normal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; size-adjust: 132%; }
-@font-face { font-family: 'JS Saowapark'; src: url('font/js-saowapark-italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; size-adjust: 132%; }
+   ฟอนต์นี้เล็กและแคบกว่า Prompt จึงใช้ size-adjust ขยายให้อ่านสบาย (132% ให้ขนาดใกล้เคียง Prompt แล้วเพิ่มอีก 15% ตามที่เจ้าของโปรเจกต์ต้องการ = 152%) มีเฉพาะน้ำหนักปกติ ตัวหนาเป็นการหนาเทียมของเบราว์เซอร์ */
+@font-face { font-family: 'JS Saowapark'; src: url('font/js-saowapark-normal.woff2') format('woff2'); font-weight: 400; font-style: normal; font-display: swap; size-adjust: 152%; }
+@font-face { font-family: 'JS Saowapark'; src: url('font/js-saowapark-italic.woff2') format('woff2'); font-weight: 400; font-style: italic; font-display: swap; size-adjust: 152%; }
 
 @layer base {
   :root {
@@ -146,3 +146,6 @@ html.pl-boot.pl-done::before, html.pl-boot.pl-done::after { animation: pl-out .4
 .dark .banner-night.is-ready { opacity: 1; filter: none; }
 .dark .banner-day { filter: none; }   /* ไม่ใช้ตัวกรองหรี่ภาพของ .photo-img กับภาพกลางวันที่อยู่ใต้ภาพกลางคืน (กันภาพกระตุกตอนเฟด) */
 @media (prefers-reduced-motion: reduce) { .banner-night { transition: none; } }
+
+/* ฟอนต์ไทยที่ขยายแล้ว (size-adjust 152%) สูงกว่าความสูงบรรทัดของข้อความบรรทัดเดียวที่ตัดด้วย .truncate (overflow: hidden) — เพิ่มความสูงบรรทัดกันสระ/วรรณยุกต์ถูกตัด */
+html[lang="th"] .truncate { line-height: 1.7; }
