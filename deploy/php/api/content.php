@@ -204,3 +204,35 @@ function lop_cms_apply(string $pageHtml, array $overrides): string {
     }
     return $pageHtml;
 }
+
+/** แปลงรูปที่อัปโหลด (JPEG/PNG/WebP) เป็น WebP ด้วย GD: ถอดรหัสแล้วเข้ารหัสใหม่ (ตัด EXIF/ข้อมูลแฝง และตัดไฟล์ที่ไม่ใช่รูปจริงทิ้ง) ย่อให้กว้างไม่เกิน $maxW
+ * คืน null เมื่อสำเร็จ หรือข้อความผิดพลาด (ภาษาไทย) */
+function lop_img_to_webp(string $tmp, string $dest, int $maxW): ?string {
+    if (!extension_loaded('gd') || !function_exists('imagewebp')) return 'เซิร์ฟเวอร์นี้ไม่มีส่วนขยาย GD (รองรับ WebP) จึงอัปโหลดรูปไม่ได้ ติดต่อผู้ให้บริการโฮสต์เพื่อเปิดใช้ GD';
+    if (!is_file($tmp) || filesize($tmp) > 8 * 1024 * 1024) return 'ไฟล์ต้องไม่เกิน 8 MB';
+    $info = @getimagesize($tmp);
+    $types = [IMAGETYPE_JPEG => 'jpeg', IMAGETYPE_PNG => 'png', IMAGETYPE_WEBP => 'webp'];
+    if (!$info || !isset($types[$info[2]])) return 'รองรับเฉพาะรูป JPEG, PNG หรือ WebP';
+    [$w, $h] = [(int)$info[0], (int)$info[1]];
+    if ($w < 1 || $h < 1 || $w > 12000 || $h > 12000 || $w * $h > 60000000) return 'ขนาดภาพใหญ่เกินไป (ไม่เกิน 12,000 px ต่อด้าน และ 60 ล้านพิกเซล)';
+    $kind = $types[$info[2]];
+    $src = $kind === 'jpeg' ? @imagecreatefromjpeg($tmp) : ($kind === 'png' ? @imagecreatefrompng($tmp) : @imagecreatefromwebp($tmp));
+    if (!$src) return 'อ่านไฟล์ภาพไม่ได้ (ไฟล์อาจเสียหาย)';
+    if ($kind === 'jpeg' && function_exists('exif_read_data')) {   // หมุนตามทิศที่ถ่าย
+        $ex = @exif_read_data($tmp);
+        $rot = [3 => 180, 6 => -90, 8 => 90][(int)($ex['Orientation'] ?? 1)] ?? 0;
+        if ($rot) { $r = imagerotate($src, $rot, 0); if ($r) { $src = $r; [$w, $h] = [imagesx($src), imagesy($src)]; } }
+    }
+    if ($w > $maxW) {
+        $nh = max(1, (int)round($h * $maxW / $w));
+        $dst = imagecreatetruecolor($maxW, $nh);
+        imagealphablending($dst, false); imagesavealpha($dst, true);
+        imagecopyresampled($dst, $src, 0, 0, 0, 0, $maxW, $nh, $w, $h);
+        $src = $dst;
+    }
+    if (!imageistruecolor($src)) imagepalettetotruecolor($src);
+    imagesavealpha($src, true);
+    if (!@imagewebp($src, $dest, 82) || !is_file($dest)) { error_log('lopburi: เขียนไฟล์รูปไม่ได้ ' . $dest); return 'บันทึกรูปไม่ได้ (ตรวจสิทธิ์เขียนของโฟลเดอร์ uploads/)'; }
+    @chmod($dest, 0644);
+    return null;
+}

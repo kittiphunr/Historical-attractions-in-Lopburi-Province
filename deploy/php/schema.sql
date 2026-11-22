@@ -39,3 +39,37 @@ CREATE TABLE IF NOT EXISTS `lop_place_revisions` (
   PRIMARY KEY (`id`),
   KEY `idx_key` (`place`, `lang`, `field`, `id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ระบบจัดการโมเดล 3 มิติ (หน้า /admin/models.php) — ถ้าไม่ได้นำเข้า ระบบจะสร้างตารางนี้ให้เองเมื่อเปิดหน้าผู้ดูแล
+CREATE TABLE IF NOT EXISTS `lop_models` (
+  `mkey`       VARCHAR(40)  NOT NULL,                                     -- รหัสสถานที่ หรือ province (แผนที่ทั้งจังหวัด)
+  `file`       VARCHAR(80)  NOT NULL,                                     -- ชื่อไฟล์ .glb ใน uploads/models
+  `ar_file`    VARCHAR(80)  NOT NULL DEFAULT '',                          -- ไฟล์ .ar.glb (เว้นว่างได้)
+  `poster`     VARCHAR(80)  NOT NULL DEFAULT '',                          -- ภาพปก .webp (เว้นว่างได้)
+  `size`       INT UNSIGNED NOT NULL DEFAULT 0,
+  `ar_size`    INT UNSIGNED NOT NULL DEFAULT 0,
+  `credit`     VARCHAR(300) NOT NULL DEFAULT '',
+  `updated_at` DATETIME     NOT NULL,                                     -- เวลา UTC
+  PRIMARY KEY (`mkey`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `lop_model_history` (
+  `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `mkey`       VARCHAR(40)  NOT NULL,
+  `file`       VARCHAR(80)  NOT NULL,
+  `ar_file`    VARCHAR(80)  NOT NULL DEFAULT '',
+  `poster`     VARCHAR(80)  NOT NULL DEFAULT '',
+  `size`       INT UNSIGNED NOT NULL DEFAULT 0,
+  `ar_size`    INT UNSIGNED NOT NULL DEFAULT 0,
+  `credit`     VARCHAR(300) NOT NULL DEFAULT '',
+  `created_at` DATETIME     NOT NULL,                                     -- เวลาที่โมเดลนี้เริ่มใช้ (เก็บ 5 ครั้งล่าสุดต่อรายการ)
+  PRIMARY KEY (`id`),
+  KEY `idx_key` (`mkey`, `id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `lop_settings` (
+  `skey`       VARCHAR(40)  NOT NULL,                                     -- เช่น province_hotspots (พิกัดหมุดที่ผู้ดูแลแก้)
+  `sval`       MEDIUMTEXT   NOT NULL,
+  `updated_at` DATETIME     NOT NULL,
+  PRIMARY KEY (`skey`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

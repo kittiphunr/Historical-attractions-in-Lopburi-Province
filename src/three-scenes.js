@@ -362,7 +362,14 @@ function createMapViewer(host, cfg) {
   const fitDist = () => { const vf = MathUtils.degToRad(camera.fov), hf = 2 * Math.atan(Math.tan(vf / 2) * camera.aspect); S.fit = (S.radius || 450) / Math.sin(Math.min(vf, hf) / 2) * 0.74; if (!S.userTouched && !selected) { goal.dist = S.fit; if (!ready) S.dist = S.fit; } };
   new ResizeObserver(size).observe(host); new IntersectionObserver(es => es.forEach(e => (visible = e.isIntersecting)), { rootMargin: '120px' }).observe(host);
 
-  const readyP = loadGLTF(cfg.url, (e) => { if (e.total) api.onProgress && api.onProgress(e.loaded / e.total); }).then((g) => {
+  /* ความคืบหน้า: เซิร์ฟเวอร์ที่บีบอัด gzip/br (เช่น GitHub Pages) ส่ง Content-Length เป็นขนาดที่บีบแล้ว แต่ตัวโหลดนับไบต์ที่แตกแล้ว loaded/total จึงเกิน 100%
+     (เคยขึ้น ~139%) — ถ้าเกิน total ถือว่าไม่ทราบขนาดจริง ส่ง null (หน้าจอแสดงข้อความโดยไม่มีเปอร์เซ็นต์) ไม่ถอยหลังและไม่เกิน 99% จนกว่าจะโหลดเสร็จ */
+  let prog = 0, progUnknown = false;
+  const readyP = loadGLTF(cfg.url, (e) => {
+    if (!api.onProgress || progUnknown) return;
+    if (!e.total || e.loaded > e.total) { progUnknown = true; api.onProgress(null); return; }
+    prog = Math.max(prog, Math.min(0.99, e.loaded / e.total)); api.onProgress(prog);
+  }).then((g) => {
     const root = g.scene; const b = new Box3().setFromObject(root), sz = b.getSize(new Vector3()), c = b.getCenter(new Vector3());
     const k = 600 / Math.max(sz.x, sz.z);
     root.position.set(-c.x, -b.min.y, -c.z); const holder = new Group(); holder.add(root); holder.scale.setScalar(k); model.add(holder);

@@ -28,38 +28,11 @@ if ($f['error'] === UPLOAD_ERR_INI_SIZE || $f['error'] === UPLOAD_ERR_FORM_SIZE)
 if ($f['error'] !== UPLOAD_ERR_OK || !is_uploaded_file((string)$f['tmp_name'])) up_fail('อัปโหลดไม่สำเร็จ ลองอีกครั้ง');
 $max = 8 * 1024 * 1024;
 if ((int)$f['size'] <= 0 || (int)$f['size'] > $max) up_fail('ไฟล์ต้องไม่เกิน 8 MB', 413);
-if (!extension_loaded('gd') || !function_exists('imagewebp')) up_fail('เซิร์ฟเวอร์นี้ไม่มีส่วนขยาย GD (รองรับ WebP) จึงอัปโหลดรูปไม่ได้ ติดต่อผู้ให้บริการโฮสต์เพื่อเปิดใช้ GD', 501);
-
-$tmp = (string)$f['tmp_name'];
-$info = @getimagesize($tmp);
-$types = [IMAGETYPE_JPEG => 'jpeg', IMAGETYPE_PNG => 'png', IMAGETYPE_WEBP => 'webp'];
-if (!$info || !isset($types[$info[2]])) up_fail('รองรับเฉพาะรูป JPEG, PNG หรือ WebP');
-[$w, $h] = [(int)$info[0], (int)$info[1]];
-if ($w < 1 || $h < 1 || $w > 12000 || $h > 12000 || $w * $h > 60000000) up_fail('ขนาดภาพใหญ่เกินไป (ไม่เกิน 12,000 px ต่อด้าน และ 60 ล้านพิกเซล)');
-
-$kind = $types[$info[2]];
-$src = $kind === 'jpeg' ? @imagecreatefromjpeg($tmp) : ($kind === 'png' ? @imagecreatefrompng($tmp) : @imagecreatefromwebp($tmp));
-if (!$src) up_fail('อ่านไฟล์ภาพไม่ได้ (ไฟล์อาจเสียหาย)');
-if ($kind === 'jpeg' && function_exists('exif_read_data')) {   // หมุนตามทิศที่ถ่าย
-    $ex = @exif_read_data($tmp);
-    $rot = [3 => 180, 6 => -90, 8 => 90][(int)($ex['Orientation'] ?? 1)] ?? 0;
-    if ($rot) { $r = imagerotate($src, $rot, 0); if ($r) { $src = $r; [$w, $h] = [imagesx($src), imagesy($src)]; } }
-}
-$maxW = 1600;
-if ($w > $maxW) {
-    $nh = max(1, (int)round($h * $maxW / $w));
-    $dst = imagecreatetruecolor($maxW, $nh);
-    imagealphablending($dst, false); imagesavealpha($dst, true);
-    imagecopyresampled($dst, $src, 0, 0, 0, 0, $maxW, $nh, $w, $h);
-    $src = $dst; [$w, $h] = [$maxW, $nh];
-}
-if (!imageistruecolor($src)) imagepalettetotruecolor($src);
-imagesavealpha($src, true);
-
+$tmpPath = (string)$f['tmp_name'];
 $dir = dirname(__DIR__) . '/' . LOP_UPLOAD_DIR . '/' . $place;
 if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) { error_log('lopburi upload: สร้างโฟลเดอร์ไม่ได้ ' . $dir); up_fail('สร้างโฟลเดอร์เก็บรูปไม่ได้ (ตรวจสิทธิ์เขียนของโฟลเดอร์ uploads/)', 500); }
 if (count(glob($dir . '/*.webp') ?: []) >= 400) up_fail('มีรูปของสถานที่นี้มากเกินไป (400 ไฟล์) ลบรูปที่ไม่ใช้ผ่านโฮสต์ก่อน');
 $name = bin2hex(random_bytes(10)) . '.webp';
-if (!@imagewebp($src, $dir . '/' . $name, 82) || !is_file($dir . '/' . $name)) { error_log('lopburi upload: เขียนไฟล์ไม่ได้'); up_fail('บันทึกรูปไม่ได้ (ตรวจสิทธิ์เขียนของโฟลเดอร์ uploads/)', 500); }
-@chmod($dir . '/' . $name, 0644);
+$err = lop_img_to_webp($tmpPath, $dir . '/' . $name, 1600);
+if ($err !== null) up_fail($err, 400);
 lop_json(['url' => '../' . LOP_UPLOAD_DIR . '/' . $place . '/' . $name]);

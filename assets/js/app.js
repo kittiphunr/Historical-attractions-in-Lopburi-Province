@@ -1,6 +1,6 @@
 (function () {
   const T = window.T || ((s, ...v) => v.reduce((r, x, i) => r.replace('{' + i + '}', x), s));
-  const { $, $$, esc, svg } = window.LopburiUI;
+  const { $, $$, esc, svg, posterUrl } = window.LopburiUI;
   const PFX = document.documentElement.dataset.prefix || ''; // 'en/' ฯลฯ บนหน้าแยกตามภาษา (ลิงก์ภายในต้องอยู่ในภาษาเดียวกัน)
   const A = window.ATTRACTIONS, S = window.SOURCES, SRC = Object.fromEntries(S.map(s => [s.id, s]));
   const ERA = { all: 'ทั้งหมด', dvaravati: 'ทวารวดี', khmer: 'ขอม', ayutthaya: 'อยุธยา–พระนารายณ์', faith: 'ภูเขา–ศรัทธา', nature: 'แหล่งน้ำ–ธรรมชาติ' };
@@ -125,7 +125,7 @@
     let viewer = null, started = false;
     host.dataset.state = 'poster';
     (function poster() {
-      const img = (m) => `<img src="assets/poster/map-${m}.webp" alt="" loading="lazy" decoding="async" draggable="false" class="poster-img poster-${m} absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]" onerror="this.remove()">`;
+      const img = (m) => { const u = posterUrl('map', m); return u ? `<img src="${u}" alt="" loading="lazy" decoding="async" draggable="false" class="poster-img poster-${m} absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.02]" onerror="this.remove()">` : ''; };
       const b = document.createElement('button'); b.type = 'button'; b.id = 'mvPoster';
       b.className = 'poster group absolute inset-0 z-[15] block h-full w-full overflow-hidden transition-opacity duration-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-terra-500';
       b.setAttribute('aria-label', 'แตะเพื่อดูแผนที่ 3 มิติทั้งจังหวัด');
@@ -167,7 +167,7 @@
       viewer = (window.LopburiGL && window.LopburiGL.createMapViewer(host, { url: P.url, hotspots: places.map(h => ({ id: h.id, x: h.x, z: h.z, el: h.el })) })) || null;
       if (!viewer) { const pp = $('#mvPoster'); if (pp) pp.remove(); host.dataset.state = 'live'; $('#mvLoadTxt').textContent = 'อุปกรณ์นี้แสดง 3 มิติแบบ WebGL ไม่ได้ ใช้แผนที่ภาพด้านบนแทน'; $('#mvSpin').style.display = 'none'; $('#mvMarkers').style.display = 'none'; return; }
       viewer.onSelect(showInfo);
-      viewer.onProgress = (f) => { $('#mvLoadTxt').textContent = `กำลังโหลดโมเดลแผนที่… ${Math.round(f * 100)}%`; };
+      viewer.onProgress = (f) => { $('#mvLoadTxt').textContent = f == null ? 'กำลังโหลดโมเดลแผนที่…' : `กำลังโหลดโมเดลแผนที่… ${Math.min(99, Math.round(f * 100))}%`; };   // f = null เมื่อไม่ทราบขนาดไฟล์จริง (เซิร์ฟเวอร์บีบอัด)
       viewer.ready.then(() => { $('#mvLoading').style.display = 'none'; host.dataset.ready = '1'; host.dataset.state = 'live'; const p = $('#mvPoster'); if (p) { p.classList.add('opacity-0'); p.disabled = true; setTimeout(() => p.remove(), 450); } if (window.Motion) window.Motion.pop($$('#mvMarkers [data-mvsel] > span:first-child'), { delay: 110 }); }).catch((e) => { const pp = $('#mvPoster'); if (pp) pp.remove(); host.dataset.state = 'live'; console.warn('โหลดโมเดลแผนที่ไม่สำเร็จ', e); $('#mvSpin').style.display = 'none'; $('#mvLoadTxt').textContent = 'โหลดโมเดลแผนที่ไม่สำเร็จ ' + (location.protocol === 'file:' ? '(เปิดแบบ file:// — เปิดผ่านเซิร์ฟเวอร์ด้วย npm start)' : 'ลองรีเฟรชหน้า'); });
     }
   })();
@@ -205,7 +205,7 @@
 
   /* ---------- places ---------- */
   const list = $('#placeList');
-  const POSTER = (id, m) => `<img src="assets/poster/${id}-${m}.webp" alt="" loading="lazy" decoding="async" draggable="false" class="poster-img poster-${m} absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.04]" onerror="this.remove()">`;
+  const POSTER = (id, m) => { const u = posterUrl(id, m); return u ? `<img src="${u}" alt="" loading="lazy" decoding="async" draggable="false" class="poster-img poster-${m} absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.04]" onerror="this.remove()">` : ''; };
   function render(filter = 'all') {
     list.innerHTML = '';
     const items = A.filter(a => filter === 'all' || a.era === filter);

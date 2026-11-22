@@ -48,17 +48,19 @@ input[type=password],input[type=text],select,textarea{font:inherit;padding:8px 1
 .warn{background:#fff3cd;border-radius:10px;padding:10px 14px}
 table{border-collapse:collapse;width:100%} th,td{padding:8px 12px;border-top:1px solid #eee;text-align:left;vertical-align:middle} thead th{border-top:0;color:#776b61;font-size:13px}
 details summary{cursor:pointer;font-weight:600}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 code,textarea.hash{font-family:ui-monospace,Menlo,monospace;font-size:13px}
 </style>' . $head . '</head><body><div class="wrap">' . $body . '</div></body></html>';
     exit;
 }
-/** แถบเมนูผู้ดูแล: $active = 'reviews' | 'places' */
+/** แถบเมนูผู้ดูแล: $active = 'reviews' | 'places' | 'models' */
 function admin_nav(string $active, string $title): string {
     global $h;
     $base = rtrim(dirname($_SERVER['SCRIPT_NAME']), '/') . '/';
     return '<div class="row"><h1 style="margin-right:auto">' . $h($title) . '</h1><a class="tab" href="' . $h($base . '?logout=1') . '">ออกจากระบบ</a></div>'
         . '<nav class="row" aria-label="เมนูผู้ดูแล" style="margin-bottom:8px"><a class="tab' . ($active === 'reviews' ? ' on' : '') . '" href="' . $h($base) . '">สมุดเยี่ยมและรีวิว</a>'
-        . '<a class="tab' . ($active === 'places' ? ' on' : '') . '" href="' . $h($base . 'places.php') . '">เนื้อหาสถานที่</a></nav>';
+        . '<a class="tab' . ($active === 'places' ? ' on' : '') . '" href="' . $h($base . 'places.php') . '">เนื้อหาสถานที่</a>'
+        . '<a class="tab' . ($active === 'models' ? ' on' : '') . '" href="' . $h($base . 'models.php') . '">โมเดล 3 มิติ</a></nav>';
 }
 function csrf(): string { if (empty($_SESSION['csrf'])) $_SESSION['csrf'] = bin2hex(random_bytes(16)); return $_SESSION['csrf']; }
 

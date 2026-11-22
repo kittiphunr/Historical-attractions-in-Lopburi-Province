@@ -97,6 +97,12 @@
   }
   /* ภาพปก (poster) ก่อน แล้วกดเพื่อโหลด 3 มิติ — ภาพสร้างด้วย npm run posters (assets/poster/<id>-day|night.webp) */
   const ACTIVE3D = new Set();
+  /* ภาพปกของโมเดล: ปกติ assets/poster/<key>-day|night.webp — แต่ถ้าผู้ดูแลอัปโหลดโมเดลใหม่ในชุด PHP (window.LOP_MODELS จาก data.php) ภาพปกเดิมไม่ตรงกับโมเดลใหม่แล้ว
+     จึงใช้ภาพปกที่อัปโหลดคู่กัน หรือไม่แสดงภาพปก (คืน '') ถ้าไม่ได้อัปโหลด — hero = โมเดลพระปรางค์สามยอด, map = แผนที่ทั้งจังหวัด */
+  function posterUrl(key, m) {
+    const o = window.LOP_MODELS && window.LOP_MODELS[key === 'hero' ? 'sam-yot' : key === 'map' ? 'province' : key];
+    return o ? (o.poster || '') : `assets/poster/${key}-${m}.webp`;
+  }
   function mountLazy(host, key, label, type, size, opts = {}) {
     const go = async () => {
       ACTIVE3D.add(key);
@@ -119,7 +125,7 @@
     const b = document.createElement('button'); b.type = 'button';
     b.className = 'poster group absolute inset-0 z-10 block h-full w-full overflow-hidden transition-opacity duration-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-[-4px] focus-visible:outline-terra-500';
     b.setAttribute('aria-label', 'แตะเพื่อดู 3 มิติ: ' + label);
-    const img = (m) => `<img src="assets/poster/${key}-${m}.webp" alt="" loading="lazy" decoding="async" draggable="false" class="poster-img poster-${m} absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.03]" onerror="this.remove()">`;
+    const img = (m) => { const u = posterUrl(key, m); return u ? `<img src="${u}" alt="" loading="lazy" decoding="async" draggable="false" class="poster-img poster-${m} absolute inset-0 h-full w-full object-contain transition-transform duration-500 group-hover:scale-[1.03]" onerror="this.remove()">` : ''; };
     b.innerHTML = `${img('day')}${img('night')}<span class="pointer-events-none absolute inset-x-0 bottom-3 grid justify-items-center"><span class="btn-terra !px-4 !py-2 text-sm">${svg('cube', 'h-4 w-4')}<span data-pl>แตะเพื่อดู 3 มิติ</span></span></span>`;
     b.addEventListener('click', go, { once: true });
     host.appendChild(b);
@@ -325,5 +331,5 @@
     dlg.addEventListener('close', () => { document.documentElement.style.overflow = ''; img.removeAttribute('src'); resetZoom(false); ptrs.clear(); pinch = drag = null; if (back && back.isConnected) back.focus(); });
   }
 
-  window.LopburiUI = { $, $$, esc, svg, ICONS, initIcons, isDark, paintThemeLabel, applyTheme, initTheme, ensureGL, mountModel, mountLazy, initAR, initCredits, initLightbox, loadGLScript };
+  window.LopburiUI = { posterUrl, $, $$, esc, svg, ICONS, initIcons, isDark, paintThemeLabel, applyTheme, initTheme, ensureGL, mountModel, mountLazy, initAR, initCredits, initLightbox, loadGLScript };
 })();
