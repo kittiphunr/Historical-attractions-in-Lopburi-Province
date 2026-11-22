@@ -172,15 +172,15 @@
 
   /* ---------- map hotspots ---------- */
   const mapWrap = $('#mapWrap');
-  /* จุดกดวางทับเลขบนภาพแผนที่ (ภาพมีเลขตามรายการสถานที่อยู่แล้ว) — หมายเลขในเว็บตรงกับภาพ */
+  /* พินหมายเลขวางทับวงเลขบนภาพแผนที่ (หมายเลขตรงกับภาพ) — ทึบเพื่ออ่านชัดบนจอเล็ก สีน้ำเงินสำหรับธรรมชาติ/ภูเขาตามสีวงเลขในภาพ */
   A.filter(a => a.map).forEach(a => {
-    const b = document.createElement('a');
-    b.href = PFX + 'places/' + a.id + '.html'; b.className = 'group absolute -translate-x-1/2 -translate-y-1/2';
+    const b = document.createElement('a'), blue = a.era === 'nature' || a.era === 'faith';
+    b.href = PFX + 'places/' + a.id + '.html'; b.className = 'group absolute -translate-x-1/2 -translate-y-1/2 outline-offset-4 hover:z-20 focus-visible:z-20';
     b.style.left = a.map[0] + '%'; b.style.top = a.map[1] + '%';
     b.setAttribute('aria-label', `${a.name} — ดูรายละเอียด`);
-    b.innerHTML = `<span class="absolute -inset-1 animate-ping rounded-full bg-terra-400/35" aria-hidden="true"></span>
-      <span class="absolute -inset-3" aria-hidden="true"></span><span class="relative block h-6 w-6 rounded-full border-2 border-terra-500 bg-white/10 shadow-[0_0_0_2px_rgba(255,255,255,.85)] transition group-hover:scale-125 group-focus-visible:scale-125 sm:h-8 sm:w-8"></span>
-      <span class="pointer-events-none absolute left-1/2 top-full z-10 mt-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-char-800 px-3 py-1.5 text-xs text-snow-50 opacity-0 shadow-dark transition group-hover:opacity-100 group-focus-visible:opacity-100">${esc(a.no)} · ${esc(a.name)}</span>`;
+    b.innerHTML = `<span class="absolute -inset-1 animate-ping rounded-full ${blue ? 'bg-sky-500/35' : 'bg-terra-400/35'}" aria-hidden="true"></span>
+      <span class="relative grid h-5 w-5 place-items-center rounded-full border-2 border-white text-[10px] font-semibold leading-none text-white shadow-dark transition group-hover:scale-125 group-focus-visible:scale-125 sm:h-[30px] sm:w-[30px] sm:text-sm ${blue ? 'bg-[#1f4f9a]' : 'bg-terra-500'}">${Number(a.no)}</span>
+      <span class="pointer-events-none absolute left-1/2 top-full z-10 mt-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-char-800 px-3 py-1.5 text-xs text-snow-50 opacity-0 shadow-dark transition group-hover:opacity-100 group-focus-visible:opacity-100">${Number(a.no)} · ${esc(a.name)}</span>`;
     mapWrap.appendChild(b);
   });
 
