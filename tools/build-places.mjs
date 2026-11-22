@@ -33,7 +33,7 @@ const A = ctx.window.ATTRACTIONS, S = ctx.window.SOURCES, SRC = Object.fromEntri
 
 const ogExtra = ['<meta property="og:site_name" content="ลพบุรี เมืองสามยุค">', '<meta property="og:locale" content="th_TH">', '<meta property="og:locale:alternate" content="en_US">', '<meta property="og:locale:alternate" content="zh_CN">', '<meta property="og:locale:alternate" content="ja_JP">'].join('\n  ');
 const esc = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
-const ERA_COLOR = { dvaravati: 'bg-sky-500/15 text-sky-700', khmer: 'bg-terra-500/10 text-terra-600', ayutthaya: 'bg-amber-500/15 text-amber-700', faith: 'bg-emerald-600/15 text-emerald-700' };
+const ERA_COLOR = { dvaravati: 'bg-sky-500/15 text-sky-700', khmer: 'bg-terra-500/10 text-terra-600', ayutthaya: 'bg-amber-500/15 text-amber-700', faith: 'bg-emerald-600/15 text-emerald-700', nature: 'bg-teal-600/15 text-teal-700' };
 const GRAD = 'background:linear-gradient(145deg,#dc6f45,#a8431f)';
 const icon = (name, cls = '') => `<i data-i="${name}" class="${cls}"></i>`;
 
@@ -108,9 +108,9 @@ function travelBlock(a) {
 
 function miniMap(a) {
   if (!a.map) return '';
-  return `<section class="reveal"><h2 class="eyebrow">ตำแหน่งในเมืองเก่า</h2>
-    <div class="relative mt-3 overflow-hidden rounded-2xl shadow-neu"><img src="assets/img/lopburi-map-768.webp" alt="แผนที่ภาพเมืองเก่าลพบุรี" width="768" height="512" loading="lazy" class="map-img w-full">
-      <span class="absolute -translate-x-1/2 -translate-y-1/2" style="left:${a.map[0]}%;top:${a.map[1]}%"><span class="absolute inset-0 -m-2 animate-ping rounded-full bg-terra-400/40"></span><span class="relative grid h-9 w-9 place-items-center rounded-full border-2 border-white bg-terra-500 text-sm font-semibold text-white shadow-dark">${a.no}</span></span></div>
+  return `<section class="reveal"><h2 class="eyebrow">ตำแหน่งบนแผนที่</h2>
+    <div class="relative mt-3 overflow-hidden rounded-2xl shadow-neu"><img src="assets/img/lopburi-map-768.webp" alt="แผนที่ท่องเที่ยวลพบุรีแบบภาพ (แผนผัง ไม่ตรงมาตราส่วนจริง)" width="768" height="512" loading="lazy" class="map-img w-full">
+      <span class="absolute -translate-x-1/2 -translate-y-1/2" style="left:${a.map[0]}%;top:${a.map[1]}%"><span class="absolute inset-0 -m-2 animate-ping rounded-full bg-terra-400/40"></span><span class="relative grid h-9 w-9 place-items-center rounded-full border-2 border-white ${a.era === 'nature' || a.era === 'faith' ? 'bg-[#1f4f9a]' : 'bg-terra-500'} text-sm font-semibold text-white shadow-dark">${Number(a.no)}</span></span></div>
     <a href="index.html#map" class="mt-3 inline-flex items-center gap-1 text-sm text-terra-600 underline-offset-4 hover:underline">ดูแผนที่ทั้งจังหวัด ${icon('arrow', 'h-4 w-4')}</a></section>`;
 }
 
@@ -145,7 +145,7 @@ function page(a, idx) {
       isPartOf: { '@type': 'TouristDestination', name: 'จังหวัดลพบุรี', url: SITE }, address: { '@type': 'PostalAddress', addressRegion: 'ลพบุรี', addressCountry: 'TH' } },
     { '@type': 'BreadcrumbList', itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'หน้าแรก', item: SITE },
-      { '@type': 'ListItem', position: 2, name: '11 แห่ง', item: SITE + '#places' },
+      { '@type': 'ListItem', position: 2, name: '12 แห่ง', item: SITE + '#places' },
       { '@type': 'ListItem', position: 3, name: a.name, item: url }] }] };
   const extraStart = 5;
   const factsAll = [...a.facts, ...(c.facts || [])];
@@ -185,7 +185,7 @@ function page(a, idx) {
   ${chrome}<main id="main" class="mx-auto max-w-6xl px-4 pt-20 lg:pl-[112px] lg:pr-6">
     <nav aria-label="ตำแหน่งหน้า" class="text-sm text-ink-500"><ol class="flex flex-wrap items-center gap-2">
       <li><a class="hover:text-terra-600" href="index.html">หน้าแรก</a></li><li aria-hidden="true">/</li>
-      <li><a class="hover:text-terra-600" href="index.html#places">11 แห่ง</a></li><li aria-hidden="true">/</li>
+      <li><a class="hover:text-terra-600" href="index.html#places">12 แห่ง</a></li><li aria-hidden="true">/</li>
       <li aria-current="page" class="text-ink-900">${esc(a.name)}</li></ol></nav>
 
     <div class="mt-6 grid items-start gap-8 lg:grid-cols-12 lg:gap-10">
@@ -217,7 +217,7 @@ function page(a, idx) {
 
         <section class="reveal">${h2('ภาพถ่าย', '01')}<div class="mt-4">${gallery(a, c)}</div></section>
         <section class="reveal">${h2('ประวัติศาสตร์', '02')}<div class="mt-4 space-y-4 leading-relaxed text-ink-700">${paras(a.history)}</div></section>
-        <section class="reveal">${h2('สถาปัตยกรรม', '03')}<div class="mt-4 space-y-4 leading-relaxed text-ink-700">${paras(a.architecture)}</div></section>
+        <section class="reveal">${h2(a.archTitle || 'สถาปัตยกรรม', '03')}<div class="mt-4 space-y-4 leading-relaxed text-ink-700">${paras(a.architecture)}</div></section>
         <section class="reveal">${h2('ไฮไลต์', '04')}<div class="mt-4 leading-relaxed text-ink-700">${bullets(a.highlights)}</div></section>
         <section class="reveal">${h2('เตรียมตัวไป', '05')}<div class="mt-4 leading-relaxed text-ink-700">${bullets(a.visit, 'bg-amber-500')}</div></section>
         ${c.sections.map((s, i) => extraSection(a, s, String(extraStart + 1 + i).padStart(2, '0'))).join('\n        ')}
@@ -417,7 +417,7 @@ function homeBlocks() {
     { '@context': 'https://schema.org', '@type': 'TouristDestination', name: 'จังหวัดลพบุรี', alternateName: 'Lopburi Province', description: 'สำรวจ 10 แหล่งประวัติศาสตร์เมืองสามยุคของลพบุรี: ทวารวดี ขอม อยุธยา', url: SITE, image: IMG + 'assets/img/og-cover.jpg', inLanguage: 'th',
       containsPlace: A.map(a => ({ '@type': 'TouristAttraction', name: a.name, alternateName: a.en, url: `${SITE}places/${a.id}.html` })) }
   ];
-  const nolist = `<noscript><nav aria-label="สถานที่ทั้ง 11 แห่ง" class="mt-6"><ul class="grid gap-2 sm:grid-cols-2">${A.map(a => `<li><a class="underline" href="places/${a.id}.html">${esc(a.no)} ${esc(a.name)} — ${esc(a.tagline)}</a></li>`).join('')}</ul></nav></noscript>`;
+  const nolist = `<noscript><nav aria-label="สถานที่ทั้ง 12 แห่ง" class="mt-6"><ul class="grid gap-2 sm:grid-cols-2">${A.map(a => `<li><a class="underline" href="places/${a.id}.html">${esc(a.no)} ${esc(a.name)} — ${esc(a.tagline)}</a></li>`).join('')}</ul></nav></noscript>`;
   return { jsonld: `\n  <script type="application/ld+json">${JSON.stringify(ld)}</script>\n  `, nolist, hreflang: '\n  ' + hreflangLinks('') + '\n  ' };
 }
 let homeThai;
@@ -427,6 +427,83 @@ let homeThai;
   if (homeThai !== cur) writeFileSync(f, homeThai);
 }
 
+/* ---------- หน้าคำถามที่พบบ่อย (faq.html) จาก content/faq.json ---------- */
+function faqPage() {
+  const F = JSON.parse(read('content/faq.json'));
+  const url = SITE + 'faq.html', title = `${F.title.th} — ลพบุรี เมืองสามยุค`;
+  const intro = F.intro.map(x => `<p class="text-lg leading-relaxed text-ink-700">${esc(x.th)}</p>`).join('');
+  let n = 0;
+  const groups = F.groups.map(g => `<section aria-labelledby="faq-g${++n}">
+        <h2 id="faq-g${n}" class="text-2xl font-semibold text-ink-900 sm:text-3xl">${esc(g.h.th)}</h2>
+        <div class="mt-4 space-y-3">${g.items.map(it => `
+          <details class="card faq-item group p-0">
+            <summary class="flex cursor-pointer items-start justify-between gap-4 px-5 py-4 text-left text-lg font-medium text-ink-900 outline-offset-[-4px] sm:px-6"><span>${esc(it.q.th)}</span><svg viewBox="0 0 24 24" class="faq-chev mt-1 h-5 w-5 shrink-0 text-terra-500 transition-transform" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>
+            <div class="space-y-3 px-5 pb-5 leading-relaxed text-ink-700 sm:px-6">${it.a.map(x => `<p>${esc(x.th)}</p>`).join('')}${it.link ? `<a class="btn-soft !px-5 !py-2.5 text-sm" href="${esc(it.link.href)}"${it.link.external ? ' target="_blank" rel="noopener noreferrer"' : ''}>${esc(it.link.label.th)}</a>` : ''}</div>
+          </details>`).join('')}
+        </div>
+      </section>`).join('\n      ');
+  const ld = { '@context': 'https://schema.org', '@graph': [
+    { '@type': 'FAQPage', '@id': url + '#faq', url, inLanguage: 'th', name: F.title.th,
+      mainEntity: F.groups.flatMap(g => g.items).map(it => ({ '@type': 'Question', name: it.q.th, acceptedAnswer: { '@type': 'Answer', text: it.a.map(x => x.th).join(' ') } })) },
+    { '@type': 'BreadcrumbList', itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'หน้าแรก', item: SITE },
+      { '@type': 'ListItem', position: 2, name: F.title.th, item: url }] }] };
+  return `<!doctype html>
+<html lang="th" data-alts="1" data-rel="faq.html" data-prefix="">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>${esc(title)}</title>
+  <meta name="description" content="${esc(F.intro[0].th)}">
+  <meta name="theme-color" content="#f4ece2">
+  <meta name="robots" content="index,follow">
+  ${ogExtra}
+  <meta property="og:title" content="${esc(title)}">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="${url}">
+  <meta property="og:image" content="${IMG}assets/img/og-cover.jpg">
+  <link rel="canonical" href="${url}">
+  ${hreflangLinks('faq.html')}
+  <link rel="icon" type="image/png" href="assets/img/favicon-64.png">
+  <link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+  ${headFonts}<link rel="stylesheet" href="assets/tailwind.css">
+  ${themeScript}
+  <script type="application/ld+json">${JSON.stringify(ld)}</script>
+</head>
+<body class="relative overflow-x-hidden pb-28 lg:pb-10" data-page="faq">
+  <a href="faq.html#main" class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-terra-500 focus:px-4 focus:py-2 focus:text-white">ข้ามไปยังเนื้อหา</a>
+
+  ${chrome}<main id="main" class="mx-auto max-w-3xl px-4 pt-20 lg:pl-[112px] lg:pr-6">
+    <a href="index.html" class="inline-flex items-center gap-1 text-sm text-ink-500 hover:text-terra-600">${esc(F.back.th)}</a>
+    <header class="mt-6">
+      <p class="eyebrow">FAQ</p>
+      <h1 class="mt-2 text-4xl font-semibold sm:text-5xl">${esc(F.title.th)}</h1>
+      <p class="mt-2 text-sm text-ink-400">${esc(F.updated.th)}</p>
+      <div class="mt-6 space-y-3">${intro}</div>
+    </header>
+    <div class="mt-10 space-y-10">
+      ${groups}
+    </div>
+  </main>
+
+  ${footer}
+
+  ${creditsDialog}
+
+  ${arDialog}
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+
+  <script src="assets/js/motion.js"></script>
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/common.js"></script>
+  <script src="assets/js/place.js"></script>
+</body>
+</html>
+`;
+}
+
 /* ---------- สร้างหน้าภาษาอื่นจากหน้าไทย ---------- */
 const translators = Object.fromEntries(OTHER.map(c => [c, makeTranslator(loadDict(root, c))]));
 function mapHref(h, prefix, isHome) {
@@ -434,7 +511,7 @@ function mapHref(h, prefix, isHome) {
   if (h.startsWith('#')) return isHome ? prefix + h : h;                       // ลิงก์ในหน้าแรก: ชี้กลับหน้าแรกของภาษานั้น (base อยู่ที่ราก)
   if (h === 'index.html') return prefix;
   if (h.startsWith('index.html#')) return prefix + h.slice('index.html'.length);
-  if (h.startsWith('places/') || h.startsWith('privacy.html')) return prefix + h;
+  if (h.startsWith('places/') || h.startsWith('privacy.html') || h.startsWith('faq.html')) return prefix + h;
   return h;                                                                    // assets/, 404.html, sitemap ฯลฯ อยู่ที่รากร่วมกัน
 }
 function localizeLd(json, code, prefix, relInSite) {
@@ -445,7 +522,7 @@ function localizeLd(json, code, prefix, relInSite) {
     if (o && typeof o === 'object') return Object.fromEntries(Object.entries(o).map(([k, v]) => [k, walk(v, k)]));
     if (typeof o !== 'string') return o;
     if (urlKeys.has(key) && o.startsWith(SITE) && !o.startsWith(SITE + 'assets/')) return SITE + prefix + o.slice(SITE.length);
-    if (key === 'name' || key === 'description') { const t = tr.lookupTitle(o); return t != null ? t : o; }
+    if (key === 'name' || key === 'description' || key === 'text') { const t = tr.lookupTitle(o); return t != null ? t : o; }
     if (key === 'inLanguage' && o === 'th') return LANG[code].html;
     return o;
   };
@@ -475,13 +552,14 @@ function emit(relFile, rel, thai) {
 emit('index.html', '', homeThai);
 A.forEach((a, i) => emit(`places/${a.id}.html`, `places/${a.id}.html`, page(a, i)));
 emit('privacy.html', 'privacy.html', privacyPage());
+emit('faq.html', 'faq.html', faqPage());
 // หน้า 404 มีภาษาเดียว (เสิร์ฟที่ที่อยู่ใดก็ได้) และใช้ตัวแปลในเบราว์เซอร์
 writeFileSync(join(root, '404.html'), notFoundPage());
 // เตือนถ้ามีหน้าสถานที่ที่ไม่มีใน data.js แล้ว (เช่น เปลี่ยน id)
 for (const dir of ['places', ...OTHER.map(c => c + '/places')]) { if (!existsSync(join(root, dir))) continue; for (const f of readdirSync(join(root, dir))) if (f.endsWith('.html') && !A.some(a => a.id + '.html' === f)) console.warn(`หมายเหตุ: ${dir}/${f} ไม่มีใน data.js แล้ว (ลบเองได้)`); }
 
 /* sitemap: ทุกหน้าในทุกภาษา พร้อมลิงก์ภาษาอื่น (xhtml:link) */
-const pages = [['', ''], ...A.map(a => [`places/${a.id}.html`, `places/${a.id}.html`]), ['privacy.html', 'privacy.html']];
+const pages = [['', ''], ...A.map(a => [`places/${a.id}.html`, `places/${a.id}.html`]), ['privacy.html', 'privacy.html'], ['faq.html', 'faq.html']];
 const sitemapUrl = (rel) => Object.values(LANG).map(l => {
   const loc = SITE + l.prefix + rel;
   return `  <url>\n    <loc>${loc}</loc>\n${Object.values(LANG).map(x => `    <xhtml:link rel="alternate" hreflang="${x.hreflang}" href="${SITE}${x.prefix}${rel}"/>`).join('\n')}\n    <xhtml:link rel="alternate" hreflang="x-default" href="${SITE}${rel}"/>\n  </url>`;

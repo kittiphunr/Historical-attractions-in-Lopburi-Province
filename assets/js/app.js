@@ -3,8 +3,8 @@
   const { $, $$, esc, svg } = window.LopburiUI;
   const PFX = document.documentElement.dataset.prefix || ''; // 'en/' ฯลฯ บนหน้าแยกตามภาษา (ลิงก์ภายในต้องอยู่ในภาษาเดียวกัน)
   const A = window.ATTRACTIONS, S = window.SOURCES, SRC = Object.fromEntries(S.map(s => [s.id, s]));
-  const ERA = { all: 'ทั้งหมด', dvaravati: 'ทวารวดี', khmer: 'ขอม', ayutthaya: 'อยุธยา–พระนารายณ์', faith: 'ภูเขา–ศรัทธา' };
-  const ERA_COLOR = { dvaravati: 'bg-sky-500/15 text-sky-700', khmer: 'bg-terra-500/10 text-terra-600', ayutthaya: 'bg-amber-500/15 text-amber-700', faith: 'bg-emerald-600/15 text-emerald-700' };
+  const ERA = { all: 'ทั้งหมด', dvaravati: 'ทวารวดี', khmer: 'ขอม', ayutthaya: 'อยุธยา–พระนารายณ์', faith: 'ภูเขา–ศรัทธา', nature: 'แหล่งน้ำ–ธรรมชาติ' };
+  const ERA_COLOR = { dvaravati: 'bg-sky-500/15 text-sky-700', khmer: 'bg-terra-500/10 text-terra-600', ayutthaya: 'bg-amber-500/15 text-amber-700', faith: 'bg-emerald-600/15 text-emerald-700', nature: 'bg-teal-600/15 text-teal-700' };
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   window.LopburiUI.initIcons();
@@ -172,14 +172,15 @@
 
   /* ---------- map hotspots ---------- */
   const mapWrap = $('#mapWrap');
+  /* พินหมายเลขวางทับวงเลขบนภาพแผนที่ (หมายเลขตรงกับภาพ) — ทึบเพื่ออ่านชัดบนจอเล็ก สีน้ำเงินสำหรับธรรมชาติ/ภูเขาตามสีวงเลขในภาพ */
   A.filter(a => a.map).forEach(a => {
-    const b = document.createElement('a');
-    b.href = PFX + 'places/' + a.id + '.html'; b.className = 'group absolute -translate-y-1/2 -translate-x-[calc(100%+6px)]';
+    const b = document.createElement('a'), blue = a.era === 'nature' || a.era === 'faith';
+    b.href = PFX + 'places/' + a.id + '.html'; b.className = 'group absolute -translate-x-1/2 -translate-y-1/2 outline-offset-4 hover:z-20 focus-visible:z-20';
     b.style.left = a.map[0] + '%'; b.style.top = a.map[1] + '%';
     b.setAttribute('aria-label', `${a.name} — ดูรายละเอียด`);
-    b.innerHTML = `<span class="absolute inset-0 -m-1 animate-ping rounded-full bg-terra-400/40 sm:-m-2"></span>
-      <span class="absolute -inset-2" aria-hidden="true"></span><span class="relative grid h-5 w-5 place-items-center rounded-full border border-white bg-terra-500 text-[9px] font-semibold text-white shadow-dark transition group-hover:scale-125 sm:h-9 sm:w-9 sm:border-2 sm:text-sm">${a.no}</span>
-      <span class="pointer-events-none absolute right-0 top-full z-10 mt-2 whitespace-nowrap rounded-lg bg-char-800 px-3 py-1.5 text-xs text-snow-50 opacity-0 shadow-dark transition group-hover:opacity-100 group-focus-visible:opacity-100">${esc(a.name)}</span>`;
+    b.innerHTML = `<span class="absolute -inset-1 animate-ping rounded-full ${blue ? 'bg-sky-500/35' : 'bg-terra-400/35'}" aria-hidden="true"></span>
+      <span class="relative grid h-5 w-5 place-items-center rounded-full border-2 border-white text-[10px] font-semibold leading-none text-white shadow-dark transition group-hover:scale-125 group-focus-visible:scale-125 sm:h-[30px] sm:w-[30px] sm:text-sm ${blue ? 'bg-[#1f4f9a]' : 'bg-terra-500'}">${Number(a.no)}</span>
+      <span class="pointer-events-none absolute left-1/2 top-full z-10 mt-2 -translate-x-1/2 whitespace-nowrap rounded-lg bg-char-800 px-3 py-1.5 text-xs text-snow-50 opacity-0 shadow-dark transition group-hover:opacity-100 group-focus-visible:opacity-100">${Number(a.no)} · ${esc(a.name)}</span>`;
     mapWrap.appendChild(b);
   });
 
@@ -220,10 +221,10 @@
   });
 
   /* ---------- route ---------- */
-  $('#routeList').innerHTML = window.ROUTE.map(([n, id, note], i) => `
+  $('#routeList').innerHTML = window.ROUTE.map(([n, id, note], i) => { const pl = A.find(x => x.id === id); return `
     <li class="reveal" style="transition-delay:${i * 50}ms"><a href="${PFX}places/${id}.html" class="card flex items-center gap-4 p-4 transition hover:-translate-y-0.5">
-      <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full text-lg font-semibold text-white" style="background:linear-gradient(145deg,#dc6f45,#a8431f)">${i + 1}</span>
-      <span class="min-w-0"><b class="block font-medium text-ink-900">${esc(n)}</b><span class="block text-sm text-ink-500">${esc(note)}</span></span></a></li>`).join('');
+      <span class="grid h-12 w-12 shrink-0 place-items-center rounded-full text-lg font-semibold text-white" style="background:linear-gradient(145deg,#dc6f45,#a8431f)">${esc(pl ? pl.no : String(i + 1))}</span>
+      <span class="min-w-0"><b class="block font-medium text-ink-900">${esc(n)}</b><span class="block text-sm text-ink-500">${esc(note)}</span></span></a></li>`; }).join('');
 
   /* ---------- reveal ---------- */
   let io;
