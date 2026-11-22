@@ -5,8 +5,12 @@
   RewriteEngine On
   RewriteRule ^(?:(en|zh|ja)/)?places/([a-z0-9]+(?:-[a-z0-9]+)*)\.html$ place.php?lang=$1&id=$2 [L]
 </IfModule>
-<Files "place.php">
+# data.js ต่อท้ายด้วยโมเดล 3 มิติและพิกัดหมุดที่ผู้ดูแลตั้งไว้ใน /admin/models.php (ถ้าไม่มีการตั้งค่าหรือฐานข้อมูลใช้ไม่ได้ จะส่ง data.js เดิม)
+<IfModule mod_rewrite.c>
+  RewriteRule ^assets/js/data\.js$ data.php [L]
+</IfModule>
+<FilesMatch "^(place|data)\.php$">
   <IfModule mod_expires.c>
     ExpiresActive Off
   </IfModule>
-</Files>
+</FilesMatch>

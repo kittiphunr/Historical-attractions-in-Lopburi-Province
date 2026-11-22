@@ -1,5 +1,5 @@
 # ไฟล์ภายในของ API: ห้ามเปิดจากเว็บ (ชื่อไฟล์ตอนวางบนโฮสต์ต้องเป็น .htaccess)
-<FilesMatch "^(lib\.php|content\.php|config\.php|config\.sample\.php|places\.json|schema\.sql)$">
+<FilesMatch "^(lib\.php|content\.php|modelstore\.php|config\.php|config\.sample\.php|places\.json|schema\.sql)$">
   <IfModule mod_authz_core.c>
     Require all denied
   </IfModule>
