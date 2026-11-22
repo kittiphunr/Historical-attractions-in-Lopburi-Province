@@ -149,3 +149,9 @@ html.pl-boot.pl-done::before, html.pl-boot.pl-done::after { animation: pl-out .4
 
 /* ฟอนต์ไทยที่ขยายแล้ว (size-adjust 152%) สูงกว่าความสูงบรรทัดของข้อความบรรทัดเดียวที่ตัดด้วย .truncate (overflow: hidden) — เพิ่มความสูงบรรทัดกันสระ/วรรณยุกต์ถูกตัด */
 html[lang="th"] .truncate { line-height: 1.7; }
+
+/* ข้อความบนแบนเนอร์ (ป้ายเล็ก / ชื่อจังหวัด / บรรทัดรอง): ฟอนต์ไทยที่ขยายแล้วสูงกว่าความสูงบรรทัดเดิม สระและวรรณยุกต์ของชื่อจึงชนป้ายบนและบรรทัดล่าง
+   เว้นระยะเพิ่มเฉพาะหน้าไทย (หน่วย em ขยายตามขนาดตัวอักษรที่ผู้ใช้เลือก) */
+html[lang="th"] .bn-eyebrow { margin-bottom: .55rem; }
+html[lang="th"] .bn-title { line-height: 1.45; }
+html[lang="th"] .bn-sub { margin-top: .45rem; line-height: 1.65; }
