@@ -155,3 +155,25 @@ html[lang="th"] .truncate { line-height: 1.7; }
 html[lang="th"] .bn-eyebrow { margin-bottom: .55rem; }
 html[lang="th"] .bn-title { line-height: 1.45; }
 html[lang="th"] .bn-sub { margin-top: .45rem; line-height: 1.65; }
+
+/* เนื้อหาที่ผู้ดูแลแก้ผ่านระบบจัดการเนื้อหา (CKEditor 5 ในชุด PHP) — ครอบด้วย .rt ใน place.php; ใช้ตัวแปรสีของธีม จึงเปลี่ยนตามโหมดมืดเอง */
+.rt > * + * { margin-top: 1rem; }
+.rt h3 { margin-top: 1.5rem; font-size: 1.3em; font-weight: 600; line-height: 1.5; color: rgb(var(--ink-900)); }
+.rt h4 { margin-top: 1.25rem; font-size: 1.1em; font-weight: 600; line-height: 1.5; color: rgb(var(--ink-900)); }
+.rt ul, .rt ol { padding-left: 1.5rem; }
+.rt ul { list-style: disc; }
+.rt ol { list-style: decimal; }
+.rt li { padding-left: .25rem; margin-top: .5rem; }
+.rt li::marker { color: #c4552f; }
+.rt ul ul, .rt ol ol, .rt ul ol, .rt ol ul { margin-top: .5rem; }
+.rt a { color: #a8431f; text-decoration: underline; text-underline-offset: 3px; }
+.dark .rt a { color: rgb(240 150 108); }
+.rt blockquote { border-left: 4px solid #d9693f; padding: .25rem 0 .25rem 1rem; font-style: italic; color: rgb(var(--ink-500)); }
+.rt hr { border: 0; border-top: 1px solid rgb(var(--cream-300)); margin: 1.5rem 0; }
+.rt figure { margin-left: auto; margin-right: auto; }
+.rt figure.image img { display: block; margin: 0 auto; max-width: 100%; height: auto; border-radius: 1rem; }
+.rt figcaption { margin-top: .5rem; text-align: center; font-size: .8em; line-height: 1.6; color: rgb(var(--ink-500)); }
+.rt figure.table { overflow-x: auto; }
+.rt table { width: 100%; border-collapse: collapse; font-size: .95em; }
+.rt th, .rt td { border: 1px solid rgb(var(--cream-300)); padding: .5rem .75rem; text-align: left; vertical-align: top; }
+.rt th { background: rgb(var(--cream-100)); font-weight: 600; }

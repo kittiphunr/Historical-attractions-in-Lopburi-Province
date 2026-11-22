@@ -369,5 +369,8 @@
  "เพิ่มขนาดตัวอักษร": "Increase text size",
  "คืนค่าเริ่มต้น": "Reset to default",
  "เมืองโบราณซับจำปา": "Sap Champa Ancient City",
- "เมืองโบราณทวารวดีที่มีคูน้ำและคันดินสองชั้น กับเศียรพระพุทธรูปหินทรายและจารึก": "A Dvaravati city with a moat and double earthen ramparts, and its sandstone Buddha head and inscriptions"
+ "เมืองโบราณทวารวดีที่มีคูน้ำและคันดินสองชั้น กับเศียรพระพุทธรูปหินทรายและจารึก": "A Dvaravati city with a moat and double earthen ramparts, and its sandstone Buddha head and inscriptions",
+ "ระบบจัดการเนื้อหา (ชุด PHP):": "Content management (PHP package):",
+ "หน้าผู้ดูแลในชุดติดตั้งแบบ PHP ใช้ตัวแก้ไขข้อความ": "The admin pages of the PHP package use the text editor",
+ "ของ CKSource (GPL-2.0 หรือใหม่กว่า) ใช้เฉพาะในหน้าผู้ดูแล ไม่ปรากฏในหน้าที่ผู้เข้าชมเห็น": "by CKSource (GPL-2.0 or later). It is used only on the admin pages and does not appear on pages visitors see."
 }

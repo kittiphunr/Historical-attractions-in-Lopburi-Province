@@ -18,3 +18,24 @@ CREATE TABLE IF NOT EXISTS `lop_reviews` (
   KEY `idx_ip`     (`ip_hash`, `created_at`),
   KEY `idx_status` (`status`, `created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ระบบจัดการเนื้อหาสถานที่ (หน้า /admin/places.php) — ถ้าไม่ได้นำเข้า ระบบจะสร้างตารางนี้ให้เองเมื่อเปิดหน้าผู้ดูแล (ผู้ใช้ฐานข้อมูลต้องมีสิทธิ์ CREATE)
+CREATE TABLE IF NOT EXISTS `lop_place_content` (
+  `place`      VARCHAR(40)  NOT NULL,                                     -- รหัสสถานที่ เช่น sam-yot
+  `lang`       VARCHAR(8)   NOT NULL,                                     -- th / en / zh / ja
+  `field`      VARCHAR(20)  NOT NULL,                                     -- history / architecture / highlights / visit
+  `html`       MEDIUMTEXT   NOT NULL,                                     -- HTML ที่ผ่านตัวกรองแล้ว (แก้ด้วย CKEditor 5)
+  `updated_at` DATETIME     NOT NULL,                                     -- เวลา UTC
+  PRIMARY KEY (`place`, `lang`, `field`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `lop_place_revisions` (
+  `id`         INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `place`      VARCHAR(40)  NOT NULL,
+  `lang`       VARCHAR(8)   NOT NULL,
+  `field`      VARCHAR(20)  NOT NULL,
+  `html`       MEDIUMTEXT   NOT NULL,                                     -- ประวัติการแก้ไข (เก็บ 15 ครั้งล่าสุดต่อส่วน)
+  `created_at` DATETIME     NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_key` (`place`, `lang`, `field`, `id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

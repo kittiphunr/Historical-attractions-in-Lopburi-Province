@@ -1,0 +1,12 @@
+
+# ---- ระบบจัดการเนื้อหาสถานที่ (เฉพาะชุด PHP) ----
+# ส่งคำขอหน้าสถานที่ (places/xxx.html และ en|zh|ja/places/xxx.html) ผ่าน place.php ซึ่งแทนที่ข้อความที่ผู้ดูแลแก้ไว้ (ถ้าไม่มีหรือฐานข้อมูลใช้ไม่ได้ จะส่งหน้าเดิมตามปกติ)
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteRule ^(?:(en|zh|ja)/)?places/([a-z0-9]+(?:-[a-z0-9]+)*)\.html$ place.php?lang=$1&id=$2 [L]
+</IfModule>
+<Files "place.php">
+  <IfModule mod_expires.c>
+    ExpiresActive Off
+  </IfModule>
+</Files>

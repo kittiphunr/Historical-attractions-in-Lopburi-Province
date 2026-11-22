@@ -5,3 +5,13 @@
 </IfModule>
 Options -Indexes
 DirectoryIndex index.php
+# ไฟล์ภายในของหน้าผู้ดูแล: ห้ามเปิดจากเว็บโดยตรง
+<FilesMatch "^common\.php$">
+  <IfModule mod_authz_core.c>
+    Require all denied
+  </IfModule>
+  <IfModule !mod_authz_core.c>
+    Order allow,deny
+    Deny from all
+  </IfModule>
+</FilesMatch>
