@@ -37,7 +37,7 @@ npm start          # เสิร์ฟหน้าเว็บ + API สมุ�
 
 ## หน้า 404
 
-`404.html` สร้างจาก `content/404.json` ด้วย `npm run build` GitHub Pages จะแสดงหน้านี้อัตโนมัติเมื่อเปิดที่อยู่ที่ไม่มี (มีตราจังหวัด ปุ่มกลับหน้าแรก รายการสถานที่ทั้ง 10 แห่ง และเดาหน้าที่หาจากส่วนท้ายของที่อยู่ เช่น `/places/sam-yot` ที่พิมพ์ผิดนิดหน่อย) `npm start` (server.js) ก็แสดงหน้านี้พร้อมสถานะ 404 เช่นกัน
+`404.html` สร้างจาก `content/404.json` ด้วย `npm run build` GitHub Pages จะแสดงหน้านี้อัตโนมัติเมื่อเปิดที่อยู่ที่ไม่มี (มีตราจังหวัด ปุ่มกลับหน้าแรก รายการสถานที่ทั้ง 12 แห่ง และเดาหน้าที่หาจากส่วนท้ายของที่อยู่ เช่น `/places/sam-yot` ที่พิมพ์ผิดนิดหน่อย) `npm start` (server.js) ก็แสดงหน้านี้พร้อมสถานะ 404 เช่นกัน
 
 ## นโยบายความเป็นส่วนตัว
 
@@ -95,7 +95,7 @@ npm run package -- --site https://ชื่อโดเมน/        # ใส�
 
 ## ภาพปกโมเดล 3 มิติ (กดก่อนค่อยโหลด)
 
-เพื่อให้หน้าเว็บเบา ทุกจุดที่มี 3 มิติ (ไดโอรามาหน้าแรก, หน้าสถานที่ทั้ง 10 แห่ง, แผนที่จังหวัด) จะแสดง **ภาพปก** ก่อน และโหลดไฟล์ `.glb` กับสร้าง WebGL เมื่อผู้ใช้กดเท่านั้น (ตอนเปิดหน้าไม่มีการดาวน์โหลด `.glb` เลย) ภาพปกอยู่ใน `assets/poster/<id>-day|night.webp` (กลางวัน/กลางคืน รวม ~0.5 MB) และสร้างอัตโนมัติจากโมเดลจริง:
+เพื่อให้หน้าเว็บเบา ทุกจุดที่มี 3 มิติ (ไดโอรามาหน้าแรก, หน้าสถานที่ทั้ง 12 แห่ง, แผนที่จังหวัด) จะแสดง **ภาพปก** ก่อน และโหลดไฟล์ `.glb` กับสร้าง WebGL เมื่อผู้ใช้กดเท่านั้น (ตอนเปิดหน้าไม่มีการดาวน์โหลด `.glb` เลย) ภาพปกอยู่ใน `assets/poster/<id>-day|night.webp` (กลางวัน/กลางคืน รวม ~0.5 MB) และสร้างอัตโนมัติจากโมเดลจริง:
 
 ```bash
 npm i -D playwright && npx playwright install chromium   # ครั้งแรกครั้งเดียว
@@ -134,18 +134,17 @@ npm run shrink -- ต้นฉบับ.glb --out assets/model/prang-sam-yot.glb
 
 ส่วน "แผนที่ 3 มิติทั้งจังหวัด" (`#map3d`) ใช้โมเดลที่เจ้าของโปรเจกต์ปั้น: ลากเพื่อหมุน/เอียง, Ctrl + ล้อเมาส์ หรือหนีบสองนิ้วเพื่อซูม, ปุ่ม +/−/รีเซ็ต, ปุ่มลูกศรบนคีย์บอร์ด (+/− ซูม, Esc รีเซ็ต) แตะหมุด แตะที่ตัวแผนที่ใกล้สถานที่ หรือเลือกจากแถบรายชื่อ กล้องจะบินเข้าไปและขึ้นการ์ดข้อมูลพร้อมลิงก์ไปอ่านรายละเอียดและดูโมเดลอาคารแบบ AR มีปุ่ม AR ของแผนที่ทั้งแผ่น (กว้าง ~50 ซม.)
 
-- ไฟล์: `assets/model/lopburi-province.glb` (2.5 MB สำหรับเว็บ: ลดจาก 1.29M เหลือ ~155k สามเหลี่ยม + meshopt + WebP) และ `lopburi-province.ar.glb` (6.2 MB สำหรับ AR ไม่บีบอัด) ต้นฉบับ 48 MB อยู่ที่ `source-models/lopburi-province.original.glb`
+- ไฟล์: `assets/model/lopburi-province.glb` (3.6 MB สำหรับเว็บ ย่อจากต้นฉบับ 12.8 MB ด้วย `npm run shrink`) และ `lopburi-province.ar.glb` (9.4 MB สำหรับ AR ไม่บีบอัด กว้าง 0.5 ม.) ต้นฉบับอยู่ที่ `source-models/lopburi-province.original.glb` (โมเดลชุดใหม่ที่มีอ่างซับเหล็กและวัดกวิศราราม แทนชุดเดิม 48 MB ซึ่งยังเรียกกลับได้จากประวัติ git) ย่อใหม่ด้วย:
   ```bash
-  npx @gltf-transform/cli optimize source-models/lopburi-province.original.glb assets/model/lopburi-province.glb \
-    --compress meshopt --simplify true --simplify-ratio 0.12 --simplify-error 0.0008 --texture-compress webp --texture-size 2048 --no-instance --no-palette
-  # ไฟล์ AR: optimize แบบ --compress false --texture-compress false, resize 1024, แล้ว node tools/make-ar-glb.mjs in.glb out.glb 0.5
+  npm run shrink -- source-models/lopburi-province.original.glb --out assets/model/lopburi-province.glb --ar 0.5
+  npm run posters -- --software map     # สร้างภาพปกแผนที่ใหม่
   ```
 - ตำแหน่งหมุดเก็บที่ `PROVINCE_MODEL.hotspots` ใน `assets/js/data.js` (พิกัด x,z ในหน่วยของไฟล์ต้นฉบับ เหนืออยู่บนเมื่อมองจากด้านบน) ความสูงคำนวณจากผิวโมเดลเอง ถ้าเปลี่ยนโมเดลต้องวัดพิกัดใหม่ ปัจจุบันโมเดลมี 7 สถานที่ (ไม่มีปรางค์แขก วัดเสาธงทอง วัดนครโกษา)
 - ตัวดู: `createMapViewer` ใน `src/three-scenes.js` ใช้ renderer ของตัวเอง โหลดโมเดลเมื่อเลื่อนใกล้ถึง ถ้าไม่มี WebGL จะแจ้งและให้ใช้แผนที่ภาพแทน
 
 ## AR (ดูโมเดลบนโต๊ะจริง)
 
-ทุกการแสดงผล 3 มิติมีปุ่ม **ดูแบบ AR** (ไดโอรามาหน้าแรก + 10 สถานที่) เปิดหน้าต่างดู 3 มิติเต็มจอด้วย [`<model-viewer>`](https://modelviewer.dev/) ของ Google ถ้าอุปกรณ์รองรับจะมีปุ่ม "ดูใน AR" (WebXR บน Android Chrome, Scene Viewer บน Android, Quick Look บน iPhone/iPad)
+ทุกการแสดงผล 3 มิติมีปุ่ม **ดูแบบ AR** (ไดโอรามาหน้าแรก + 12 สถานที่) เปิดหน้าต่างดู 3 มิติเต็มจอด้วย [`<model-viewer>`](https://modelviewer.dev/) ของ Google ถ้าอุปกรณ์รองรับจะมีปุ่ม "ดูใน AR" (WebXR บน Android Chrome, Scene Viewer บน Android, Quick Look บน iPhone/iPad)
 
 - `src/ar.js` → `assets/js/ar.js` (~1 MB) โหลดเฉพาะตอนกดปุ่ม ใช้ three 0.183 (`three-mv`) แยกจากตัวเรนเดอร์หลัก (three 0.187) เพราะ model-viewer 4.4 ผูกกับ 0.183 (alias ตอน build)
 - โมเดลที่สร้างด้วยโค้ด: `LopburiGL.exportGLB(type)` ส่งออก .glb ตอนกด (กว้างราว 40 ซม. พร้อมฐานดินเผา ก้นแตะพื้น) ไม่ต้องมีไฟล์สำรอง ผ่านตัวตรวจ Khronos glTF Validator ครบ 10 แบบ

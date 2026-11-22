@@ -93,12 +93,12 @@
         <button type="button" data-ar="province" class="neu grid h-10 w-10 place-items-center text-terra-600" aria-label="ดูแผนที่แบบ AR" title="ดูแบบ AR">${svg('cube', 'h-5 w-5')}</button>
       </div>
       <div id="mvInfo" data-map-ui class="card absolute inset-x-3 bottom-3 z-20 hidden max-w-md p-4 sm:left-4 sm:right-auto" role="status"></div>`);
-    $('#mvChips').innerHTML = places.map(h => `<button type="button" class="chip inline-flex items-center gap-2" data-mvsel="${h.id}"><b class="grid h-6 w-6 place-items-center rounded-full bg-terra-500 text-[11px] text-white">${h.a.no}</b>${esc(h.a.name)}</button>`).join('');
+    $('#mvChips').innerHTML = places.map(h => `<button type="button" class="chip inline-flex items-center gap-2" data-mvsel="${h.id}"><b class="grid h-6 w-6 place-items-center rounded-full ${h.a.era === 'nature' || h.a.era === 'faith' ? 'bg-[#1f4f9a]' : 'bg-terra-500'} text-[11px] text-white">${h.a.no}</b>${esc(h.a.name)}</button>`).join('');
     const layer = $('#mvMarkers');
     places.forEach(h => {
       const w = document.createElement('div'); w.className = 'absolute left-0 top-0 will-change-transform'; w.style.visibility = 'hidden';
       w.innerHTML = `<button type="button" data-map-ui data-mvsel="${h.id}" class="pointer-events-auto group relative -translate-x-1/2 -translate-y-full outline-offset-4" aria-label="${esc(h.a.name)}">
-        <span class="grid h-8 w-8 place-items-center rounded-full border-2 border-white bg-terra-500 text-xs font-semibold text-white shadow-dark transition group-hover:scale-110">${h.a.no}</span>
+        <span class="grid h-8 w-8 place-items-center rounded-full border-2 border-white ${h.a.era === 'nature' || h.a.era === 'faith' ? 'bg-[#1f4f9a]' : 'bg-terra-500'} text-xs font-semibold text-white shadow-dark transition group-hover:scale-110">${h.a.no}</span>
         <span class="mx-auto block h-2 w-0.5 bg-terra-500"></span>
         <span class="pointer-events-none absolute bottom-full left-1/2 mb-1 hidden -translate-x-1/2 whitespace-nowrap rounded-lg bg-char-800 px-2.5 py-1 text-xs text-snow-50 shadow-dark group-hover:block">${esc(h.a.name)}</span></button>`;
       layer.appendChild(w); h.el = w; h.btn = w.firstElementChild;
