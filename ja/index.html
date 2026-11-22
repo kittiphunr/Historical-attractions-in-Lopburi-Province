@@ -99,7 +99,10 @@
         <!-- แบนเนอร์หน้าปก: ภาพพาโนรามาลพบุรี + ตราประจำจังหวัดซ้อนด้านหน้า -->
         <section class="card relative isolate overflow-hidden lg:col-span-12" aria-label="ロッブリー県のカバー画像">
           <img src="assets/img/banner-lopburi-1600.webp" srcset="assets/img/banner-lopburi-800.webp 800w, assets/img/banner-lopburi-1600.webp 1600w" sizes="(min-width:1024px) 960px, 100vw" width="1600" height="552" fetchpriority="high"
-               alt="ロッブリーの名所のコラージュ：プラ・プラーン・サームヨート、水辺の鉄道、赤い屋根の白い建物" class="photo-img h-48 w-full object-cover object-[50%_30%] sm:h-60 lg:h-72">
+               alt="ロッブリーの名所のコラージュ：プラ・プラーン・サームヨート、水辺の鉄道を走る列車、赤い屋根の白い建物" class="banner-day photo-img h-48 w-full object-cover object-[50%_30%] sm:h-60 lg:h-72">
+          <!-- ภาพโหมดกลางคืน: ซ่อนในโหมดกลางวัน (loading=lazy เบราว์เซอร์จึงไม่ดาวน์โหลดจนกว่าจะเปลี่ยนเป็นโหมดกลางคืน) -->
+          <img src="assets/img/banner-lopburi-night-1600.webp" srcset="assets/img/banner-lopburi-night-800.webp 800w, assets/img/banner-lopburi-night-1600.webp 1600w" sizes="(min-width:1024px) 960px, 100vw" width="1600" height="552" loading="lazy" decoding="async"
+               alt="夜のロッブリーの名所を組み合わせた写真：ライトアップされたプラ・プラーン・サームヨート、水辺の線路を走る列車、月明かりの下の赤い屋根の白い建物" class="banner-night h-48 w-full object-cover object-[50%_30%] sm:h-60 lg:h-72">
           <div class="absolute inset-0 bg-gradient-to-t from-char-900/75 via-char-900/10 to-transparent"></div>
           <p class="absolute left-3 top-3 rounded-full bg-black/35 px-2.5 py-1 text-[10px] text-white/90 backdrop-blur sm:bottom-3 sm:left-auto sm:right-3 sm:top-auto">イラスト：プロジェクトオーナー提供</p>
           <div class="absolute inset-x-0 bottom-0 flex items-end gap-4 p-4 sm:gap-5 sm:p-6">
@@ -347,7 +350,8 @@
           <p><b class="text-ink-900">3Dモデル：</b> 12か所すべての場所のモデルと県全体マップのモデル（.glb ファイル）は、プロジェクトの所有者が制作しました。次のライブラリで描画しています： <a class="text-terra-600 underline" href="https://threejs.org/" target="_blank" rel="noopener noreferrer">Three.js</a> （MIT）。CSS 3Dのフォールバックもあります。他人の写真やモデルを改変したものではありません。</p>
           <p><b class="text-ink-900">フォント：</b> タイ語の文章にはJS Saowaparkフォントを使っています。フォントファイルの著作権表示は「Copyright (c) ReEncode By P-chanSoft, 2002. All rights reserved.」（P-chanSoftはフォントの文字コードを変換した側）で、元のデザイナーもライセンスもファイルには記載がありません。プロジェクトオーナーが提供したものです。商用利用の前に再配布の権利をご確認ください。英語・中国語・日本語のページにはGoogle FontsのPromptフォント（SIL Open Font License 1.1）を使っています。</p>
           <p><b class="text-ink-900">ロッブリー県章：</b> プロジェクトオーナーから提供された画像で、内容の説明とこのサイトの識別のために使用しています。県章の権利は発行機関に帰属します。このサイトはロッブリー県の公式サイトではありません。</p>
-          <p><b class="text-ink-900">ホームのカバー画像：</b> プロジェクトの所有者が提供したパノラマのコラージュ（プラ・プラーン・サームヨート、水辺の鉄道、赤い屋根の白い建物）です。複数の部分から作られており、各部分の撮影者・作者とライセンスはまだ分かっていないため、プロジェクトの所有者の提供とだけ記載しています。出典が分かればここにクレジットを追加します。</p>
+          <p><b class="text-ink-900">ホームのバナー（ナイトモード）：</b> プロジェクトオーナー提供の夜景パノラマで、ナイトモードでは昼のバナーの代わりに表示されます。制作者または撮影者とライセンスは不明のため、プロジェクトオーナー提供とのみ記載しています。</p>
+          <p><b class="text-ink-900">ホームのカバー画像：</b> プロジェクトの所有者が提供したパノラマのコラージュ（プラ・プラーン・サームヨート、水辺の鉄道を走る列車、赤い屋根の白い建物）です。複数の部分から作られており、各部分の撮影者・作者とライセンスはまだ分かっていないため、プロジェクトの所有者の提供とだけ記載しています。出典が分かればここにクレジットを追加します。</p>
           <p><b class="text-ink-900">AR:</b> 使用： <a class="text-terra-600 underline" href="https://modelviewer.dev/" target="_blank" rel="noopener noreferrer">&lt;model-viewer&gt;</a> （Google、Apache-2.0）。Android ChromeのWebXR、Scene Viewer、iPhone/iPadのQuick Lookに対応します。HTTPSとAR対応端末が必要です。</p>
           <p><b class="text-ink-900">天気：</b> データ提供： <a class="text-terra-600 underline" href="https://open-meteo.com/" target="_blank" rel="noopener noreferrer">Open-Meteo.com</a> （CC BY 4.0）。訪問者のブラウザで取得し、ロッブリー市街の座標のみを送信します。</p>
           <p><b class="text-ink-900">ご注意：</b> 開館時間・料金・交通は変更されることがあります。出発前に美術局またはロッブリー美術局第4事務所にご確認ください。</p>
