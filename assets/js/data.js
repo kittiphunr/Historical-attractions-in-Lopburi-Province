@@ -340,17 +340,18 @@ window.PROVINCE_MODEL = {
   url: 'assets/model/lopburi-province.glb',
   ar: 'assets/model/lopburi-province.ar.glb',
   credit: 'โมเดลแผนที่ 3 มิติ: ปั้นโดยเจ้าของโปรเจกต์ (Kittiphun Ruttanakorn)',
-  hotspots: [
-    { id: 'sam-yot', x: 0.022, z: 0.168 },
-    { id: 'sala-phra-kan', x: 0.288, z: -0.070 },
-    { id: 'narai-palace', x: 0.186, z: 0.590 },
-    { id: 'wat-lai', x: -0.644, z: 0.044 },
-    { id: 'mahathat', x: 0.535, z: 0.273 },
-    { id: 'wichayen', x: -0.266, z: 0.338 },
-    { id: 'khao-wong', x: -0.135, z: -0.812 },
-    // 3 แห่งนี้ในโมเดลแผนที่ไม่มีอาคารเฉพาะให้ชี้ตรง ๆ จึงประมาณตำแหน่งจากทิศทางจริงเทียบกับหมุดอื่น (ปรับได้ด้วย map-debug.html)
-    { id: 'prang-khaek', x: -0.128, z: 0.334 },      // ทางแยกทางตะวันตกเฉียงใต้ของพระปรางค์สามยอด (ตั้งอยู่บนเกาะกลางถนนจริง)
-    { id: 'sao-thong-thong', x: 0.200, z: 0.485 },   // อาคารหลังคาส้มทางเหนือของพระนารายณ์ราชนิเวศน์
-    { id: 'nakhon-kosa', x: 0.280, z: 0.200 }        // ตะวันออกเฉียงใต้ของพระปรางค์สามยอด ใกล้ศาลพระกาฬและสถานีรถไฟ
+  hotspots: [   /* วัดจากภาพมุมมองจากด้านบนของโมเดลแผนที่ (เหนืออยู่บน) เรียงตามหมายเลขบนแผนที่ 2D — ปรับตำแหน่งได้ด้วย map-debug.html */
+    { id: 'narai-palace', x: -0.394, z: 0.532 },
+    { id: 'wichayen', x: -0.285, z: 0.240 },
+    { id: 'sao-thong-thong', x: -0.529, z: 0.259 },
+    { id: 'prang-khaek', x: -0.276, z: 0.026 },
+    { id: 'mahathat', x: -0.039, z: 0.433 },
+    { id: 'sam-yot', x: -0.022, z: 0.227 },
+    { id: 'sala-phra-kan', x: 0.131, z: 0.259 },
+    { id: 'nakhon-kosa', x: 0.171, z: 0.613 },
+    { id: 'kawisararam', x: -0.112, z: 0.706 },
+    { id: 'wat-lai', x: -0.650, z: -0.400 },
+    { id: 'ang-sap-lek', x: 0.459, z: -0.079 },
+    { id: 'khao-wong', x: 0.542, z: -0.794 }
   ]
 };
