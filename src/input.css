@@ -140,7 +140,9 @@ html.pl-boot.pl-done::before, html.pl-boot.pl-done::after { animation: pl-out .4
 .faq-item > summary:focus-visible { outline: 2px solid #c4552f; }
 @media (prefers-reduced-motion: reduce) { .faq-chev { transition: none; } }
 
-/* แบนเนอร์หน้าปก: ภาพกลางวัน/กลางคืนสลับตามโหมด (ภาพกลางคืนมืดอยู่แล้ว จึงไม่ใช้ตัวกรองลดความสว่างของ .photo-img) */
-.banner-night { display: none; }
-.dark .banner-day { display: none; }
-.dark .banner-night { display: block; }
+/* แบนเนอร์หน้าปก: ภาพกลางคืนซ้อนบนภาพกลางวัน (ซ้อนชั้นเดียวกัน ภาพตรงกันทุกจุด) สลับโหมดแล้วเฟดเข้า/ออกช้า ๆ พร้อมไล่ความสว่างและสี
+   ให้เหมือนแสงไฟค่อย ๆ ติดขึ้น ภาพกลางวันอยู่ใต้ภาพกลางคืนตลอด จึงไม่มีช่วงมืดแวบกลางทางตอนเฟด ภาพกลางคืนเริ่มแสดงเมื่อโหลดเสร็จ (.is-ready) */
+.banner-night { opacity: 0; filter: brightness(.72) saturate(.8); transition: opacity 2.2s cubic-bezier(.45, 0, .2, 1), filter 2.6s cubic-bezier(.3, 0, .2, 1); will-change: opacity; }
+.dark .banner-night.is-ready { opacity: 1; filter: none; }
+.dark .banner-day { filter: none; }   /* ไม่ใช้ตัวกรองหรี่ภาพของ .photo-img กับภาพกลางวันที่อยู่ใต้ภาพกลางคืน (กันภาพกระตุกตอนเฟด) */
+@media (prefers-reduced-motion: reduce) { .banner-night { transition: none; } }

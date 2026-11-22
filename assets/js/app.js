@@ -64,6 +64,25 @@
   }
   loadWeather(); setInterval(loadWeather, 15 * 60 * 1000);
 
+  /* ---------- แบนเนอร์กลางวัน/กลางคืน: โหลดภาพกลางคืนล่วงหน้า แล้วเฟดตามโหมด ---------- */
+  (function () {
+    const night = $('.banner-night'), day = $('.banner-day'); if (!night || !day) return;
+    const dark = () => document.documentElement.classList.contains('dark');
+    const sync = () => { const on = dark() && night.classList.contains('is-ready'); night.setAttribute('aria-hidden', String(!on)); day.setAttribute('aria-hidden', String(on)); };
+    const ready = () => { night.classList.add('is-ready'); sync(); };
+    function load() {
+      if (night.dataset.started) return; night.dataset.started = '1';
+      night.addEventListener('load', () => (night.decode ? night.decode().catch(() => {}) : Promise.resolve()).then(ready), { once: true });
+      night.sizes = night.dataset.sizes; night.srcset = night.dataset.srcset; night.src = night.dataset.src;
+      if (night.complete && night.naturalWidth) ready();
+    }
+    const c = navigator.connection, saver = c && (c.saveData || /(^|-)2g$/.test(c.effectiveType || ''));
+    if (dark()) load();
+    else if (!saver) { const idle = () => (window.requestIdleCallback ? requestIdleCallback(load, { timeout: 5000 }) : setTimeout(load, 2500)); if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true }); }
+    window.addEventListener('themechange', () => { if (dark()) load(); sync(); });
+    sync();
+  })();
+
   /* ---------- เมนู: ไฮไลต์ตามส่วนที่กำลังดู ---------- */
   const secMap = { top: 'top', story: 'top', map: 'map', map3d: 'map', places: 'places', route: 'route', guestbook: 'guestbook', credits: 'credits' };
   const setActive = (id) => $$('[data-sec]').forEach(a => { const on = a.dataset.sec === (secMap[id] || id); on ? a.setAttribute('aria-current', 'true') : a.removeAttribute('aria-current'); if (a.closest('nav[aria-label*=มือถือ]')) a.classList.toggle('text-terra-600', on); });

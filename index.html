@@ -100,9 +100,9 @@
         <section class="card relative isolate overflow-hidden lg:col-span-12" aria-label="ภาพปกจังหวัดลพบุรี">
           <img src="assets/img/banner-lopburi-1600.webp" srcset="assets/img/banner-lopburi-800.webp 800w, assets/img/banner-lopburi-1600.webp 1600w" sizes="(min-width:1024px) 960px, 100vw" width="1600" height="552" fetchpriority="high"
                alt="ภาพตัดต่อแหล่งท่องเที่ยวลพบุรี: พระปรางค์สามยอด รถไฟบนทางรถไฟริมน้ำ และอาคารสีขาวหลังคาแดง" class="banner-day photo-img h-48 w-full object-cover object-[50%_30%] sm:h-60 lg:h-72">
-          <!-- ภาพโหมดกลางคืน: ซ่อนในโหมดกลางวัน (loading=lazy เบราว์เซอร์จึงไม่ดาวน์โหลดจนกว่าจะเปลี่ยนเป็นโหมดกลางคืน) -->
-          <img src="assets/img/banner-lopburi-night-1600.webp" srcset="assets/img/banner-lopburi-night-800.webp 800w, assets/img/banner-lopburi-night-1600.webp 1600w" sizes="(min-width:1024px) 960px, 100vw" width="1600" height="552" loading="lazy" decoding="async"
-               alt="ภาพตัดต่อแหล่งท่องเที่ยวลพบุรียามค่ำคืน: พระปรางค์สามยอดใต้แสงไฟ รถไฟบนทางรถไฟริมน้ำ และอาคารสีขาวหลังคาแดงใต้แสงจันทร์" class="banner-night h-48 w-full object-cover object-[50%_30%] sm:h-60 lg:h-72">
+          <!-- ภาพโหมดกลางคืน: วางซ้อนบนภาพกลางวัน แล้วเฟดเข้า/ออกเมื่อสลับโหมด (เหมือนไฟค่อย ๆ ติด) — app.js โหลดไฟล์ให้ก่อนล่วงหน้าตอนว่าง (ข้ามเมื่อประหยัดข้อมูล/เครือข่ายช้า) เพื่อให้เฟดได้เนียน -->
+          <img data-src="assets/img/banner-lopburi-night-1600.webp" data-srcset="assets/img/banner-lopburi-night-800.webp 800w, assets/img/banner-lopburi-night-1600.webp 1600w" data-sizes="(min-width:1024px) 960px, 100vw" width="1600" height="552" decoding="async"
+               alt="ภาพตัดต่อแหล่งท่องเที่ยวลพบุรียามค่ำคืน: พระปรางค์สามยอดใต้แสงไฟ รถไฟบนทางรถไฟริมน้ำ และอาคารสีขาวหลังคาแดงใต้แสงจันทร์" aria-hidden="true" class="banner-night pointer-events-none absolute inset-0 h-full w-full object-cover object-[50%_30%]">
           <div class="absolute inset-0 bg-gradient-to-t from-char-900/75 via-char-900/10 to-transparent"></div>
           <p class="absolute left-3 top-3 rounded-full bg-black/35 px-2.5 py-1 text-[10px] text-white/90 backdrop-blur sm:bottom-3 sm:left-auto sm:right-3 sm:top-auto">ภาพประกอบ: จัดเตรียมโดยเจ้าของโปรเจกต์</p>
           <div class="absolute inset-x-0 bottom-0 flex items-end gap-4 p-4 sm:gap-5 sm:p-6">
