@@ -27,7 +27,7 @@ const ERA = { dvaravati: ['#dff0f7', '#1e6f93'], khmer: ['#f6dfd5', '#a8431f'], 
 const html = (a) => {
   const [chipBg, chipFg] = ERA[a.era] || ERA.khmer;
   const pf = `assets/poster/${a.id}-day.webp`;
-  const poster = existsSync(join(root, pf)) ? `<img class="poster" src="${dataUri(pf, 'image/webp')}">` : '';
+  const poster = existsSync(join(root, pf)) ? `<img class="poster" src="${dataUri(pf, 'image/webp')}">` : `<div style="position:absolute;inset:0;display:grid;place-content:center;justify-items:center;gap:14px;color:#a8431f99;font-size:26px"><svg viewBox="0 0 24 24" width="120" height="120" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round" stroke-linecap="round"><path d="M12 2.5l8.5 4.8v9.4L12 21.5l-8.5-4.8V7.3z"/><path d="M3.5 7.3L12 12l8.5-4.7M12 12v9.5"/></svg>โมเดล 3 มิติกำลังจัดทำ</div>`;   // ยังไม่มีโมเดล: ใส่ไอคอนกับข้อความแทนกรอบว่าง
   return `<!doctype html><html><head><meta charset="utf-8">
 <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600&display=swap" rel="stylesheet">
 <style>

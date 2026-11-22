@@ -417,6 +417,38 @@
     <xhtml:link rel="alternate" hreflang="x-default" href="https://centralthaiheritage.com/places/khao-wong.html"/>
   </url>
   <url>
+    <loc>https://centralthaiheritage.com/places/sap-champa.html</loc>
+    <xhtml:link rel="alternate" hreflang="th" href="https://centralthaiheritage.com/places/sap-champa.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://centralthaiheritage.com/en/places/sap-champa.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://centralthaiheritage.com/zh/places/sap-champa.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://centralthaiheritage.com/ja/places/sap-champa.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://centralthaiheritage.com/places/sap-champa.html"/>
+  </url>
+  <url>
+    <loc>https://centralthaiheritage.com/en/places/sap-champa.html</loc>
+    <xhtml:link rel="alternate" hreflang="th" href="https://centralthaiheritage.com/places/sap-champa.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://centralthaiheritage.com/en/places/sap-champa.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://centralthaiheritage.com/zh/places/sap-champa.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://centralthaiheritage.com/ja/places/sap-champa.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://centralthaiheritage.com/places/sap-champa.html"/>
+  </url>
+  <url>
+    <loc>https://centralthaiheritage.com/zh/places/sap-champa.html</loc>
+    <xhtml:link rel="alternate" hreflang="th" href="https://centralthaiheritage.com/places/sap-champa.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://centralthaiheritage.com/en/places/sap-champa.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://centralthaiheritage.com/zh/places/sap-champa.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://centralthaiheritage.com/ja/places/sap-champa.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://centralthaiheritage.com/places/sap-champa.html"/>
+  </url>
+  <url>
+    <loc>https://centralthaiheritage.com/ja/places/sap-champa.html</loc>
+    <xhtml:link rel="alternate" hreflang="th" href="https://centralthaiheritage.com/places/sap-champa.html"/>
+    <xhtml:link rel="alternate" hreflang="en" href="https://centralthaiheritage.com/en/places/sap-champa.html"/>
+    <xhtml:link rel="alternate" hreflang="zh-Hans" href="https://centralthaiheritage.com/zh/places/sap-champa.html"/>
+    <xhtml:link rel="alternate" hreflang="ja" href="https://centralthaiheritage.com/ja/places/sap-champa.html"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://centralthaiheritage.com/places/sap-champa.html"/>
+  </url>
+  <url>
     <loc>https://centralthaiheritage.com/privacy.html</loc>
     <xhtml:link rel="alternate" hreflang="th" href="https://centralthaiheritage.com/privacy.html"/>
     <xhtml:link rel="alternate" hreflang="en" href="https://centralthaiheritage.com/en/privacy.html"/>

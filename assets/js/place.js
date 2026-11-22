@@ -4,7 +4,7 @@
   const A = window.ATTRACTIONS, id = document.body.dataset.place, a = A.find(x => x.id === id);
   U.initIcons(); U.initTheme(); U.initAR(); U.initCredits(); U.initLightbox();
 
-  // เมนูข้าง/ล่าง: ไฮไลต์ "12 แห่ง" เพราะอยู่ในหมวดสถานที่
+  // เมนูข้าง/ล่าง: ไฮไลต์ "13 แห่ง" เพราะอยู่ในหมวดสถานที่
   if (a) $$('[data-sec="places"]').forEach(el => { el.setAttribute('aria-current', 'true'); if (el.closest('nav[aria-label*=มือถือ]')) el.classList.add('text-terra-600'); });
 
   // ภาพปก -> กดเพื่อโหลดโมเดล 3 มิติ (ไม่โหลดไฟล์ .glb จนกว่าจะกด)
