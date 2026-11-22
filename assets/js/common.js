@@ -38,7 +38,33 @@
     if (persist) { try { localStorage.setItem(THEME_KEY, mode); } catch (e) { /* โหมดส่วนตัว */ } }
     window.dispatchEvent(new CustomEvent('themechange', { detail: { mode } }));
   }
+  /* ---------- ปรับขนาดตัวอักษร (A− / A+) ---------- */
+  const FS_KEY = 'lopburi.fs', FS_STEPS = [0.85, 1, 1.15, 1.3, 1.5];
+  function initFontSize() {
+    const btn = $('#fsBtn'), menu = $('#fsMenu'); if (!btn || !menu) return;
+    const dec = $('#fsDec'), inc = $('#fsInc'), reset = $('#fsReset'), val = $('#fsVal'), dots = $$('#fsDots i');
+    let cur = 1; try { const v = parseFloat(localStorage.getItem(FS_KEY)); if (FS_STEPS.includes(v)) cur = v; } catch (e) { /* โหมดส่วนตัว */ }
+    const idx = () => FS_STEPS.indexOf(cur);
+    function paint() {
+      document.documentElement.style.setProperty('--fs', cur);
+      val.textContent = Math.round(cur * 100) + '%';
+      dec.disabled = idx() <= 0; inc.disabled = idx() >= FS_STEPS.length - 1;
+      dots.forEach((d, i) => { d.classList.toggle('bg-terra-500', i === idx()); d.classList.toggle('bg-ink-400/40', i !== idx()); d.classList.toggle('scale-150', i === idx()); });
+    }
+    function set(v) { cur = v; paint(); try { localStorage.setItem(FS_KEY, String(v)); } catch (e) { /* โหมดส่วนตัว */ } }
+    const open = () => { menu.classList.toggle('hidden', false); btn.setAttribute('aria-expanded', 'true'); };
+    const close = (back) => { menu.classList.toggle('hidden', true); btn.setAttribute('aria-expanded', 'false'); if (back) btn.focus(); };
+    btn.addEventListener('click', () => (menu.classList.contains('hidden') ? open() : close(false)));
+    dec.addEventListener('click', () => { if (idx() > 0) set(FS_STEPS[idx() - 1]); });
+    inc.addEventListener('click', () => { if (idx() < FS_STEPS.length - 1) set(FS_STEPS[idx() + 1]); });
+    reset.addEventListener('click', () => set(1));
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !menu.classList.contains('hidden')) { e.stopPropagation(); close(true); } });
+    document.addEventListener('click', (e) => { if (!menu.classList.contains('hidden') && !e.target.closest('#fsBtn,#fsMenu')) close(false); });
+    paint();
+  }
+
   function initTheme() {
+  initFontSize();
   $('#themeBtn').addEventListener('click', () => { const toDark = !isDark(); applyTheme(toDark ? 'dark' : 'light', true); if (window.Motion) window.Motion.themeBurst($('#themeBtn'), toDark); });
   // ตามการตั้งค่าระบบ ถ้าผู้ใช้ยังไม่เคยเลือกเอง
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => { let saved = null; try { saved = localStorage.getItem(THEME_KEY); } catch (err) { /* ไม่มี storage */ } if (!saved) applyTheme(e.matches ? 'dark' : 'light', false); });

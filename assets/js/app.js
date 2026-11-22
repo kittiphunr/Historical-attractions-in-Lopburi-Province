@@ -186,7 +186,7 @@
   $('#topList').innerHTML = ['sam-yot', 'narai-palace', 'khao-wong'].map(id => A.find(a => a.id === id)).map(a => `
     <li><a href="${PFX}places/${a.id}.html" class="neu flex items-center gap-4 p-3 hover:-translate-y-0.5">
       <span class="grid h-14 w-14 shrink-0 place-items-center rounded-xl text-lg font-semibold text-white" style="background:linear-gradient(145deg,#dc6f45,#a8431f)">${a.no}</span>
-      <span class="min-w-0 flex-1"><b class="block truncate font-medium text-ink-900">${esc(a.name)}</b><span class="block truncate text-xs text-ink-500">${esc(a.eraLabel)}</span></span>
+      <span class="min-w-0 flex-1"><b class="block font-medium leading-snug text-ink-900">${esc(a.name)}</b><span class="block text-xs leading-snug text-ink-500">${esc(a.eraLabel)}</span></span>
       ${svg('arrow', 'h-5 w-5 text-terra-500')}</a></li>`).join('');
 
   /* ---------- map hotspots ---------- */
