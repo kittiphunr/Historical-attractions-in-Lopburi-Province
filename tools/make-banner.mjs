@@ -1,5 +1,6 @@
 /* สร้างภาพแบนเนอร์หน้าปกและภาพตัวอย่างตอนแชร์ลิงก์จากภาพต้นฉบับ
    ใช้:  node tools/make-banner.mjs [ต้นฉบับ] [--ratio 2.9] [--focus 0.2]
+         node tools/make-banner.mjs source-models/banner-lopburi-night.original.webp --night   (แบนเนอร์โหมดกลางคืน: เขียน banner-lopburi-night-1600/800.webp ใช้สัดส่วนเดียวกับภาพกลางวัน ไม่แตะ og-cover.jpg)
    - ตัดขอบขาวรอบภาพออกอัตโนมัติ (ภาพต้นฉบับมักมีแถบขาวบน/ล่าง)
    - ตัดให้ได้สัดส่วนกว้าง:สูง = --ratio (ค่าเริ่มต้น 2.9) --focus 0..1 คือสัดส่วนของส่วนที่ตัดทิ้งที่เอาจากด้านบน
      (0 = ตัดจากด้านล่างทั้งหมด เก็บยอดอาคารไว้, 0.5 = ตัดสองข้างเท่ากัน)
@@ -10,7 +11,7 @@ import sharp from 'sharp';
 const args = process.argv.slice(2);
 const flag = (n, d) => { const i = args.indexOf('--' + n); return i < 0 ? d : parseFloat(args[i + 1]); };
 const src = args.find((a, i) => !a.startsWith('--') && !(i > 0 && args[i - 1].startsWith('--'))) || 'source-models/banner-lopburi.original.webp';
-const ratio = flag('ratio', 2.9), focus = flag('focus', 0.2);
+const ratio = flag('ratio', 2.9), focus = flag('focus', 0.2), NIGHT = args.includes('--night');
 
 // 1) หาขอบเนื้อหา (ไม่ขาว)
 const { data, info } = await sharp(src).flatten({ background: '#fff' }).raw().toBuffer({ resolveWithObject: true });
@@ -35,10 +36,12 @@ const png = await base.clone().png().toBuffer();
 
 // 3) ไฟล์แบนเนอร์
 for (const w of [1600, 800]) {
-  const out = `assets/img/banner-lopburi-${w}.webp`;
+  const out = `assets/img/banner-lopburi${NIGHT ? '-night' : ''}-${w}.webp`;
   const r = await sharp(png).resize({ width: w }).webp({ quality: 82 }).toFile(out);
   console.log(`${out}  ${r.width}x${r.height}  ${(r.size / 1024).toFixed(0)} KB`);
 }
+
+if (NIGHT) { console.log(`\nใส่ใน index.html: <img … width="1600" height="${Math.round(1600 / (cw / ch))}"> (ภาพกลางคืน) — ไม่สร้าง og-cover.jpg ใหม่`); process.exit(0); }
 
 // 4) ภาพตัวอย่างตอนแชร์ลิงก์ 1200x630
 const OW = 1200, OH = 630;
