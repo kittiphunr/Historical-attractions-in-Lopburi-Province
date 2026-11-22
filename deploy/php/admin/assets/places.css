@@ -1,0 +1,6 @@
+/* หน้าแก้ไขเนื้อหาสถานที่ (admin/places.php) */
+.ck-editor__editable { min-height: 220px; max-height: 70vh; }
+.ck.ck-editor__editable_inline { font: 16px/1.8 system-ui, "Noto Sans Thai", "Sarabun", sans-serif; color: #2b2623; }
+.ck-content img { max-width: 100%; height: auto; }
+.ck-content figure.image figcaption { font-size: 13px; color: #5b524a; }
+textarea.lop-rt { min-height: 160px; }

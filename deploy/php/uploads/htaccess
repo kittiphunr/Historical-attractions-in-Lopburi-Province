@@ -1,0 +1,18 @@
+# รูปที่อัปโหลดจากระบบจัดการเนื้อหา: เสิร์ฟได้เฉพาะไฟล์ภาพ ห้ามเรียกไฟล์ชนิดอื่น (รวมถึง .php) (ชื่อไฟล์ตอนวางบนโฮสต์ต้องเป็น .htaccess)
+Options -Indexes
+<IfModule mod_authz_core.c>
+  Require all denied
+  <FilesMatch "\.(webp|jpe?g|png)$">
+    Require all granted
+  </FilesMatch>
+</IfModule>
+<IfModule !mod_authz_core.c>
+  Order deny,allow
+  Deny from all
+  <FilesMatch "\.(webp|jpe?g|png)$">
+    Allow from all
+  </FilesMatch>
+</IfModule>
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+</IfModule>

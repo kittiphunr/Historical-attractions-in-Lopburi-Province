@@ -31,17 +31,22 @@ function lop_json($data, int $code = 200, array $headers = []): void {
 }
 function lop_fail(string $key, int $code = 400, array $headers = []): void { lop_json(['error' => LOP_MSG[$key] ?? LOP_MSG['bad']], $code, $headers); }
 
-function lop_config(): array {
-    static $cfg = null;
-    if ($cfg !== null) return $cfg;
+/** อ่าน config โดยไม่จบการทำงานเมื่อไม่พบ (คืน null) — ใช้กับหน้าที่ต้องแสดงผลต่อได้แม้ระบบหลังบ้านยังไม่พร้อม เช่น place.php */
+function lop_config_load(): ?array {
+    static $cfg = false;
+    if ($cfg !== false) return $cfg;
     $paths = [];
     if (!empty($_SERVER['DOCUMENT_ROOT'])) $paths[] = dirname(rtrim($_SERVER['DOCUMENT_ROOT'], '/\\')) . '/lopburi-config.php';
     $paths[] = __DIR__ . '/config.php';
     foreach ($paths as $p) {
         if (is_file($p)) { $c = require $p; if (is_array($c)) { return $cfg = $c + ['table_prefix' => 'lop_', 'allowed_origins' => [], 'trust_proxy' => false, 'limits' => [], 'ip_salt' => '', 'admin_password_hash' => '']; } }
     }
-    error_log('lopburi: ไม่พบ config.php');
-    lop_fail('server', 500);
+    return $cfg = null;
+}
+function lop_config(): array {
+    $c = lop_config_load();
+    if ($c === null) { error_log('lopburi: ไม่พบ config.php'); lop_fail('server', 500); }
+    return $c;
 }
 function lop_limit(string $key): array {
     $d = ['guestbook_per_ip' => [3, 600], 'review_per_ip' => [3, 3600], 'review_per_place' => [1, 86400], 'guestbook_global' => [120, 3600], 'review_global' => [60, 3600]];
@@ -54,19 +59,23 @@ function lop_table(): string {
     if (!preg_match('/^[A-Za-z0-9_]{0,20}$/', $p)) { error_log('lopburi: table_prefix ไม่ถูกต้อง'); lop_fail('server', 500); }
     return '`' . $p . 'reviews`';
 }
-function lop_db(): PDO {
+/** เชื่อมต่อฐานข้อมูล (โยนข้อยกเว้นเมื่อไม่ได้) */
+function lop_pdo(): PDO {
     static $pdo = null;
     if ($pdo) return $pdo;
-    $c = lop_config();
-    try {
-        $pdo = new PDO('mysql:host=' . ($c['db_host'] ?? 'localhost') . (!empty($c['db_port']) ? ';port=' . (int)$c['db_port'] : '') . ';dbname=' . ($c['db_name'] ?? '') . ';charset=utf8mb4', (string)($c['db_user'] ?? ''), (string)($c['db_pass'] ?? ''), [
+    $c = lop_config_load();
+    if ($c === null) throw new RuntimeException('ไม่พบ config.php');
+    $pdo = new PDO('mysql:host=' . ($c['db_host'] ?? 'localhost') . (!empty($c['db_port']) ? ';port=' . (int)$c['db_port'] : '') . ';dbname=' . ($c['db_name'] ?? '') . ';charset=utf8mb4', (string)($c['db_user'] ?? ''), (string)($c['db_pass'] ?? ''), [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false,
         ]);
-        $pdo->exec("SET time_zone = '+00:00'");
-    } catch (Throwable $e) { error_log('lopburi db: ' . $e->getMessage()); lop_fail('server', 500); }
+    $pdo->exec("SET time_zone = '+00:00'");
     return $pdo;
+}
+function lop_db(): PDO {
+    try { return lop_pdo(); }
+    catch (Throwable $e) { error_log('lopburi db: ' . $e->getMessage()); lop_fail('server', 500); }
 }
 
 /** รหัสสถานที่ที่รับได้ (อ่านจาก places.json ที่สร้างตอนทำชุดติดตั้ง: { "sam-yot": "พระปรางค์สามยอด", ... }) */

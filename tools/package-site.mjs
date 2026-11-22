@@ -79,13 +79,19 @@ if (PHP) {
   cpSync(join(root, 'deploy/php/schema.sql'), join(out, 'schema.sql'));
   cpSync(join(root, 'deploy/php/schema.sql'), join(dir, 'api/schema.sql'));   // ตัวช่วยติดตั้ง install.php ใช้ไฟล์นี้
   cpSync(join(root, 'deploy/php/install.php'), join(dir, 'install.php'));
+  cpSync(join(root, 'deploy/php/place.php'), join(dir, 'place.php'));   // ตัวแสดงหน้าสถานที่ที่แทนที่ข้อความจากระบบจัดการเนื้อหา
+  mkdirSync(join(dir, 'uploads'), { recursive: true });                // โฟลเดอร์เก็บรูปที่อัปโหลดจากตัวแก้ไข (htaccess = เสิร์ฟเฉพาะไฟล์ภาพ)
+  cpSync(join(root, 'deploy/php/uploads/htaccess'), join(dir, 'uploads/.htaccess'));
+  for (const f of ['editor.js', 'editor.css', 'places.js', 'places.css']) if (!existsSync(join(dir, 'admin/assets', f))) { console.error(`ไม่พบ admin/assets/${f} — รัน npm run build:editor ก่อน`); process.exit(1); }
+  cpSync(join(root, 'node_modules/ckeditor5/LICENSE.md'), join(dir, 'admin/assets/LICENSE-ckeditor5.md'));   // CKEditor 5 (GPL-2.0-or-later) ต้องแนบสัญญาอนุญาตไปกับไฟล์ที่แจกจ่าย
+  cpSync(join(root, 'node_modules/ckeditor5/COPYING.GPL'), join(dir, 'admin/assets/COPYING.GPL'));
   phpFiles = ['schema.sql', 'INSTALL.php.th.md'];
 }
 
 /* ไฟล์ตั้งค่าเซิร์ฟเวอร์และคู่มือ */
 const mb = walk(dir).reduce((s, f) => s + statSync(f).size, 0) / 1048576;
 const fill = (s) => s.replaceAll('{{SITE_ORIGIN}}', ORIGIN).replaceAll('{{SITE}}', site).replaceAll('{{HOST}}', HOST).replaceAll('{{PATH}}', PATH).replaceAll('{{SIZE}}', `${Math.round(mb)} MB`);
-writeFileSync(join(dir, '.htaccess'), fill(readFileSync(join(root, 'deploy/htaccess.template'), 'utf8')));
+writeFileSync(join(dir, '.htaccess'), fill(readFileSync(join(root, 'deploy/htaccess.template'), 'utf8') + (PHP ? readFileSync(join(root, 'deploy/htaccess.php.template'), 'utf8') : '')));
 writeFileSync(join(out, 'nginx.conf.example'), fill(readFileSync(join(root, 'deploy/nginx.conf.template'), 'utf8')));
 writeFileSync(join(out, 'INSTALL.th.md'), fill(readFileSync(join(root, 'deploy/INSTALL.th.template.md'), 'utf8')));
 if (PHP) writeFileSync(join(out, 'INSTALL.php.th.md'), fill(readFileSync(join(root, 'deploy/INSTALL.php.th.template.md'), 'utf8')));

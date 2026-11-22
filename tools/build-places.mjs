@@ -216,10 +216,10 @@ function page(a, idx) {
         </header>
 
         <section class="reveal">${h2('ภาพถ่าย', '01')}<div class="mt-4">${gallery(a, c)}</div></section>
-        <section class="reveal">${h2('ประวัติศาสตร์', '02')}<div class="mt-4 space-y-4 leading-relaxed text-ink-700">${paras(a.history)}</div></section>
-        <section class="reveal">${h2(a.archTitle || 'สถาปัตยกรรม', '03')}<div class="mt-4 space-y-4 leading-relaxed text-ink-700">${paras(a.architecture)}</div></section>
-        <section class="reveal">${h2('ไฮไลต์', '04')}<div class="mt-4 leading-relaxed text-ink-700">${bullets(a.highlights)}</div></section>
-        <section class="reveal">${h2('เตรียมตัวไป', '05')}<div class="mt-4 leading-relaxed text-ink-700">${bullets(a.visit, 'bg-amber-500')}</div></section>
+        <section class="reveal">${h2('ประวัติศาสตร์', '02')}<div class="mt-4 space-y-4 leading-relaxed text-ink-700"><!--lop:history-->${paras(a.history)}<!--/lop:history--></div></section>
+        <section class="reveal">${h2(a.archTitle || 'สถาปัตยกรรม', '03')}<div class="mt-4 space-y-4 leading-relaxed text-ink-700"><!--lop:architecture-->${paras(a.architecture)}<!--/lop:architecture--></div></section>
+        <section class="reveal">${h2('ไฮไลต์', '04')}<div class="mt-4 leading-relaxed text-ink-700"><!--lop:highlights-->${bullets(a.highlights)}<!--/lop:highlights--></div></section>
+        <section class="reveal">${h2('เตรียมตัวไป', '05')}<div class="mt-4 leading-relaxed text-ink-700"><!--lop:visit-->${bullets(a.visit, 'bg-amber-500')}<!--/lop:visit--></div></section>
         ${c.sections.map((s, i) => extraSection(a, s, String(extraStart + 1 + i).padStart(2, '0'))).join('\n        ')}
 
         <!-- รีวิวจากผู้เข้าชม: ซ่อนไว้จนกว่า assets/js/reviews.js จะโหลดรีวิวได้ (ต้องตั้ง reviewsApi ใน assets/js/config.js) -->
