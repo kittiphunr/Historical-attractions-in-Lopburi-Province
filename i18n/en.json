@@ -549,5 +549,10 @@
  "ข้อความภาษาไทยใช้ฟอนต์ JS Saowapark ไฟล์ฟอนต์ระบุลิขสิทธิ์ไว้ว่า “Copyright (c) ReEncode By P-chanSoft, 2002. All rights reserved.” (P-chanSoft คือผู้แปลงรหัสฟอนต์) ไฟล์ไม่ได้ระบุผู้ออกแบบต้นฉบับหรือสัญญาอนุญาต เจ้าของโปรเจกต์เป็นผู้นำมาใช้ ควรตรวจสิทธิ์การเผยแพร่ซ้ำก่อนใช้เชิงพาณิชย์ ส่วนภาษาอังกฤษ จีน และญี่ปุ่นใช้ฟอนต์ Prompt (SIL Open Font License 1.1) จาก Google Fonts": "Thai text uses the JS Saowapark font. The font file states its copyright as “Copyright (c) ReEncode By P-chanSoft, 2002. All rights reserved.” (P-chanSoft is the party that re-encoded the font). The file names neither the original designer nor a licence. The project owner supplied it for use here; check redistribution rights before any commercial use. English, Chinese and Japanese pages use the Prompt font (SIL Open Font License 1.1) from Google Fonts.",
  "ภาพตัดต่อแหล่งท่องเที่ยวลพบุรียามค่ำคืน: พระปรางค์สามยอดใต้แสงไฟ รถไฟบนทางรถไฟริมน้ำ และอาคารสีขาวหลังคาแดงใต้แสงจันทร์": "Composite of Lopburi attractions at night: Phra Prang Sam Yot under lights, a train on the railway beside the water, and a white building with a red roof under the moon",
  "ภาพปกหน้าแรกโหมดกลางคืน:": "Home banner (night mode):",
- "ภาพพาโนรามายามค่ำคืนที่เจ้าของโปรเจกต์จัดเตรียมให้ ใช้แทนภาพปกกลางวันเมื่อเปิดโหมดกลางคืน ยังไม่ทราบผู้สร้างภาพหรือผู้ถ่ายและสัญญาอนุญาต จึงระบุเพียงว่าจัดเตรียมโดยเจ้าของโปรเจกต์": "A night-time panorama provided by the project owner, shown instead of the daytime banner in night mode. The creator or photographer and the licence are not known, so it is credited only as provided by the project owner."
+ "ภาพพาโนรามายามค่ำคืนที่เจ้าของโปรเจกต์จัดเตรียมให้ ใช้แทนภาพปกกลางวันเมื่อเปิดโหมดกลางคืน ยังไม่ทราบผู้สร้างภาพหรือผู้ถ่ายและสัญญาอนุญาต จึงระบุเพียงว่าจัดเตรียมโดยเจ้าของโปรเจกต์": "A night-time panorama provided by the project owner, shown instead of the daytime banner in night mode. The creator or photographer and the licence are not known, so it is credited only as provided by the project owner.",
+ "ปรับขนาดตัวอักษร": "Adjust text size",
+ "ขนาดตัวอักษร": "Text size",
+ "ลดขนาดตัวอักษร": "Decrease text size",
+ "เพิ่มขนาดตัวอักษร": "Increase text size",
+ "คืนค่าเริ่มต้น": "Reset to default"
 }

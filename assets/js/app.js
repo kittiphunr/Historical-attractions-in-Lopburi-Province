@@ -54,7 +54,7 @@
       $('#wxUpdated').textContent = 'อัปเดต ' + c.time.slice(11, 16) + ' น.';
       $('#wxHours').innerHTML = [0, 3, 6, 9, 12].map((o, k) => {
         const i = Math.min(i0 + o, h.time.length - 1), hh = +h.time[i].slice(11, 13), day = hh >= 6 && hh < 18;
-        return `<li class="grid justify-items-center gap-1"><span>${k === 0 ? 'ตอนนี้' : String(hh).padStart(2, '0') + ':00'}</span>${wxSvg(h.weather_code[i], day, 'h-8 w-8 ' + (day ? 'text-amber-300' : 'text-amber-200'))}<b class="font-medium text-white">${Math.round(h.temperature_2m[i])}°</b></li>`;
+        return `<li class="grid justify-items-center gap-1.5"><span>${k === 0 ? 'ตอนนี้' : String(hh).padStart(2, '0') + ':00'}</span>${wxSvg(h.weather_code[i], day, 'h-8 w-8 sm:h-9 sm:w-9 ' + (day ? 'text-amber-300' : 'text-amber-200'))}<b class="text-base font-medium text-white sm:text-lg">${Math.round(h.temperature_2m[i])}°</b></li>`;
       }).join('');
     } catch (e) {
       $('#wxDesc').textContent = 'โหลดสภาพอากาศไม่ได้';
@@ -186,7 +186,7 @@
   $('#topList').innerHTML = ['sam-yot', 'narai-palace', 'khao-wong'].map(id => A.find(a => a.id === id)).map(a => `
     <li><a href="${PFX}places/${a.id}.html" class="neu flex items-center gap-4 p-3 hover:-translate-y-0.5">
       <span class="grid h-14 w-14 shrink-0 place-items-center rounded-xl text-lg font-semibold text-white" style="background:linear-gradient(145deg,#dc6f45,#a8431f)">${a.no}</span>
-      <span class="min-w-0 flex-1"><b class="block truncate font-medium text-ink-900">${esc(a.name)}</b><span class="block truncate text-xs text-ink-500">${esc(a.eraLabel)}</span></span>
+      <span class="min-w-0 flex-1"><b class="block font-medium leading-snug text-ink-900">${esc(a.name)}</b><span class="block text-xs leading-snug text-ink-500">${esc(a.eraLabel)}</span></span>
       ${svg('arrow', 'h-5 w-5 text-terra-500')}</a></li>`).join('');
 
   /* ---------- map hotspots ---------- */
