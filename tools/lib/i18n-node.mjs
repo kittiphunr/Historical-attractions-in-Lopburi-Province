@@ -1,7 +1,7 @@
 /* ตัวแปลฝั่ง Node สำหรับสร้างหน้าแยกตามภาษา (en/zh/ja) ตอน build
    ใช้พจนานุกรมชุดเดียวกับเบราว์เซอร์ (i18n/<code>.json + คำแปลใน content/privacy.json และ content/404.json)
    และกติกาเดียวกับ assets/js/i18n.js: คีย์ = ข้อความไทยต้นฉบับ (ตัดช่องว่างซ้ำ), รองรับ {0} {1}, ข้อความที่ต่อด้วย " — " แปลทีละท่อน */
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
 const walkLeaves = (v, out) => { if (v && typeof v === 'object') { if (typeof v.th === 'string') out.push(v); else Object.values(v).forEach(x => walkLeaves(x, out)); } return out; };
@@ -11,6 +11,12 @@ export function loadDict(root, code) {
   const ui = JSON.parse(readFileSync(join(root, 'i18n', code + '.json'), 'utf8'));
   for (const f of ['content/privacy.json', 'content/404.json', 'content/faq.json']) {
     for (const l of walkLeaves(JSON.parse(readFileSync(join(root, f), 'utf8')), [])) if (typeof l[code] === 'string') ui[l.th] = l[code];
+  }
+  // คำแปลเฉพาะสถานที่: content/places/<id>.json -> translations[code] (คีย์ = ข้อความไทยตรงตัว) ทับค่าในพจนานุกรมกลาง
+  const pdir = join(root, 'content/places');
+  if (existsSync(pdir)) for (const f of readdirSync(pdir).filter(n => n.endsWith('.json')).sort()) {
+    const tr = (JSON.parse(readFileSync(join(pdir, f), 'utf8')).translations || {})[code];
+    if (tr) Object.assign(ui, tr);
   }
   return ui;
 }
