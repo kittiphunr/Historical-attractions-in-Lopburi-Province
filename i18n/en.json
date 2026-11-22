@@ -544,5 +544,7 @@
  "ตำแหน่งบนแผนที่": "Position on the map",
  "แผนที่ท่องเที่ยวลพบุรีแบบภาพ (แผนผัง ไม่ตรงมาตราส่วนจริง)": "Illustrated tourist map of Lopburi (schematic, not to scale)",
  "เรื่องเล่าต่างชาติสมัยพระนารายณ์": "Foreign stories from King Narai’s reign",
- "หนึ่งในปราสาทขอมที่เก่าที่สุดของเมือง": "One of the oldest Khmer shrines in town"
+ "หนึ่งในปราสาทขอมที่เก่าที่สุดของเมือง": "One of the oldest Khmer shrines in town",
+ "ฟอนต์:": "Fonts:",
+ "ข้อความภาษาไทยใช้ฟอนต์ JS Saowapark ไฟล์ฟอนต์ระบุลิขสิทธิ์ไว้ว่า “Copyright (c) ReEncode By P-chanSoft, 2002. All rights reserved.” (P-chanSoft คือผู้แปลงรหัสฟอนต์) ไฟล์ไม่ได้ระบุผู้ออกแบบต้นฉบับหรือสัญญาอนุญาต เจ้าของโปรเจกต์เป็นผู้นำมาใช้ ควรตรวจสิทธิ์การเผยแพร่ซ้ำก่อนใช้เชิงพาณิชย์ ส่วนภาษาอังกฤษ จีน และญี่ปุ่นใช้ฟอนต์ Prompt (SIL Open Font License 1.1) จาก Google Fonts": "Thai text uses the JS Saowapark font. The font file states its copyright as “Copyright (c) ReEncode By P-chanSoft, 2002. All rights reserved.” (P-chanSoft is the party that re-encoded the font). The file names neither the original designer nor a licence. The project owner supplied it for use here; check redistribution rights before any commercial use. English, Chinese and Japanese pages use the Prompt font (SIL Open Font License 1.1) from Google Fonts."
 }
