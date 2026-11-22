@@ -54,7 +54,7 @@
       $('#wxUpdated').textContent = 'อัปเดต ' + c.time.slice(11, 16) + ' น.';
       $('#wxHours').innerHTML = [0, 3, 6, 9, 12].map((o, k) => {
         const i = Math.min(i0 + o, h.time.length - 1), hh = +h.time[i].slice(11, 13), day = hh >= 6 && hh < 18;
-        return `<li class="grid justify-items-center gap-1"><span>${k === 0 ? 'ตอนนี้' : String(hh).padStart(2, '0') + ':00'}</span>${wxSvg(h.weather_code[i], day, 'h-8 w-8 ' + (day ? 'text-amber-300' : 'text-amber-200'))}<b class="font-medium text-white">${Math.round(h.temperature_2m[i])}°</b></li>`;
+        return `<li class="grid justify-items-center gap-1.5"><span>${k === 0 ? 'ตอนนี้' : String(hh).padStart(2, '0') + ':00'}</span>${wxSvg(h.weather_code[i], day, 'h-8 w-8 sm:h-9 sm:w-9 ' + (day ? 'text-amber-300' : 'text-amber-200'))}<b class="text-base font-medium text-white sm:text-lg">${Math.round(h.temperature_2m[i])}°</b></li>`;
       }).join('');
     } catch (e) {
       $('#wxDesc').textContent = 'โหลดสภาพอากาศไม่ได้';
