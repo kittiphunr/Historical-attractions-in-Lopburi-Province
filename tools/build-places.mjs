@@ -532,6 +532,7 @@ function localize(html, code, relFile, rel) {
   const l = LANG[code], prefix = l.prefix, isHome = relFile === 'index.html';
   const depth = relFile.split('/').length - 1, baseHref = '../'.repeat(depth + 1);
   let out = translators[code].translateHtml(html);
+  out = out.replace(/[ \t]*<link rel="preload" href="assets\/font\/js-saowapark-normal\.woff2"[^>]*>\n?/, '');   // ฟอนต์ภาษาไทยใช้เฉพาะหน้าไทย
   out = out.replace(/<html lang="th"[^>]*>/, `<html lang="${l.html}" data-alts="1" data-rel="${rel}" data-prefix="${prefix}" data-lang-code="${code}" data-prerendered="1">`);
   out = /<base href="[^"]*">/.test(out) ? out.replace(/<base href="[^"]*">/, `<base href="${baseHref}">`) : out.replace(/(<meta name="viewport"[^>]*>)/, `$1\n  <base href="${baseHref}">`);
   out = out.replace(/(\shref=")([^"]*)(")/g, (m, a, h, z) => a + mapHref(h, prefix, isHome) + z);
