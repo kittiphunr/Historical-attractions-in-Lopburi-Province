@@ -145,7 +145,7 @@ function page(a, idx) {
       isPartOf: { '@type': 'TouristDestination', name: 'จังหวัดลพบุรี', url: SITE }, address: { '@type': 'PostalAddress', addressRegion: 'ลพบุรี', addressCountry: 'TH' } },
     { '@type': 'BreadcrumbList', itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'หน้าแรก', item: SITE },
-      { '@type': 'ListItem', position: 2, name: '12 แห่ง', item: SITE + '#places' },
+      { '@type': 'ListItem', position: 2, name: '13 แห่ง', item: SITE + '#places' },
       { '@type': 'ListItem', position: 3, name: a.name, item: url }] }] };
   const extraStart = 5;
   const factsAll = [...a.facts, ...(c.facts || [])];
@@ -185,7 +185,7 @@ function page(a, idx) {
   ${chrome}<main id="main" class="mx-auto max-w-6xl px-4 pt-20 lg:pl-[112px] lg:pr-6">
     <nav aria-label="ตำแหน่งหน้า" class="text-sm text-ink-500"><ol class="flex flex-wrap items-center gap-2">
       <li><a class="hover:text-terra-600" href="index.html">หน้าแรก</a></li><li aria-hidden="true">/</li>
-      <li><a class="hover:text-terra-600" href="index.html#places">12 แห่ง</a></li><li aria-hidden="true">/</li>
+      <li><a class="hover:text-terra-600" href="index.html#places">13 แห่ง</a></li><li aria-hidden="true">/</li>
       <li aria-current="page" class="text-ink-900">${esc(a.name)}</li></ol></nav>
 
     <div class="mt-6 grid items-start gap-8 lg:grid-cols-12 lg:gap-10">
@@ -417,7 +417,7 @@ function homeBlocks() {
     { '@context': 'https://schema.org', '@type': 'TouristDestination', name: 'จังหวัดลพบุรี', alternateName: 'Lopburi Province', description: 'สำรวจ 10 แหล่งประวัติศาสตร์เมืองสามยุคของลพบุรี: ทวารวดี ขอม อยุธยา', url: SITE, image: IMG + 'assets/img/og-cover.jpg', inLanguage: 'th',
       containsPlace: A.map(a => ({ '@type': 'TouristAttraction', name: a.name, alternateName: a.en, url: `${SITE}places/${a.id}.html` })) }
   ];
-  const nolist = `<noscript><nav aria-label="สถานที่ทั้ง 12 แห่ง" class="mt-6"><ul class="grid gap-2 sm:grid-cols-2">${A.map(a => `<li><a class="underline" href="places/${a.id}.html">${esc(a.no)} ${esc(a.name)} — ${esc(a.tagline)}</a></li>`).join('')}</ul></nav></noscript>`;
+  const nolist = `<noscript><nav aria-label="สถานที่ทั้ง 13 แห่ง" class="mt-6"><ul class="grid gap-2 sm:grid-cols-2">${A.map(a => `<li><a class="underline" href="places/${a.id}.html">${esc(a.no)} ${esc(a.name)} — ${esc(a.tagline)}</a></li>`).join('')}</ul></nav></noscript>`;
   return { jsonld: `\n  <script type="application/ld+json">${JSON.stringify(ld)}</script>\n  `, nolist, hreflang: '\n  ' + hreflangLinks('') + '\n  ' };
 }
 let homeThai;
