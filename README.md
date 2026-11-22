@@ -170,7 +170,7 @@ npm run shrink -- ต้นฉบับ.glb --out assets/model/prang-sam-yot.glb
 
 ## แบนเนอร์หน้าปก
 
-มีสองภาพสลับตามโหมดของเว็บ: กลางวัน `source-models/banner-lopburi.original.webp` (`node tools/make-banner.mjs` สร้าง `banner-lopburi-1600/800.webp` และ `og-cover.jpg`) และกลางคืน `source-models/banner-lopburi-night.original.webp` (`node tools/make-banner.mjs source-models/banner-lopburi-night.original.webp --night` สร้าง `banner-lopburi-night-1600/800.webp`) ภาพกลางคืนไม่ถูกโหลดในโหมดกลางวัน
+มีสองภาพสลับตามโหมดของเว็บ: กลางวัน `source-models/banner-lopburi.original.webp` (`node tools/make-banner.mjs` สร้าง `banner-lopburi-1600/800.webp` และ `og-cover.jpg`) และกลางคืน `source-models/banner-lopburi-night.original.webp` (`node tools/make-banner.mjs source-models/banner-lopburi-night.original.webp --night` สร้าง `banner-lopburi-night-1600/800.webp`) ภาพกลางคืนซ้อนบนภาพกลางวัน (สองภาพต้องจัดองค์ประกอบตรงกัน) สลับโหมดแล้วเฟดเข้า/ออกช้า ๆ ราว 2 วินาทีให้เหมือนไฟค่อย ๆ ติด (CSS `.banner-night` ใน `src/input.css`, โหลดไฟล์ล่วงหน้าตอนว่างด้วย `app.js` ยกเว้นเมื่อเปิดโหมดประหยัดข้อมูลหรือเครือข่ายช้า จะโหลดตอนสลับโหมดแทน) ผู้ที่ตั้งลดการเคลื่อนไหวในระบบจะเห็นสลับทันที
 
 ภาพพาโนรามาที่เจ้าของโปรเจกต์จัดเตรียมให้ (ต้นฉบับ `source-models/banner-lopburi.original.webp` มีแถบขาวบน/ล่าง) สร้างเป็นแบนเนอร์ด้วย `node tools/make-banner.mjs` ซึ่งตัดขอบขาวออก ตัดให้ได้สัดส่วน 2.9:1 (`--ratio`, `--focus`) แล้วเขียน WebP 800/1600 พิกเซล (`assets/img/banner-lopburi-*.webp`) พร้อมภาพตัวอย่างตอนแชร์ลิงก์ `assets/img/og-cover.jpg` ใช้เป็นพื้นหลังด้านหลังตราประจำจังหวัดที่ด้านบนสุดของหน้าแรก ภาพนี้ประกอบจากหลายส่วน ยังไม่ทราบผู้ถ่ายหรือผู้สร้างภาพและสัญญาอนุญาต หน้าเว็บจึงระบุว่า "จัดเตรียมโดยเจ้าของโปรเจกต์" ถ้าทราบที่มา ให้เพิ่มเครดิตในป๊อบอัพ "เครดิต" (`index.html`)
 
