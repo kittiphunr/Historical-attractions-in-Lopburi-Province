@@ -152,7 +152,7 @@ html[lang="th"] .truncate { line-height: 1.7; }
 
 /* ข้อความบนแบนเนอร์ (ป้ายเล็ก / ชื่อจังหวัด / บรรทัดรอง): ฟอนต์ไทยที่ขยายแล้วสูงกว่าความสูงบรรทัดเดิม สระและวรรณยุกต์ของชื่อจึงชนป้ายบนและบรรทัดล่าง
    เว้นระยะเพิ่มเฉพาะหน้าไทย (หน่วย em ขยายตามขนาดตัวอักษรที่ผู้ใช้เลือก) */
-html[lang="th"] .bn-eyebrow { margin-bottom: .55rem; }
+html[lang="th"] .bn-eyebrow { margin-bottom: .55rem; font-weight: 600; color: #fef3c7; text-shadow: 0 0 3px rgba(0,0,0,.85), 0 1px 10px rgba(0,0,0,.9); }
 html[lang="th"] .bn-title { line-height: 1.45; }
 html[lang="th"] .bn-sub { margin-top: .45rem; line-height: 1.65; }
 
