@@ -835,7 +835,10 @@ window.ATTRACTIONS = [
     "era": "dvaravati",
     "eraLabel": "ทวารวดี",
     "model": "ruins",
-    "map": null,
+    "map": [
+      91.5,
+      44
+    ],
     "archTitle": "ผังเมืองและโบราณวัตถุ",
     "glb": {
       "url": "assets/model/sap-champa.glb",
