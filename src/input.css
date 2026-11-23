@@ -177,3 +177,16 @@ html[lang="th"] .bn-sub { margin-top: .45rem; line-height: 1.65; }
 .rt table { width: 100%; border-collapse: collapse; font-size: .95em; }
 .rt th, .rt td { border: 1px solid rgb(var(--cream-300)); padding: .5rem .75rem; text-align: left; vertical-align: top; }
 .rt th { background: rgb(var(--cream-100)); font-weight: 600; }
+
+/* แบนเนอร์บนมือถือ: (1) แถบเครื่องมือลอย (ภาษา/ขนาดตัวอักษร/ธีม) ทับมุมบนขวาของแบนเนอร์ ทำให้ป้ายเครดิตภาพถูกบังและหัวข้อถูกทับเมื่อจอแคบหรือขยายตัวอักษร — index.html เว้นระยะบนของแบนเนอร์ให้พ้นแถบ (pt-[4.75rem] ต่ำกว่า sm)
+   (2) ป้ายเล็กเหนือชื่อ "Lopburi Province" ซ้ำกับชื่อจังหวัดเมื่อแปลเป็นภาษาอื่น (en: Lopburi Province / zh: 华富里府 ซ้ำสองบรรทัด) และเป็นอักษรอังกฤษบนหน้าไทยที่อ่านยากบนภาพ — ซ่อนในภาษาที่ไม่ใช่ไทยทุกขนาดจอ และซ่อนบนมือถือทุกภาษา */
+html:not([lang="th"]) .bn-eyebrow { display: none; }
+@media (max-width: 639px) { .bn-eyebrow { display: none; } }
+
+/* แบนเนอร์บนมือถือเมื่อผู้ใช้ขยายตัวอักษร (--fs สูงสุด 1.5): ข้อความและตราบนภาพขยายตาม rem จนชื่อจังหวัดล้นขอบ คำบรรยายกลายเป็นคอลัมน์ตัวอักษรเดียว และตัวอักษรชนป้ายเครดิต
+   จึงจำกัดการขยายของข้อความบนภาพไว้ที่ 112% (ส่วนอื่นของหน้ายังขยายเต็มตามที่เลือก) + ตัดคำได้ + ตราย่อตามความกว้างจอ — ใช้เฉพาะต่ำกว่า sm (หน้าจอกว้างภาพมีที่พอ) */
+@media (max-width: 639px) {
+  .bn-title { font-size: calc(1.875rem / var(--fs, 1) * min(var(--fs, 1), 1.12)); overflow-wrap: anywhere; }
+  .bn-sub { font-size: calc(.875rem / var(--fs, 1) * min(var(--fs, 1), 1.12)); overflow-wrap: anywhere; }
+  .bn-seal { width: min(calc(5rem / var(--fs, 1) * min(var(--fs, 1), 1.12)), 22vw); }
+}
